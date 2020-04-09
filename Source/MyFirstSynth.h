@@ -47,6 +47,9 @@ public:
         for(int i = 0; i < 4; ++i)  //Initialising an owned array of parameter smoothers
         {
             ADSRSmooth.add(new SmoothChanges());
+            smoothEnvParams.add(new MultiSmooth());
+            smoothOscParams.add(new MultiSmooth());
+            myEnvs.add(new ADSR());
         }
         
         //setADSR(); //Setting ADSR with attribute values
@@ -61,12 +64,17 @@ public:
     
     void init(float sampleRate)
     {
-        myOsc.setSampleRate(sampleRate);
+        myOsc1.setSampleRate(sampleRate);
+        myOsc2.setSampleRate(sampleRate);
+        myOsc2.setType(3);
         //myEnv.setSampleRate(sampleRate);
         
         for(int i = 0; i < 4; ++i)
         {
             ADSRSmooth[i] -> setSampleRate(sampleRate);
+            smoothEnvParams[i] -> setSampleRate(sampleRate);
+            smoothOscParams[i] -> setSampleRate(sampleRate);
+            myEnvs[i] -> setSampleRate(sampleRate);
         }
     }
 
@@ -94,9 +102,47 @@ public:
         
     }*/
     
-    void setParams(OwnedArray<MultiSmooth>* envSmoothParams, OwnedArray<MultiSmooth>* oscSmoothParams)
+    void setParams(float envParams[2][4], float newOscParams[2][3])
     {
+        //NEED A BETTER WAY THAN MULTI DIMENSIONAL ARRAY I THINK
         
+        float newenvolopeParams[2][4] = {{1000.0f/1000.0f, 1000.0f/1000.0f, 0.7f, 1000.0f/1000.0f},
+        {500.0f/1000.0f, 1500.0f/1000.0f, 0.8f, 100.0f/1000.0f}};
+        
+        if(!playing)
+        {
+            for(int i = 0; i < 2; ++i)
+            {
+                for(int j = 0; j < 4; ++j)
+                {
+                    if(j<3)
+                    {
+                        oscParams[i][j] = newOscParams[i][j];
+                    }
+                    ADSRparams[i][j] = newenvolopeParams[i][j];
+                }
+            }
+        }
+        else
+        {
+            for(int i = 0; i < 2; ++i)
+            {
+                smoothEnvParams[i] -> setTargetVal(newenvolopeParams[i]);
+                smoothOscParams[i] -> setTargetVal(newOscParams[i]);
+            }
+            
+        }
+        
+    }
+    
+    void setInitalParams()
+    {
+        for(int i = 0; i < 2; ++i)
+        {
+            smoothEnvParams[i] -> init(ADSRparams[i] ,ADSRparams[i]);
+            smoothOscParams[i] -> init(oscParams[i] ,oscParams[i]);
+            setADSR(i);
+        }
     }
      //--------------------------------------------------------------------------
      /**
@@ -110,11 +156,15 @@ public:
     void startNote (int midiNoteNumber, float velocity, SynthesiserSound*, int /*currentPitchWheelPosition*/) override
     {
         float freq = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
-        myOsc.setFrequency(freq);
+        myOsc1.setFrequency(freq);
+        myOsc2.setFrequency(freq);
+        setInitalParams();
         noteVelocity = velocity;
         playing = true;
-        //myEnv.reset();
-        //myEnv.noteOn();
+        myEnvs[0] -> reset();
+        myEnvs[0] -> noteOn();
+        myEnvs[1] -> reset();
+        myEnvs[1] -> noteOn();
         
     }
     //--------------------------------------------------------------------------
@@ -127,7 +177,8 @@ public:
      */
     void stopNote(float /*velocity*/, bool allowTailOff) override
     {
-        //myEnv.noteOff();
+        myEnvs[0] -> noteOff();
+        myEnvs[1] -> noteOff();
         released = true;
     }
     
@@ -143,34 +194,40 @@ public:
      */
     void renderNextBlock(AudioSampleBuffer& outputBuffer, int startSample, int numSamples) override
     {
-        if (playing) // check to see if this voice should be playing
+        
+        
+        // iterate through the necessary number of samples (from startSample up to startSample + numSamples)
+        for (int sampleIndex = startSample;   sampleIndex < (startSample+numSamples);   sampleIndex++)
         {
-            // iterate through the necessary number of samples (from startSample up to startSample + numSamples)
-            for (int sampleIndex = startSample;   sampleIndex < (startSample+numSamples);   sampleIndex++)
+            float currentSample = 0;
+            // your sample-by-sample DSP code here!
+            // An example white noise generater as a placeholder - replace with your own code
+            if(playing)
             {
-                // your sample-by-sample DSP code here!
-                // An example white noise generater as a placeholder - replace with your own code
-                
                 //Updating synth parameters
-                //updateParams();
+                updateParams();
                 
-                //float envVal = myEnv.getNextSample();
+                float envVal1 = myEnvs[0] -> getNextSample();
+                float envVal2 = myEnvs[1] -> getNextSample();
                 
-                float currentSample = myOsc.getNextSample();
+                //currentSample = envVal1 * ((envVal2 * (oscParams[0][2] - oscParams[0][1]) + oscParams[0][1]) * myOsc1.getNextSample() + ((1 - envVal2) * (oscParams[1][2] -       oscParams[1][1]) + oscParams[1][1]) * myOsc2.getNextSample());
                 
-                //if(released && envVal<0.0001f)
-                //{
-                //    clearCurrentNote();
-                //    playing = false;
-                //    released = false;
-                //}
+                currentSample = envVal1 * ((envVal2 * (1.0f - 0.2f) + 0.2f) * myOsc2.getNextSample() + ((1.0f - envVal2) * (0.9f - 0.1f) + 0.1f) * myOsc1.getNextSample());
                 
-                // for each channel, write the currentSample float to the output
-                for (int chan = 0; chan<outputBuffer.getNumChannels(); chan++)
+                //currentSample = envVal1 * myOsc1.getNextSample();
+                
+                if(released && envVal1<0.0001f)
                 {
-                    // The output sample is scaled by 0.2 and note velocity so that it is not too loud by default
-                    outputBuffer.addSample (chan, sampleIndex, currentSample * noteVelocity * 0.2);
+                    clearCurrentNote();
+                    playing = false;
+                    released = false;
                 }
+            }
+            // for each channel, write the currentSample float to the output
+            for (int chan = 0; chan<outputBuffer.getNumChannels(); chan++)
+            {
+                // The output sample is scaled by 0.2 and note velocity so that it is not too loud by default
+                outputBuffer.addSample (chan, sampleIndex, currentSample * noteVelocity * 0.2);
             }
         }
     }
@@ -197,19 +254,19 @@ private:
 
     */
     
-    /*void setADSR()
+    void setADSR(int envNum)
     {
         //Setting ADSR parameters
         ADSR::Parameters myADSR;
         
-        myADSR.attack = ADSRparams[0];
-        myADSR.decay = ADSRparams[1];
-        myADSR.sustain = ADSRparams[2];
-        myADSR.release = ADSRparams[3];
+        myADSR.attack = ADSRparams[envNum][0];
+        myADSR.decay = ADSRparams[envNum][1];
+        myADSR.sustain = ADSRparams[envNum][2];
+        myADSR.release = ADSRparams[envNum][3];
         
-        myEnv.setParameters(myADSR);   //Setting envolope with passed parameters
+        myEnvs[envNum] -> setParameters(myADSR);   //Setting envolope with passed parameters
         
-    }*/
+    }
     
     /*
     Checking if parameters have changed and if so updating them
@@ -234,6 +291,17 @@ private:
         }
     }*/
     
+    void updateParams()
+    {
+        for(int i = 0; i < 2; ++i)
+        {
+            //smoothEnvParams[i] -> getNextVal(ADSRparams[i]);
+            smoothOscParams[i] -> getNextVal(oscParams[i]);
+            
+            //setADSR(i);
+        }
+    }
+    
     
     // Set up any necessary variables here
     /// Should the voice be playing?
@@ -248,12 +316,19 @@ private:
     float noteVelocity=0;
     
     //Sine Oscillator
-    Oscillator myOsc;
+    Oscillator myOsc1;
+    Oscillator myOsc2;
     
     //ADSR
     OwnedArray<ADSR> myEnvs;
-    float ADSRparams[4] = {1.0f, 1.0f, 0.5f, 1.0f};
+    float ADSRparams[2][4] = {{1.0f, 1.0f, 0.5f, 1.0f}, {1.0f, 1.0f, 0.5f, 1.0f}};
+    float oscParams[2][3] ={{0.0f, 0.0f, 0.5f}, {0.0f, 0.0f, 0.5f}};
     
     //Parameter Smoother
     OwnedArray<SmoothChanges> ADSRSmooth;
+    
+    
+    //Owned array for smoothing all parameters
+    OwnedArray<MultiSmooth> smoothEnvParams;
+    OwnedArray<MultiSmooth> smoothOscParams;
 };

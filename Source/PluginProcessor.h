@@ -94,8 +94,12 @@ private:
     
     
     //Owned array for smoothing all parameters
-    OwnedArray<MultiSmooth> smoothEnvParams;
-    OwnedArray<MultiSmooth> smoothOscParams;
-    OwnedArray<SmoothChanges> smoothParams;
+    //OwnedArray<MultiSmooth> smoothEnvParams;
+    //OwnedArray<MultiSmooth> smoothOscParams;
+    //OwnedArray<SmoothChanges> smoothParams;
+    
+    float envolopeParams[2][4];
+    float oscillatorParams[2][3];
+    
     
 };

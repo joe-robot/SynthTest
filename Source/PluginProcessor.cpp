@@ -53,35 +53,28 @@ parameters(*this, nullptr, "Parameters", {
         mySynth.addVoice(new MyFirstSynthVoice());
     }
     
-    //Ensuring Smooth params owned arrays are empty
-    smoothParams.clear();
-    smoothEnvParams.clear();
-    smoothOscParams.clear();
     
     //Main Envolope Params
     attackParam = parameters.getRawParameterValue("attack");
     decayParam = parameters.getRawParameterValue("decay");
     sustainParam = parameters.getRawParameterValue("sustain");
     releaseParam = parameters.getRawParameterValue("release");
-    smoothEnvParams.add(new MultiSmooth());
+
     
     //Setting Up oscillator parameters  NEEEEEEEEED TO BE LOWCASE PARAMS!!!!!!!!!!!
     Osc1Tune = parameters.getRawParameterValue("osc1Tune");
     Osc1MinAmp = parameters.getRawParameterValue("osc1MinAmp");
     Osc1MaxAmp = parameters.getRawParameterValue("osc1MaxAmp");
-    smoothOscParams.add(new MultiSmooth(3));
     
     Osc2Tune = parameters.getRawParameterValue("osc2Tune");
     Osc2MinAmp = parameters.getRawParameterValue("osc2MinAmp");
     Osc2MaxAmp = parameters.getRawParameterValue("osc2MaxAmp");
-    smoothOscParams.add(new MultiSmooth(3));
 
     //Osc X Params
     OscXAttackParam = parameters.getRawParameterValue("oscXAttack");
     OscXDecayParam = parameters.getRawParameterValue("oscXDecay");
     OscXSustainParam = parameters.getRawParameterValue("oscXSustain");
     OscXReleaseParam = parameters.getRawParameterValue("oscXRelease");
-    smoothEnvParams.add(new MultiSmooth());
     
 }
 
@@ -163,19 +156,7 @@ void SynthTesterAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
         //v -> changeADSR(*attackParam, *decayParam, *sustainParam, *releaseParam);
     }
     
-    float defaultEnvArray[4] {1000.0f, 1000.0f, 50.0f, 1000.0f};
-    
-    for(int i = 0; i < smoothEnvParams.size(); ++i)
-    {
-        smoothEnvParams[i] -> setSampleRate(sampleRate);
-        smoothEnvParams[i] -> init(defaultEnvArray, defaultEnvArray);
-    }
-    
-    for(int i = 0; i < smoothOscParams.size(); ++i)
-    {
-        smoothOscParams[i] -> setSampleRate(sampleRate);
-        smoothOscParams[i] -> init(defaultEnvArray, defaultEnvArray);
-    }
+
 }
 
 void SynthTesterAudioProcessor::releaseResources()
@@ -220,7 +201,7 @@ void SynthTesterAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBu
         MyFirstSynthVoice* v = dynamic_cast<MyFirstSynthVoice*>(mySynth.getVoice(i));
         //v -> changeADSR(*attackParam, *decayParam, *sustainParam, *releaseParam);
         
-        v -> setParams(&smoothEnvParams, &smoothOscParams);
+        v -> setParams(envolopeParams, oscillatorParams);
     }
     
     mySynth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
@@ -261,15 +242,14 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 
 void SynthTesterAudioProcessor::setParamTargets()
 {
-    //Long way need to figure out a quicker way!!!!!
-    float env1Array[4]{*attackParam, *decayParam, *sustainParam, *releaseParam};
-    smoothEnvParams[0] -> setTargetVal(env1Array);
-    float env2Array[4]{*attackParam, *decayParam, *sustainParam, *releaseParam};
-    smoothEnvParams[1] -> setTargetVal(env2Array);
+  //Arrays
+    float newenvolopeParams[2][4] = {{*attackParam/1000.0f, *decayParam/1000.0f, *sustainParam/100.0f, *releaseParam/1000.0f},
+                            {*OscXAttackParam/1000.0f, *OscXDecayParam/1000.0f, *OscXSustainParam/100.0f, *OscXReleaseParam/1000.0f}};
     
-    float osc1Array[3]{*Osc1Tune, *Osc1MinAmp, *Osc1MaxAmp};
-    smoothOscParams[0] -> setTargetVal(osc1Array);
-    float osc2Array[3]{*Osc2Tune, *Osc2MinAmp, *Osc2MaxAmp};
-    smoothOscParams[1] -> setTargetVal(osc2Array);
+    memcpy(newenvolopeParams, envolopeParams, sizeof(newenvolopeParams));
     
+    float newoscillatorParams[2][3] = {{*Osc1Tune, *Osc1MinAmp/100.0f, *Osc1MaxAmp/100.0f},
+                                    {*Osc2Tune, *Osc2MinAmp/100.0f, *Osc2MaxAmp/100.0f}};
+    
+    memcpy(newoscillatorParams, oscillatorParams, sizeof(newoscillatorParams));
 }
