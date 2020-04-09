@@ -160,7 +160,7 @@ void SynthTesterAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     {
         MyFirstSynthVoice* v = dynamic_cast<MyFirstSynthVoice*>(mySynth.getVoice(i));
         v -> init(sampleRate);
-        v -> changeADSR(*attackParam, *decayParam, *sustainParam, *releaseParam);
+        //v -> changeADSR(*attackParam, *decayParam, *sustainParam, *releaseParam);
     }
     
     float defaultEnvArray[4] {1000.0f, 1000.0f, 50.0f, 1000.0f};
@@ -218,9 +218,9 @@ void SynthTesterAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBu
     {
         
         MyFirstSynthVoice* v = dynamic_cast<MyFirstSynthVoice*>(mySynth.getVoice(i));
-        v -> changeADSR(*attackParam, *decayParam, *sustainParam, *releaseParam);
+        //v -> changeADSR(*attackParam, *decayParam, *sustainParam, *releaseParam);
         
-        v -> setParams(smoothEnvParams, smoothOscParams);
+        v -> setParams(&smoothEnvParams, &smoothOscParams);
     }
     
     mySynth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());

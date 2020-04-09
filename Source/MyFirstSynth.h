@@ -49,7 +49,7 @@ public:
             ADSRSmooth.add(new SmoothChanges());
         }
         
-        setADSR(); //Setting ADSR with attribute values
+        //setADSR(); //Setting ADSR with attribute values
     }
     //--------------------------------------------------------------------------
     
@@ -62,7 +62,7 @@ public:
     void init(float sampleRate)
     {
         myOsc.setSampleRate(sampleRate);
-        myEnv.setSampleRate(sampleRate);
+        //myEnv.setSampleRate(sampleRate);
         
         for(int i = 0; i < 4; ++i)
         {
@@ -84,7 +84,7 @@ public:
     @param Release
     */
     
-    void changeADSR(float newAttack, float newDecay, float newSustain, float newRelease)
+    /*void changeADSR(float newAttack, float newDecay, float newSustain, float newRelease)
     {
         //inialising ramps if params changed
         ADSRSmooth[0] -> init(ADSRparams[0], newAttack / 1000.0f);
@@ -92,7 +92,7 @@ public:
         ADSRSmooth[2] -> init(ADSRparams[2], newSustain / 100.0f);
         ADSRSmooth[3] -> init(ADSRparams[3], newRelease / 1000.0f);
         
-    }
+    }*/
     
     void setParams(OwnedArray<MultiSmooth>* envSmoothParams, OwnedArray<MultiSmooth>* oscSmoothParams)
     {
@@ -113,8 +113,8 @@ public:
         myOsc.setFrequency(freq);
         noteVelocity = velocity;
         playing = true;
-        myEnv.reset();
-        myEnv.noteOn();
+        //myEnv.reset();
+        //myEnv.noteOn();
         
     }
     //--------------------------------------------------------------------------
@@ -127,7 +127,7 @@ public:
      */
     void stopNote(float /*velocity*/, bool allowTailOff) override
     {
-        myEnv.noteOff();
+        //myEnv.noteOff();
         released = true;
     }
     
@@ -152,18 +152,18 @@ public:
                 // An example white noise generater as a placeholder - replace with your own code
                 
                 //Updating synth parameters
-                updateParams();
+                //updateParams();
                 
-                float envVal = myEnv.getNextSample();
+                //float envVal = myEnv.getNextSample();
                 
-                float currentSample = myOsc.getNextSample()*envVal;
+                float currentSample = myOsc.getNextSample();
                 
-                if(released && envVal<0.0001f)
-                {
-                    clearCurrentNote();
-                    playing = false;
-                    released = false;
-                }
+                //if(released && envVal<0.0001f)
+                //{
+                //    clearCurrentNote();
+                //    playing = false;
+                //    released = false;
+                //}
                 
                 // for each channel, write the currentSample float to the output
                 for (int chan = 0; chan<outputBuffer.getNumChannels(); chan++)
@@ -197,7 +197,7 @@ private:
 
     */
     
-    void setADSR()
+    /*void setADSR()
     {
         //Setting ADSR parameters
         ADSR::Parameters myADSR;
@@ -209,13 +209,13 @@ private:
         
         myEnv.setParameters(myADSR);   //Setting envolope with passed parameters
         
-    }
+    }*/
     
     /*
     Checking if parameters have changed and if so updating them
 
     */
-    void updateParams() 
+    /*void updateParams()
     {
         bool checkUpdate = false; //Initially set ADSR updated as false
         
@@ -232,7 +232,7 @@ private:
         {
             setADSR();
         }
-    }
+    }*/
     
     
     // Set up any necessary variables here
@@ -251,7 +251,7 @@ private:
     Oscillator myOsc;
     
     //ADSR
-    ADSR myEnv;
+    OwnedArray<ADSR> myEnvs;
     float ADSRparams[4] = {1.0f, 1.0f, 0.5f, 1.0f};
     
     //Parameter Smoother
