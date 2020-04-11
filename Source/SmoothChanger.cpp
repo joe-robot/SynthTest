@@ -53,7 +53,7 @@ void SmoothChanges::setTargetVal(float targetVal)
 
 void SmoothChanges::setSampleRate(float newSampleRate)
 {
-    sampleRate=newSampleRate > 0 ? newSampleRate : 48000; //Check passed sample rate bigger than zero if not set as default value
+    sampleRate= newSampleRate > 0 ? newSampleRate : 48000; //Check passed sample rate bigger than zero if not set as default value
     
     setSmoothTime(transitionTimeMS); //Need to set time again for change
 }
@@ -119,8 +119,7 @@ MultiSmooth::MultiSmooth()
 
 MultiSmooth::MultiSmooth(int numParams)
 {
-    numberParams = numParams;
-    MultiSmooth();
+    setNumParams(numParams);
 }
 
 MultiSmooth::~MultiSmooth(){}
@@ -166,10 +165,26 @@ void MultiSmooth::setSampleRate(float newSampleRate)
 void MultiSmooth::setNumParams(int numParams)
 {
     paramSmooth.clear();
+    //paramSmooth.clearQuick(true);
     numberParams = numParams;
     
     for(int i = 0; i < numberParams; ++i)  //Initialising an owned array of parameter smoothers
     {
         paramSmooth.add(new SmoothChanges());
     }
+}
+
+
+bool MultiSmooth::checkChanging()
+{
+    for(int i = 0; i < numberParams; ++i)
+    {
+        if(paramSmooth[i] -> checkChanging())
+        {
+            return true;
+        }
+    }
+    
+    
+    return false;
 }

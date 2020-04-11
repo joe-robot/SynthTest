@@ -168,6 +168,14 @@ public:
     */
     void getNextVal(float params[4]);
     
+    /**
+     * Checks if any values being smoothed are still changing
+     *
+     * @return true if it is changing, otherwise false
+     *
+    */
+    bool checkChanging();
+    
 private:
     OwnedArray<SmoothChanges> paramSmooth;   //Owned array of parameter smoothing class to smooth each param
     

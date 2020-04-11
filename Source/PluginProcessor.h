@@ -104,13 +104,13 @@ private:
     //OwnedArray<MultiSmooth> smoothOscParams;
     //OwnedArray<SmoothChanges> smoothParams;
     
-    float envolopeParams[2][4];
-    float oscillatorParams[2][3];
+    //float envolopeParams[2][4];
+    //float oscillatorParams[2][3];
     
     std::atomic<bool> paramsUpdated {false};
     
-    //OwnedArray<EnvolopeParams> envolopes;
-    //OwnedArray<OscParams> oscillators;
+    OwnedArray<EnvolopeParams> envolopeParams;
+    OwnedArray<OscParams> oscillatorParams;
     
     
     ParamNames paramID;

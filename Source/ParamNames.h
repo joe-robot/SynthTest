@@ -10,11 +10,13 @@
 
 #pragma once
 
+#include <stdio.h>  //Including the standard library
+
 class ParamNames
 {
 public:
-    ParamNames();
-    ~ParamNames();
+    ParamNames(){};
+    ~ParamNames(){};
 
     std::string getEnvolopeParamName(int envNum, int envolopePos)
     {

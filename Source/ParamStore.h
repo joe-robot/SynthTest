@@ -18,7 +18,7 @@ public:
     {
         setADSRParams();
     };
-    ~EnvolopeParams();
+    ~EnvolopeParams(){};
     
     void setParams(float attackMS, float decayMS, float sustain, float releaseMS)
     {
@@ -82,15 +82,15 @@ private:
 class OscParams
 {
 public:
-    OscParams();
-    ~OscParams();
+    OscParams(){};
+    ~OscParams(){};
     
     bool getValSwitch()
     {
         return newVals;
     }
     
-    void setOscParams(float tune, float minAmp, float maxAmp)
+    void setParams(float tune, float minAmp, float maxAmp)
     {
         bool changed = false;;
         if(oscParam[0] != tune || oscParam[1] != minAmp || oscParam[2] != maxAmp)

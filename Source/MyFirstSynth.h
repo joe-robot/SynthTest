@@ -13,6 +13,7 @@
 
 #include "Oscillator.h"
 #include "SmoothChanger.h"
+#include "ParamStore.h"
 
 // ===========================
 // ===========================
@@ -44,11 +45,13 @@ class MyFirstSynthVoice : public SynthesiserVoice
 {
 public:
     MyFirstSynthVoice() {
+        smoothEnvParams.clear();
+        smoothOscParams.clear();
         for(int i = 0; i < 4; ++i)  //Initialising an owned array of parameter smoothers
         {
-            ADSRSmooth.add(new SmoothChanges());
+            //ADSRSmooth.add(new SmoothChanges());
             smoothEnvParams.add(new MultiSmooth());
-            smoothOscParams.add(new MultiSmooth());
+            smoothOscParams.add(new MultiSmooth(3));
             myEnvs.add(new ADSR());
         }
         
@@ -71,7 +74,7 @@ public:
         
         for(int i = 0; i < 4; ++i)
         {
-            ADSRSmooth[i] -> setSampleRate(sampleRate);
+           // ADSRSmooth[i] -> setSampleRate(sampleRate);
             smoothEnvParams[i] -> setSampleRate(sampleRate);
             smoothOscParams[i] -> setSampleRate(sampleRate);
             myEnvs[i] -> setSampleRate(sampleRate);
@@ -102,46 +105,65 @@ public:
         
     }*/
     
-    void setParams(float envParams[2][4], float newOscParams[2][3])
+    void setParams(OwnedArray<EnvolopeParams>& envs, OwnedArray<OscParams>& oscs)
     {
         //NEED A BETTER WAY THAN MULTI DIMENSIONAL ARRAY I THINK
+        for(int i = 0; i < envs.size(); ++i)
+        {
+            if(envs[i] -> getValSwitch() != envUpdate[i])   //Check if env updated since last checked
+            {
+                updateEnv(i, envs[i] -> getADSRParams());
+            }
+        }
         
-        float newenvolopeParams[2][4] = {{1000.0f/1000.0f, 1000.0f/1000.0f, 0.7f, 1000.0f/1000.0f},
-        {500.0f/1000.0f, 1500.0f/1000.0f, 0.8f, 100.0f/1000.0f}};
-        
+        for(int i = 0; i < oscs.size(); ++i)
+        {
+            if(oscs[i] -> getValSwitch() != oscUpdate[i])   //Check if env updated since last checked
+            {
+                updateOsc(i, oscs[i] -> getOscParams(0), oscs[i] -> getOscParams(1), oscs[i] -> getOscParams(2));
+            }
+        }
+    }
+    
+    void updateEnv(int envNum, ADSR::Parameters thisADSR)
+    {
+        float adsrParams[4] = {thisADSR.attack, thisADSR.decay, thisADSR.sustain, thisADSR.release};
+        //Update env differently if playing or not playing
         if(!playing)
         {
-            for(int i = 0; i < 2; ++i)
-            {
-                for(int j = 0; j < 4; ++j)
-                {
-                    if(j<3)
-                    {
-                        oscParams[i][j] = newOscParams[i][j];
-                    }
-                    ADSRparams[i][j] = newenvolopeParams[i][j];
-                }
-            }
+            smoothEnvParams[envNum] -> init(adsrParams ,adsrParams);
+            myEnvs[envNum] -> setParameters(thisADSR);
         }
         else
         {
-            for(int i = 0; i < 2; ++i)
-            {
-                smoothEnvParams[i] -> setTargetVal(newenvolopeParams[i]);
-                smoothOscParams[i] -> setTargetVal(newOscParams[i]);
-            }
-            
+            smoothEnvParams[envNum] -> setTargetVal(adsrParams);
         }
+    }
         
+    void updateOsc(int oscNum, float newTune, float newMinAmp, float newMaxAmp)
+    {
+        float oscParams[3] = {newTune, newMinAmp, newMaxAmp};
+        
+        //Update osc differently if playing or not playing
+        if(!playing)
+        {
+            smoothOscParams[oscNum] -> init(oscParams, oscParams);
+        }
+        else
+        {
+            smoothOscParams[oscNum] -> setTargetVal(oscParams);
+        }
     }
     
     void setInitalParams()
     {
         for(int i = 0; i < 2; ++i)
         {
-            smoothEnvParams[i] -> init(ADSRparams[i] ,ADSRparams[i]);
-            smoothOscParams[i] -> init(oscParams[i] ,oscParams[i]);
-            setADSR(i);
+            float initialEnv[4] = {1.0, 1.0, 0.5f, 1.0f};
+            float initialOsc[3] = {0.0f, 0.2f, 1.0f};
+            smoothEnvParams[i] -> init(initialEnv ,initialEnv);
+            smoothOscParams[i] -> init(initialOsc ,initialOsc);
+            setADSR(i, initialEnv);
         }
     }
      //--------------------------------------------------------------------------
@@ -207,12 +229,20 @@ public:
                 //Updating synth parameters
                 updateParams();
                 
+                float osc1[3] = {0.0f, 0.0f, 0.0f};;
+                float osc2[3]  = {0.0f, 0.0f, 0.0f};;
+                
+                smoothOscParams[0] -> getNextVal(osc1);
+                smoothOscParams[1] -> getNextVal(osc2);
+                
                 float envVal1 = myEnvs[0] -> getNextSample();
                 float envVal2 = myEnvs[1] -> getNextSample();
                 
                 //currentSample = envVal1 * ((envVal2 * (oscParams[0][2] - oscParams[0][1]) + oscParams[0][1]) * myOsc1.getNextSample() + ((1 - envVal2) * (oscParams[1][2] -       oscParams[1][1]) + oscParams[1][1]) * myOsc2.getNextSample());
                 
-                currentSample = envVal1 * ((envVal2 * (1.0f - 0.2f) + 0.2f) * myOsc2.getNextSample() + ((1.0f - envVal2) * (0.9f - 0.1f) + 0.1f) * myOsc1.getNextSample());
+                //currentSample = envVal1 * ((envVal2 * (1.0f - 0.2f) + 0.2f) * myOsc2.getNextSample() + ((1.0f - envVal2) * (0.9f - 0.1f) + 0.1f) * myOsc1.getNextSample());
+                
+                currentSample = envVal1 * ((envVal2 * (osc1[2] - osc1[1]) + osc1[1]) * myOsc2.getNextSample() + ((1.0f - envVal2) * (osc2[2] - osc2[1]) + osc2[1]) * myOsc1.getNextSample());
                 
                 //currentSample = envVal1 * myOsc1.getNextSample();
                 
@@ -221,6 +251,7 @@ public:
                     clearCurrentNote();
                     playing = false;
                     released = false;
+                    //resetAllEnvs();
                 }
             }
             // for each channel, write the currentSample float to the output
@@ -254,19 +285,21 @@ private:
 
     */
     
-    void setADSR(int envNum)
+    void setADSR(int envNum, float adsrVals[4])
     {
+        std::cout<< adsrVals[0] <<std::endl;
         //Setting ADSR parameters
         ADSR::Parameters myADSR;
         
-        myADSR.attack = ADSRparams[envNum][0];
-        myADSR.decay = ADSRparams[envNum][1];
-        myADSR.sustain = ADSRparams[envNum][2];
-        myADSR.release = ADSRparams[envNum][3];
+        myADSR.attack = adsrVals[0];
+        myADSR.decay = adsrVals[1];
+        myADSR.sustain = adsrVals[2];
+        myADSR.release = adsrVals[3];
         
         myEnvs[envNum] -> setParameters(myADSR);   //Setting envolope with passed parameters
         
     }
+    
     
     /*
     Checking if parameters have changed and if so updating them
@@ -295,8 +328,14 @@ private:
     {
         for(int i = 0; i < 2; ++i)
         {
+            if(smoothEnvParams[i] -> checkChanging())
+            {
+                float adsrVals[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+                smoothEnvParams[i] -> getNextVal(adsrVals);
+                setADSR(i, adsrVals);
+            }
             //smoothEnvParams[i] -> getNextVal(ADSRparams[i]);
-            smoothOscParams[i] -> getNextVal(oscParams[i]);
+            //smoothOscParams[i] -> getNextVal(oscParams[i]);
             
             //setADSR(i);
         }
@@ -319,14 +358,18 @@ private:
     Oscillator myOsc1;
     Oscillator myOsc2;
     
+    //OwnedArray<Oscillator> myOscs;
+    
     //ADSR
     OwnedArray<ADSR> myEnvs;
     bool envUpdate[5] = {false, false, false, false, false};
-    float ADSRparams[2][4] = {{1.0f, 1.0f, 0.5f, 1.0f}, {1.0f, 1.0f, 0.5f, 1.0f}};
-    float oscParams[2][3] ={{0.0f, 0.0f, 0.5f}, {0.0f, 0.0f, 0.5f}};
+    bool oscUpdate[4] = {false, false, false, false};
+    //float ADSRparams[2][4] = {{1.0f, 1.0f, 0.5f, 1.0f}, {1.0f, 1.0f, 0.5f, 1.0f}};
+    //float oscParams[2][3] ={{0.0f, 0.0f, 0.5f}, {0.0f, 0.0f, 0.5f}};
     
     //Parameter Smoother
-    OwnedArray<SmoothChanges> ADSRSmooth;
+    //OwnedArray<SmoothChanges> ADSRSmooth;
+    
     
     //Owned array for smoothing all parameters
     OwnedArray<MultiSmooth> smoothEnvParams;

@@ -55,27 +55,33 @@ parameters(*this, nullptr, "Parameters", {
     
     parameters.state.addListener(this);
     
+    envolopeParams.clear();
+    oscillatorParams.clear();
+    
     //Main Envolope Params
     attackParam = parameters.getRawParameterValue("attack");
     decayParam = parameters.getRawParameterValue("decay");
     sustainParam = parameters.getRawParameterValue("sustain");
     releaseParam = parameters.getRawParameterValue("release");
-
+    envolopeParams.add(new EnvolopeParams());
     
     //Setting Up oscillator parameters  NEEEEEEEEED TO BE LOWCASE PARAMS!!!!!!!!!!!
     Osc1Tune = parameters.getRawParameterValue("osc1Tune");
     Osc1MinAmp = parameters.getRawParameterValue("osc1MinAmp");
     Osc1MaxAmp = parameters.getRawParameterValue("osc1MaxAmp");
+    oscillatorParams.add(new OscParams());
     
     Osc2Tune = parameters.getRawParameterValue("osc2Tune");
     Osc2MinAmp = parameters.getRawParameterValue("osc2MinAmp");
     Osc2MaxAmp = parameters.getRawParameterValue("osc2MaxAmp");
+    oscillatorParams.add(new OscParams());
 
     //Osc X Params
     OscXAttackParam = parameters.getRawParameterValue("oscXattack");
     OscXDecayParam = parameters.getRawParameterValue("oscXdecay");
     OscXSustainParam = parameters.getRawParameterValue("oscXsustain");
     OscXReleaseParam = parameters.getRawParameterValue("oscXrelease");
+    envolopeParams.add(new EnvolopeParams());
     
 }
 
@@ -247,16 +253,25 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 
 void SynthTesterAudioProcessor::setParamTargets()
 {
-  //Arrays
-    float newenvolopeParams[2][4] = {{*attackParam/1000.0f, *decayParam/1000.0f, *sustainParam/100.0f, *releaseParam/1000.0f},
-                            {*OscXAttackParam/1000.0f, *OscXDecayParam/1000.0f, *OscXSustainParam/100.0f, *OscXReleaseParam/1000.0f}};
+    for(int i = 0; i < envolopeParams.size(); ++i)
+    {
+        float adsr[4];
+        for(int j=0; j < 4; ++j)
+        {
+            adsr[j] = *parameters.getRawParameterValue(paramID.getEnvolopeParamName(i, j));
+        }
+        envolopeParams[i] -> setParams(adsr[0], adsr[1], adsr[2], adsr[3]);
+    }
     
-    memcpy(newenvolopeParams, envolopeParams, sizeof(newenvolopeParams));
-    
-    float newoscillatorParams[2][3] = {{*Osc1Tune, *Osc1MinAmp/100.0f, *Osc1MaxAmp/100.0f},
-                                    {*Osc2Tune, *Osc2MinAmp/100.0f, *Osc2MaxAmp/100.0f}};
-    
-    memcpy(newoscillatorParams, oscillatorParams, sizeof(newoscillatorParams));
+    for(int i = 0; i < oscillatorParams.size(); ++i)
+    {
+        float oscPar[3];
+        for(int j=0; j < 3; ++j)
+        {
+            oscPar[j] = *parameters.getRawParameterValue(paramID.getOscParamName(i, j));
+        }
+        oscillatorParams[i] -> setParams(oscPar[0], oscPar[1], oscPar[2]);
+    }
 }
 
 void SynthTesterAudioProcessor::valueTreePropertyChanged(ValueTree& valTree, const Identifier& property)
