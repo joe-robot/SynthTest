@@ -93,7 +93,7 @@ public:
     void setParams(float tune, float minAmp, float maxAmp)
     {
         bool changed = false;;
-        if(oscParam[0] != tune || oscParam[1] != minAmp || oscParam[2] != maxAmp)
+        if(oscParam[0] != tune || oscParam[1] != minAmp/100.0f || oscParam[2] != maxAmp/100.0f)
         {
             changed = true;
         }
@@ -101,8 +101,8 @@ public:
         if(changed)
         {
             oscParam[0] = tune;
-            oscParam[1] = minAmp;
-            oscParam[2] = maxAmp;
+            oscParam[1] = minAmp/100.0f;
+            oscParam[2] = maxAmp/100.0f;
             
             newVals = !newVals;
         }

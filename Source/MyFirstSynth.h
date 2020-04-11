@@ -110,29 +110,32 @@ public:
         //NEED A BETTER WAY THAN MULTI DIMENSIONAL ARRAY I THINK
         for(int i = 0; i < envs.size(); ++i)
         {
-            if(envs[i] -> getValSwitch() != envUpdate[i])   //Check if env updated since last checked
-            {
+            //if(envs[i] -> getValSwitch() != envUpdate[i])   //Check if env updated since last checked
+            //{
                 updateEnv(i, envs[i] -> getADSRParams());
-            }
+                envUpdate[i] = !envUpdate[i];
+            //}
         }
         
         for(int i = 0; i < oscs.size(); ++i)
         {
-            if(oscs[i] -> getValSwitch() != oscUpdate[i])   //Check if env updated since last checked
-            {
+            //if(oscs[i] -> getValSwitch() != oscUpdate[i])   //Check if env updated since last checked
+            //{
                 updateOsc(i, oscs[i] -> getOscParams(0), oscs[i] -> getOscParams(1), oscs[i] -> getOscParams(2));
-            }
+                oscUpdate[i] = !oscUpdate[i];
+            //}
         }
     }
     
     void updateEnv(int envNum, ADSR::Parameters thisADSR)
     {
         float adsrParams[4] = {thisADSR.attack, thisADSR.decay, thisADSR.sustain, thisADSR.release};
+        //std::cout<< "sent targets" << (float)adsrParams[0] <<" | "<<adsrParams[1] << " | "<< adsrParams[2]<< " | " << adsrParams[3] <<std::endl;
         //Update env differently if playing or not playing
         if(!playing)
         {
             smoothEnvParams[envNum] -> init(adsrParams ,adsrParams);
-            myEnvs[envNum] -> setParameters(thisADSR);
+            setADSR(envNum, adsrParams);
         }
         else
         {
@@ -155,7 +158,7 @@ public:
         }
     }
     
-    void setInitalParams()
+   /* void setInitalParams()
     {
         for(int i = 0; i < 2; ++i)
         {
@@ -165,7 +168,7 @@ public:
             smoothOscParams[i] -> init(initialOsc ,initialOsc);
             setADSR(i, initialEnv);
         }
-    }
+    }*/
      //--------------------------------------------------------------------------
      /**
      What should be done when a note starts
@@ -180,13 +183,15 @@ public:
         float freq = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
         myOsc1.setFrequency(freq);
         myOsc2.setFrequency(freq);
-        setInitalParams();
+        //setInitalParams();
         noteVelocity = velocity;
         playing = true;
         myEnvs[0] -> reset();
         myEnvs[0] -> noteOn();
         myEnvs[1] -> reset();
         myEnvs[1] -> noteOn();
+        ADSR::Parameters theParamsandSHit =  myEnvs[0] -> getParameters();
+        std::cout<< theParamsandSHit.attack <<std::endl;
         
     }
     //--------------------------------------------------------------------------
@@ -217,7 +222,8 @@ public:
     void renderNextBlock(AudioSampleBuffer& outputBuffer, int startSample, int numSamples) override
     {
         
-        
+        ADSR::Parameters checkParams = myEnvs[0] -> getParameters();
+        //std::cout << checkParams.attack << std::endl;
         // iterate through the necessary number of samples (from startSample up to startSample + numSamples)
         for (int sampleIndex = startSample;   sampleIndex < (startSample+numSamples);   sampleIndex++)
         {
@@ -287,7 +293,7 @@ private:
     
     void setADSR(int envNum, float adsrVals[4])
     {
-        std::cout<< adsrVals[0] <<std::endl;
+        //std::cout<< adsrVals[0] <<std::endl;
         //Setting ADSR parameters
         ADSR::Parameters myADSR;
         
@@ -296,10 +302,14 @@ private:
         myADSR.sustain = adsrVals[2];
         myADSR.release = adsrVals[3];
         
-        myEnvs[envNum] -> setParameters(myADSR);   //Setting envolope with passed parameters
+        setADSR(envNum, myADSR);  //Setting envolope with passed parameters
         
     }
     
+    void setADSR(int envNum, ADSR::Parameters adsrParams)
+    {
+        myEnvs[envNum] -> setParameters(adsrParams);   //Setting envolope with passed parameters
+    }
     
     /*
     Checking if parameters have changed and if so updating them
@@ -362,8 +372,8 @@ private:
     
     //ADSR
     OwnedArray<ADSR> myEnvs;
-    bool envUpdate[5] = {false, false, false, false, false};
-    bool oscUpdate[4] = {false, false, false, false};
+    bool envUpdate[5] = {true, true, true, true, true};
+    bool oscUpdate[4] = {true, true, true, true};
     //float ADSRparams[2][4] = {{1.0f, 1.0f, 0.5f, 1.0f}, {1.0f, 1.0f, 0.5f, 1.0f}};
     //float oscParams[2][3] ={{0.0f, 0.0f, 0.5f}, {0.0f, 0.0f, 0.5f}};
     

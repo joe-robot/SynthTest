@@ -160,6 +160,8 @@ void SynthTesterAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     {
         MyFirstSynthVoice* v = dynamic_cast<MyFirstSynthVoice*>(mySynth.getVoice(i));
         v -> init(sampleRate);
+        setParamTargets();
+        v -> setParams(envolopeParams, oscillatorParams);
         //v -> changeADSR(*attackParam, *decayParam, *sustainParam, *releaseParam);
     }
     
@@ -200,7 +202,7 @@ void SynthTesterAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBu
 {
     ScopedNoDenormals noDenormals;
     
-    setParamTargets();
+    
     
     for(int i=0; i < numVoices; ++i)
     {
@@ -209,6 +211,7 @@ void SynthTesterAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBu
         //v -> changeADSR(*attackParam, *decayParam, *sustainParam, *releaseParam);
         if(paramsUpdated)
         {
+            setParamTargets();
             v -> setParams(envolopeParams, oscillatorParams);
         }
     }

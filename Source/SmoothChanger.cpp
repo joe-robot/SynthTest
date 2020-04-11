@@ -142,6 +142,7 @@ void MultiSmooth::setTargetVal(float* targetVal)
 {
     for(int i=0; i < numberParams; ++i)    //Update target value for all parts of the envolope
     {
+        std::cout<<"Target: "<< targetVal[i] <<std::endl;
         paramSmooth[i] -> setTargetVal(targetVal[i]);
     }
 }
