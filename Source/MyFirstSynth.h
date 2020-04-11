@@ -79,6 +79,7 @@ public:
             smoothOscParams[i] -> setSampleRate(sampleRate);
             myEnvs[i] -> setSampleRate(sampleRate);
         }
+        
     }
 
     //--------------------------------------------------------------------------
@@ -183,15 +184,15 @@ public:
         float freq = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
         myOsc1.setFrequency(freq);
         myOsc2.setFrequency(freq);
-        //setInitalParams();
         noteVelocity = velocity;
-        playing = true;
         myEnvs[0] -> reset();
-        myEnvs[0] -> noteOn();
         myEnvs[1] -> reset();
+        myEnvs[0] -> noteOn();
         myEnvs[1] -> noteOn();
-        ADSR::Parameters theParamsandSHit =  myEnvs[0] -> getParameters();
-        std::cout<< theParamsandSHit.attack <<std::endl;
+        released = false;
+        playing = true;
+        //ADSR::Parameters theParamsandSHit =  myEnvs[0] -> getParameters();
+        //std::cout<< theParamsandSHit.attack <<std::endl;
         
     }
     //--------------------------------------------------------------------------
@@ -222,7 +223,7 @@ public:
     void renderNextBlock(AudioSampleBuffer& outputBuffer, int startSample, int numSamples) override
     {
         
-        ADSR::Parameters checkParams = myEnvs[0] -> getParameters();
+        //ADSR::Parameters checkParams = myEnvs[0] -> getParameters();
         //std::cout << checkParams.attack << std::endl;
         // iterate through the necessary number of samples (from startSample up to startSample + numSamples)
         for (int sampleIndex = startSample;   sampleIndex < (startSample+numSamples);   sampleIndex++)

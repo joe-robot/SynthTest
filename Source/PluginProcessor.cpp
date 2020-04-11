@@ -208,7 +208,6 @@ void SynthTesterAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBu
     {
         
         MyFirstSynthVoice* v = dynamic_cast<MyFirstSynthVoice*>(mySynth.getVoice(i));
-        //v -> changeADSR(*attackParam, *decayParam, *sustainParam, *releaseParam);
         if(paramsUpdated)
         {
             setParamTargets();
