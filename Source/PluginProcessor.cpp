@@ -33,10 +33,10 @@ parameters(*this, nullptr, "Parameters", {
     std::make_unique<AudioParameterFloat>("osc2MaxAmp", "Osc 2 Max Amplitude", 0.0f, 100.0f, 100.0f),
     
     //Envolope parameters for x oscillator
-    std::make_unique<AudioParameterFloat>("oscXAttack", "Osc X Attack (ms)", 0.001f, 2000.0f, 1000.0f),
-    std::make_unique<AudioParameterFloat>("oscXDecay", "Osc X Decay (ms)", 0.001f, 2000.0f, 1000.0f),
-    std::make_unique<AudioParameterFloat>("oscXSustain", "Osc X Sustain (%)", 0.0f, 100.0f, 50.0f),
-    std::make_unique<AudioParameterFloat>("oscXRelease", "Osc X Release (ms)", 0.001f, 2000.0f, 1000.0f),
+    std::make_unique<AudioParameterFloat>("oscXattack", "Osc X Attack (ms)", 0.001f, 2000.0f, 1000.0f),
+    std::make_unique<AudioParameterFloat>("oscXdecay", "Osc X Decay (ms)", 0.001f, 2000.0f, 1000.0f),
+    std::make_unique<AudioParameterFloat>("oscXsustain", "Osc X Sustain (%)", 0.0f, 100.0f, 50.0f),
+    std::make_unique<AudioParameterFloat>("oscXrelease", "Osc X Release (ms)", 0.001f, 2000.0f, 1000.0f),
     
     //Envolope params for the whole note
     std::make_unique<AudioParameterFloat>("attack", "Master Attack (ms)", 0.001f, 2000.0f, 1000.0f),
@@ -53,6 +53,7 @@ parameters(*this, nullptr, "Parameters", {
         mySynth.addVoice(new MyFirstSynthVoice());
     }
     
+    parameters.state.addListener(this);
     
     //Main Envolope Params
     attackParam = parameters.getRawParameterValue("attack");
@@ -71,10 +72,10 @@ parameters(*this, nullptr, "Parameters", {
     Osc2MaxAmp = parameters.getRawParameterValue("osc2MaxAmp");
 
     //Osc X Params
-    OscXAttackParam = parameters.getRawParameterValue("oscXAttack");
-    OscXDecayParam = parameters.getRawParameterValue("oscXDecay");
-    OscXSustainParam = parameters.getRawParameterValue("oscXSustain");
-    OscXReleaseParam = parameters.getRawParameterValue("oscXRelease");
+    OscXAttackParam = parameters.getRawParameterValue("oscXattack");
+    OscXDecayParam = parameters.getRawParameterValue("oscXdecay");
+    OscXSustainParam = parameters.getRawParameterValue("oscXsustain");
+    OscXReleaseParam = parameters.getRawParameterValue("oscXrelease");
     
 }
 
@@ -200,11 +201,15 @@ void SynthTesterAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBu
         
         MyFirstSynthVoice* v = dynamic_cast<MyFirstSynthVoice*>(mySynth.getVoice(i));
         //v -> changeADSR(*attackParam, *decayParam, *sustainParam, *releaseParam);
-        
-        v -> setParams(envolopeParams, oscillatorParams);
+        if(paramsUpdated)
+        {
+            v -> setParams(envolopeParams, oscillatorParams);
+        }
     }
     
     mySynth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+    
+    paramsUpdated = false;
 }
 
 //==============================================================================
@@ -252,4 +257,9 @@ void SynthTesterAudioProcessor::setParamTargets()
                                     {*Osc2Tune, *Osc2MinAmp/100.0f, *Osc2MaxAmp/100.0f}};
     
     memcpy(newoscillatorParams, oscillatorParams, sizeof(newoscillatorParams));
+}
+
+void SynthTesterAudioProcessor::valueTreePropertyChanged(ValueTree& valTree, const Identifier& property)
+{
+    paramsUpdated = true;
 }

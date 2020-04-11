@@ -17,6 +17,8 @@
       <FILE id="cZAKGf" name="SmoothChanger.cpp" compile="1" resource="0"
             file="Source/SmoothChanger.cpp"/>
       <FILE id="c6KuJX" name="SmoothChanger.h" compile="0" resource="0" file="Source/SmoothChanger.h"/>
+      <FILE id="J53zgd" name="ParamNames.h" compile="0" resource="0" file="Source/ParamNames.h"/>
+      <FILE id="QSX2jn" name="ParamStore.h" compile="0" resource="0" file="Source/ParamStore.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>

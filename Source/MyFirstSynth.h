@@ -321,14 +321,16 @@ private:
     
     //ADSR
     OwnedArray<ADSR> myEnvs;
+    bool envUpdate[5] = {false, false, false, false, false};
     float ADSRparams[2][4] = {{1.0f, 1.0f, 0.5f, 1.0f}, {1.0f, 1.0f, 0.5f, 1.0f}};
     float oscParams[2][3] ={{0.0f, 0.0f, 0.5f}, {0.0f, 0.0f, 0.5f}};
     
     //Parameter Smoother
     OwnedArray<SmoothChanges> ADSRSmooth;
     
-    
     //Owned array for smoothing all parameters
     OwnedArray<MultiSmooth> smoothEnvParams;
     OwnedArray<MultiSmooth> smoothOscParams;
+    
+    
 };

@@ -13,11 +13,14 @@
 #include <JuceHeader.h>
 #include "SmoothChanger.h"
 #include "MyFirstSynth.h"
+#include "ParamNames.h"
+#include "ParamStore.h"
 
 //==============================================================================
 /**
 */
-class SynthTesterAudioProcessor  : public AudioProcessor
+class SynthTesterAudioProcessor  : public AudioProcessor,
+                                   public ValueTree::Listener
 {
 public:
     //==============================================================================
@@ -58,6 +61,9 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
     
     void setParamTargets();
+    
+    void valueTreePropertyChanged(ValueTree& treeWhosePropertyHasChanged, const Identifier& property) override;
+    
 
 private:
     //==============================================================================
@@ -101,5 +107,12 @@ private:
     float envolopeParams[2][4];
     float oscillatorParams[2][3];
     
+    std::atomic<bool> paramsUpdated {false};
+    
+    //OwnedArray<EnvolopeParams> envolopes;
+    //OwnedArray<OscParams> oscillators;
+    
+    
+    ParamNames paramID;
     
 };
