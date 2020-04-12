@@ -95,10 +95,17 @@ public:
     */
     float getTargetVal();
     
+    /**
+     * Moves value to target if not already reached
+     *
+     *
+    */
+    void setToTarget();
+    
 private:
     
     float targetValue = 0;
-    float lastValue;
+    float lastValue = 0;
     float transitionTime;
     float transitionTimeMS = 50.0f;
     float increment;
@@ -175,6 +182,14 @@ public:
      *
     */
     bool checkChanging();
+    
+    
+    /**
+     * Moves value to target if not already reached
+     *
+     *
+    */
+    void setToTarget();
     
 private:
     OwnedArray<SmoothChanges> paramSmooth;   //Owned array of parameter smoothing class to smooth each param

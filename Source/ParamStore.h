@@ -35,12 +35,12 @@ public:
             currentADSRms[2] = sustain;
             currentADSRms[3] = releaseMS;
             setADSRParams();
-            newVals = !newVals; //Switch value of newVals
+            newVals = (newVals + 1) % 4; //Switch value of newVals
         }
         
     }
     
-    bool getValSwitch()
+    int getValSwitch()
     {
         return newVals;
     }
@@ -74,7 +74,7 @@ private:
         envolope.release = currentADSRms[3] / 1000.0f;
     }
     
-    bool newVals = false;
+    int newVals = 0;
     
 };
 
@@ -85,7 +85,7 @@ public:
     OscParams(){};
     ~OscParams(){};
     
-    bool getValSwitch()
+    int getValSwitch()
     {
         return newVals;
     }
@@ -104,7 +104,7 @@ public:
             oscParam[1] = minAmp/100.0f;
             oscParam[2] = maxAmp/100.0f;
             
-            newVals = !newVals;
+            newVals = (newVals + 1) % 4;
         }
     };
     
@@ -116,5 +116,5 @@ public:
 private:
     float oscParam[3] = {0.0f, 0.5f, 0.9f};
     
-    bool newVals = false;
+    int newVals = 0;
 };

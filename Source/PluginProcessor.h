@@ -69,7 +69,7 @@ private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SynthTesterAudioProcessor)
     
-    int numVoices = 16; //Setting number of synth voices
+    int numVoices = 1; //Setting number of synth voices
     
     //Synthesiser
     Synthesiser mySynth;

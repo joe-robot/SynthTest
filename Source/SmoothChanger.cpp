@@ -35,9 +35,11 @@ void SmoothChanges::setTargetVal(float targetVal)
 {
     if(targetVal != targetValue) //Checking target value changed
     {
-        if(lastValue != targetValue) //Checking not already reached target
+        //std::cout<<"Old Target: "<<targetValue  << "Target Val: "<< targetVal << " LastValue: " << lastValue;
+        if(lastValue != targetVal) //Checking not already reached target
         {
             targetValue = targetVal;    //Update target value
+            //std::cout<<"   New Target: "<<targetValue;
             float valDiff = targetValue - lastValue;     //Get the difference and calculate the increment each sample
             increment = valDiff / transitionTime;       //Calculate the increment
             valueChanging = true;
@@ -108,7 +110,14 @@ float SmoothChanges::getTargetVal() //getting the target value
     return targetValue;
 }
 
-
+void SmoothChanges::setToTarget()
+{
+    if(valueChanging)
+    {
+        lastValue = targetValue;
+        valueChanging = false;
+    }
+}
 
 //-----------------------------------------
 
@@ -142,7 +151,6 @@ void MultiSmooth::setTargetVal(float* targetVal)
 {
     for(int i=0; i < numberParams; ++i)    //Update target value for all parts of the envolope
     {
-        std::cout<<"Target: "<< targetVal[i] <<std::endl;
         paramSmooth[i] -> setTargetVal(targetVal[i]);
     }
 }
@@ -185,7 +193,16 @@ bool MultiSmooth::checkChanging()
             return true;
         }
     }
-    
-    
+
     return false;
+}
+
+
+
+void MultiSmooth::setToTarget()
+{
+    for(int i = 0; i < numberParams; ++i)
+    {
+        paramSmooth[i] -> setToTarget();
+    }
 }

@@ -111,20 +111,20 @@ public:
         //NEED A BETTER WAY THAN MULTI DIMENSIONAL ARRAY I THINK
         for(int i = 0; i < envs.size(); ++i)
         {
-            //if(envs[i] -> getValSwitch() != envUpdate[i])   //Check if env updated since last checked
-            //{
+            if(envs[i] -> getValSwitch() != envUpdate[i])   //Check if env updated since last checked
+            {
                 updateEnv(i, envs[i] -> getADSRParams());
-                envUpdate[i] = !envUpdate[i];
-            //}
+                envUpdate[i] = envs[i] -> getValSwitch();
+            }
         }
         
         for(int i = 0; i < oscs.size(); ++i)
         {
-            //if(oscs[i] -> getValSwitch() != oscUpdate[i])   //Check if env updated since last checked
-            //{
+            if(oscs[i] -> getValSwitch() != oscUpdate[i])   //Check if env updated since last checked
+            {
                 updateOsc(i, oscs[i] -> getOscParams(0), oscs[i] -> getOscParams(1), oscs[i] -> getOscParams(2));
-                oscUpdate[i] = !oscUpdate[i];
-            //}
+                oscUpdate[i] = oscs[i] -> getValSwitch();
+            }
         }
     }
     
@@ -140,7 +140,9 @@ public:
         }
         else
         {
+            //std::cout<<"should set target here for env: "<< envNum<<std::endl;
             smoothEnvParams[envNum] -> setTargetVal(adsrParams);
+            //std::cout << smoothEnvParams[envNum] -> checkChanging() << std::endl;
         }
     }
         
@@ -256,6 +258,7 @@ public:
                 if(released && envVal1<0.0001f)
                 {
                     clearCurrentNote();
+                    updateParams();
                     playing = false;
                     released = false;
                     //resetAllEnvs();
@@ -341,8 +344,18 @@ private:
         {
             if(smoothEnvParams[i] -> checkChanging())
             {
+                //std::cout<< "Therefore this should be changing: "<< i <<std::endl;
                 float adsrVals[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-                smoothEnvParams[i] -> getNextVal(adsrVals);
+                if(playing)
+                {
+                    smoothEnvParams[i] -> getNextVal(adsrVals);
+                }
+                else
+                {
+                    smoothEnvParams[i] -> setToTarget();
+                    smoothEnvParams[i] -> getNextVal(adsrVals);
+                }
+                //std::cout<<"wehere"<<std::endl;
                 setADSR(i, adsrVals);
             }
             //smoothEnvParams[i] -> getNextVal(ADSRparams[i]);
@@ -373,8 +386,8 @@ private:
     
     //ADSR
     OwnedArray<ADSR> myEnvs;
-    bool envUpdate[5] = {true, true, true, true, true};
-    bool oscUpdate[4] = {true, true, true, true};
+    int envUpdate[5] = {0, 0, 0, 0, 0};
+    int oscUpdate[4] = {0, 0, 0, 0};
     //float ADSRparams[2][4] = {{1.0f, 1.0f, 0.5f, 1.0f}, {1.0f, 1.0f, 0.5f, 1.0f}};
     //float oscParams[2][3] ={{0.0f, 0.0f, 0.5f}, {0.0f, 0.0f, 0.5f}};
     
