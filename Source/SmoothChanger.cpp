@@ -36,9 +36,10 @@ void SmoothChanges::setTargetVal(float targetVal)
     if(targetVal != targetValue) //Checking target value changed
     {
         //std::cout<<"Old Target: "<<targetValue  << "Target Val: "<< targetVal << " LastValue: " << lastValue;
+        targetValue = targetVal;
         if(lastValue != targetVal) //Checking not already reached target
         {
-            targetValue = targetVal;    //Update target value
+            //targetValue = targetVal;    //Update target value
             //std::cout<<"   New Target: "<<targetValue;
             float valDiff = targetValue - lastValue;     //Get the difference and calculate the increment each sample
             increment = valDiff / transitionTime;       //Calculate the increment

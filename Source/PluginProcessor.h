@@ -69,7 +69,7 @@ private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SynthTesterAudioProcessor)
     
-    int numVoices = 1; //Setting number of synth voices
+    int numVoices = 16; //Setting number of synth voices
     
     //Synthesiser
     Synthesiser mySynth;
@@ -78,7 +78,7 @@ private:
     AudioProcessorValueTreeState parameters;
     
     //Params for oscillators
-    std::atomic<float>* Osc1Tune;
+    /*std::atomic<float>* Osc1Tune;
     std::atomic<float>* Osc1MinAmp;
     std::atomic<float>* Osc1MaxAmp;
     
@@ -96,8 +96,10 @@ private:
     std::atomic<float>* attackParam;
     std::atomic<float>* decayParam;
     std::atomic<float>* sustainParam;
-    std::atomic<float>* releaseParam;
+    std::atomic<float>* releaseParam;*/
     
+    int numOscs = 4;
+    int numEnvs = 3;
     
     //Owned array for smoothing all parameters
     //OwnedArray<MultiSmooth> smoothEnvParams;

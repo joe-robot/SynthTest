@@ -44,14 +44,19 @@ public:
 class MyFirstSynthVoice : public SynthesiserVoice
 {
 public:
-    MyFirstSynthVoice() {
+    MyFirstSynthVoice(int numOscs, int numEnvs) {
         smoothEnvParams.clear();
         smoothOscParams.clear();
-        for(int i = 0; i < 4; ++i)  //Initialising an owned array of parameter smoothers
+        for(int i = 0; i < numOscs; ++i)  //Initialising an owned array of parameter smoothers
+        {
+            synthOscs.add(new Oscillator());
+            smoothOscParams.add(new MultiSmooth(3));
+        }
+        
+        for(int i = 0; i < numEnvs; ++i)  //Initialising an owned array of parameter smoothers
         {
             //ADSRSmooth.add(new SmoothChanges());
             smoothEnvParams.add(new MultiSmooth());
-            smoothOscParams.add(new MultiSmooth(3));
             myEnvs.add(new ADSR());
         }
         
@@ -67,16 +72,18 @@ public:
     
     void init(float sampleRate)
     {
-        myOsc1.setSampleRate(sampleRate);
-        myOsc2.setSampleRate(sampleRate);
-        myOsc2.setType(3);
-        //myEnv.setSampleRate(sampleRate);
+        for(int i = 0; i < synthOscs.size(); ++i)
+        {
+            synthOscs[i] -> setSampleRate(sampleRate);
+            synthOscs[i] -> setType(i);
+            smoothOscParams[i] -> setSampleRate(sampleRate);
+        }
         
-        for(int i = 0; i < 4; ++i)
+        for(int i = 0; i < smoothEnvParams.size(); ++i)
         {
            // ADSRSmooth[i] -> setSampleRate(sampleRate);
             smoothEnvParams[i] -> setSampleRate(sampleRate);
-            smoothOscParams[i] -> setSampleRate(sampleRate);
+            //smoothOscParams[i] -> setSampleRate(sampleRate);
             myEnvs[i] -> setSampleRate(sampleRate);
         }
         
@@ -153,6 +160,7 @@ public:
         //Update osc differently if playing or not playing
         if(!playing)
         {
+            std::cout << "updatepls" << std::endl;
             smoothOscParams[oscNum] -> init(oscParams, oscParams);
         }
         else
@@ -184,13 +192,16 @@ public:
     void startNote (int midiNoteNumber, float velocity, SynthesiserSound*, int /*currentPitchWheelPosition*/) override
     {
         float freq = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
-        myOsc1.setFrequency(freq);
-        myOsc2.setFrequency(freq);
+        for(int i = 0; i < synthOscs.size(); ++i)
+        {
+            synthOscs[i] -> setFrequency(freq);
+        }
         noteVelocity = velocity;
-        myEnvs[0] -> reset();
-        myEnvs[1] -> reset();
-        myEnvs[0] -> noteOn();
-        myEnvs[1] -> noteOn();
+        for(int i = 0; i < myEnvs.size(); ++i)
+        {
+            myEnvs[i] -> reset();
+            myEnvs[i] -> noteOn();
+        }
         released = false;
         playing = true;
         //ADSR::Parameters theParamsandSHit =  myEnvs[0] -> getParameters();
@@ -238,20 +249,27 @@ public:
                 //Updating synth parameters
                 updateParams();
                 
-                float osc1[3] = {0.0f, 0.0f, 0.0f};;
-                float osc2[3]  = {0.0f, 0.0f, 0.0f};;
+                float osc1[3] = {0.0f, 0.0f, 0.0f};
+                float osc2[3]  = {0.0f, 0.0f, 0.0f};
+                float osc3[3] = {0.0f, 0.0f, 0.0f};
+                float osc4[3]  = {0.0f, 0.0f, 0.0f};
+                
                 
                 smoothOscParams[0] -> getNextVal(osc1);
                 smoothOscParams[1] -> getNextVal(osc2);
+                smoothOscParams[2] -> getNextVal(osc3);
+                smoothOscParams[3] -> getNextVal(osc4);
                 
                 float envVal1 = myEnvs[0] -> getNextSample();
                 float envVal2 = myEnvs[1] -> getNextSample();
+                float envVal3 = myEnvs[2] -> getNextSample();
+                //float envVal4 = myEnvs[3] -> getNextSample();
                 
                 //currentSample = envVal1 * ((envVal2 * (oscParams[0][2] - oscParams[0][1]) + oscParams[0][1]) * myOsc1.getNextSample() + ((1 - envVal2) * (oscParams[1][2] -       oscParams[1][1]) + oscParams[1][1]) * myOsc2.getNextSample());
                 
                 //currentSample = envVal1 * ((envVal2 * (1.0f - 0.2f) + 0.2f) * myOsc2.getNextSample() + ((1.0f - envVal2) * (0.9f - 0.1f) + 0.1f) * myOsc1.getNextSample());
                 
-                currentSample = envVal1 * ((envVal2 * (osc1[2] - osc1[1]) + osc1[1]) * myOsc2.getNextSample() + ((1.0f - envVal2) * (osc2[2] - osc2[1]) + osc2[1]) * myOsc1.getNextSample());
+                currentSample = envVal1 * (((1.0f -envVal2) * (1.0f - envVal3) * (osc1[2] - osc1[1]) + osc1[1]) * synthOscs[0] -> getNextSample() + ((1.0f - envVal3) * (envVal2) * (osc2[2] - osc2[1]) + osc2[1]) * synthOscs[1] -> getNextSample() + ((1.0f -envVal2) * (envVal3) * (osc3[2] - osc3[1]) + osc3[1]) * synthOscs[2] -> getNextSample() + ((envVal3) * (envVal2) * (osc4[2] - osc4[1]) + osc4[1]) * synthOscs[3] -> getNextSample());
                 
                 //currentSample = envVal1 * myOsc1.getNextSample();
                 
@@ -340,7 +358,7 @@ private:
     
     void updateParams()
     {
-        for(int i = 0; i < 2; ++i)
+        for(int i = 0; i < myEnvs.size(); ++i)
         {
             if(smoothEnvParams[i] -> checkChanging())
             {
@@ -379,15 +397,15 @@ private:
     float noteVelocity=0;
     
     //Sine Oscillator
-    Oscillator myOsc1;
-    Oscillator myOsc2;
+    //Oscillator myOsc1;
+    //Oscillator myOsc2;
     
-    //OwnedArray<Oscillator> myOscs;
+    OwnedArray<Oscillator> synthOscs;
     
     //ADSR
     OwnedArray<ADSR> myEnvs;
-    int envUpdate[5] = {0, 0, 0, 0, 0};
-    int oscUpdate[4] = {0, 0, 0, 0};
+    int envUpdate[5] = {4, 4, 4, 4, 4};
+    int oscUpdate[4] = {4, 4, 4, 4};
     //float ADSRparams[2][4] = {{1.0f, 1.0f, 0.5f, 1.0f}, {1.0f, 1.0f, 0.5f, 1.0f}};
     //float oscParams[2][3] ={{0.0f, 0.0f, 0.5f}, {0.0f, 0.0f, 0.5f}};
     

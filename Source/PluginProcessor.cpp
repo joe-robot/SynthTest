@@ -31,12 +31,24 @@ parameters(*this, nullptr, "Parameters", {
     std::make_unique<AudioParameterFloat>("osc2Tune", "Osc 2 Tune (semiTones)", -24, 24, 0),
     std::make_unique<AudioParameterFloat>("osc2MinAmp", "Osc 2 Min Amplitude", 0.0f, 100.0f, 0.0f),
     std::make_unique<AudioParameterFloat>("osc2MaxAmp", "Osc 2 Max Amplitude", 0.0f, 100.0f, 100.0f),
+    std::make_unique<AudioParameterFloat>("osc3Tune", "Osc 3 Tune (semiTones)", -24, 24, 0),
+    std::make_unique<AudioParameterFloat>("osc3MinAmp", "Osc 3 Min Amplitude", 0.0f, 100.0f, 0.0f),
+    std::make_unique<AudioParameterFloat>("osc3MaxAmp", "Osc 3 Max Amplitude", 0.0f, 100.0f, 100.0f),
+    std::make_unique<AudioParameterFloat>("osc4Tune", "Osc 4 Tune (semiTones)", -24, 24, 0),
+    std::make_unique<AudioParameterFloat>("osc4MinAmp", "Osc 4 Min Amplitude", 0.0f, 100.0f, 0.0f),
+    std::make_unique<AudioParameterFloat>("osc4MaxAmp", "Osc 4 Max Amplitude", 0.0f, 100.0f, 100.0f),
     
-    //Envolope parameters for x oscillator
+    //Envolope parameters for x oscillators
     std::make_unique<AudioParameterFloat>("oscXattack", "Osc X Attack (ms)", 0.001f, 2000.0f, 1000.0f),
     std::make_unique<AudioParameterFloat>("oscXdecay", "Osc X Decay (ms)", 0.001f, 2000.0f, 1000.0f),
     std::make_unique<AudioParameterFloat>("oscXsustain", "Osc X Sustain (%)", 0.0f, 100.0f, 50.0f),
     std::make_unique<AudioParameterFloat>("oscXrelease", "Osc X Release (ms)", 0.001f, 2000.0f, 1000.0f),
+    
+    //Envolope parameters for y oscillators
+    std::make_unique<AudioParameterFloat>("oscYattack", "Osc Y Attack (ms)", 0.001f, 2000.0f, 1000.0f),
+    std::make_unique<AudioParameterFloat>("oscYdecay", "Osc Y Decay (ms)", 0.001f, 2000.0f, 1000.0f),
+    std::make_unique<AudioParameterFloat>("oscYsustain", "Osc Y Sustain (%)", 0.0f, 100.0f, 50.0f),
+    std::make_unique<AudioParameterFloat>("oscYrelease", "Osc Y Release (ms)", 0.001f, 2000.0f, 1000.0f),
     
     //Envolope params for the whole note
     std::make_unique<AudioParameterFloat>("attack", "Master Attack (ms)", 0.001f, 2000.0f, 1000.0f),
@@ -50,7 +62,7 @@ parameters(*this, nullptr, "Parameters", {
     mySynth.addSound(new MyFirstSynthSound());
     for(int i = 0; i < numVoices; ++i)
     {
-        mySynth.addVoice(new MyFirstSynthVoice());
+        mySynth.addVoice(new MyFirstSynthVoice(numOscs, numEnvs));
     }
     
     parameters.state.addListener(this);
@@ -59,29 +71,35 @@ parameters(*this, nullptr, "Parameters", {
     oscillatorParams.clear();
     
     //Main Envolope Params
-    attackParam = parameters.getRawParameterValue("attack");
+    /*attackParam = parameters.getRawParameterValue("attack");
     decayParam = parameters.getRawParameterValue("decay");
     sustainParam = parameters.getRawParameterValue("sustain");
-    releaseParam = parameters.getRawParameterValue("release");
-    envolopeParams.add(new EnvolopeParams());
+    releaseParam = parameters.getRawParameterValue("release");*/
+    for(int i = 0; i < numEnvs; ++i)
+    {
+        envolopeParams.add(new EnvolopeParams());
+    }
     
     //Setting Up oscillator parameters  NEEEEEEEEED TO BE LOWCASE PARAMS!!!!!!!!!!!
-    Osc1Tune = parameters.getRawParameterValue("osc1Tune");
+   /* Osc1Tune = parameters.getRawParameterValue("osc1Tune");
     Osc1MinAmp = parameters.getRawParameterValue("osc1MinAmp");
-    Osc1MaxAmp = parameters.getRawParameterValue("osc1MaxAmp");
-    oscillatorParams.add(new OscParams());
+    Osc1MaxAmp = parameters.getRawParameterValue("osc1MaxAmp");*/
+    for(int i = 0; i < numOscs; ++i)
+    {
+        oscillatorParams.add(new OscParams());
+    }
     
-    Osc2Tune = parameters.getRawParameterValue("osc2Tune");
+    /*Osc2Tune = parameters.getRawParameterValue("osc2Tune");
     Osc2MinAmp = parameters.getRawParameterValue("osc2MinAmp");
-    Osc2MaxAmp = parameters.getRawParameterValue("osc2MaxAmp");
-    oscillatorParams.add(new OscParams());
+    Osc2MaxAmp = parameters.getRawParameterValue("osc2MaxAmp");*/
+    //oscillatorParams.add(new OscParams());
 
     //Osc X Params
-    OscXAttackParam = parameters.getRawParameterValue("oscXattack");
+    /*OscXAttackParam = parameters.getRawParameterValue("oscXattack");
     OscXDecayParam = parameters.getRawParameterValue("oscXdecay");
     OscXSustainParam = parameters.getRawParameterValue("oscXsustain");
-    OscXReleaseParam = parameters.getRawParameterValue("oscXrelease");
-    envolopeParams.add(new EnvolopeParams());
+    OscXReleaseParam = parameters.getRawParameterValue("oscXrelease");*/
+    //envolopeParams.add(new EnvolopeParams());
     
 }
 
