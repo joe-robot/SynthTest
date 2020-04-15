@@ -19,6 +19,8 @@
       <FILE id="c6KuJX" name="SmoothChanger.h" compile="0" resource="0" file="Source/SmoothChanger.h"/>
       <FILE id="J53zgd" name="ParamNames.h" compile="0" resource="0" file="Source/ParamNames.h"/>
       <FILE id="QSX2jn" name="ParamStore.h" compile="0" resource="0" file="Source/ParamStore.h"/>
+      <FILE id="O6UmUw" name="myIIRFilter.cpp" compile="1" resource="0" file="Source/myIIRFilter.cpp"/>
+      <FILE id="BezyLo" name="myIIRFilter.h" compile="0" resource="0" file="Source/myIIRFilter.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
