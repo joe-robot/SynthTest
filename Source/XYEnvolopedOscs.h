@@ -11,6 +11,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "SmoothChanger.h"
 #include "Oscillator.h"
 
 
@@ -35,17 +36,33 @@ public:
     
     void getNextVal(float envs[2], float outSamples[2]);
     
+    void playMode(bool playMode);
     
     
 private:
+    
+    float pan(float newPanAmount, int channel);
+    
+    void setOscFrequency(int oscNum, float frequency);
+    
+    void updateFreq();
+    
+    void resetParams();
     
     OwnedArray<Oscillator> oscs;
     float minMaxVols[2][4]  =  {{0.1f, 0.1f, 0.1f, 0.1f},   //Min Oscillator Volumes
                                 {0.5f, 0.5f, 0.5f, 0.5f}};  //Max Oscillator Volumes
     
     int tuneAmount[4] = {0, 0, 0, 0};
+    int targetTuneAmount[4] = {0, 0, 0, 0};
     
     float panAmount[4] = {0, 0, 0, 0};
     
     int prevMidiInput = 48;
+    
+    bool playing = false;
+    bool changeFreq[4] = {false, false, false, false};
+    
+    OwnedArray<SmoothChanges> smoothFreq;
+    
 };
