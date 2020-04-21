@@ -90,10 +90,10 @@ public:
         return newVals;
     }
     
-    void setParams(float tune, float minAmp, float maxAmp)
+    void setParams(int newSourceType, float tune, float pan, float minAmp, float maxAmp)
     {
-        bool changed = false;;
-        if(oscParam[0] != tune || oscParam[1] != minAmp/100.0f || oscParam[2] != maxAmp/100.0f)
+        bool changed = false;
+        if(oscParam[0] != tune || oscParam[1] != pan || oscParam[2] != minAmp/100.0f || oscParam[3] != maxAmp/100.0f || sourceType != newSourceType)
         {
             changed = true;
         }
@@ -101,11 +101,19 @@ public:
         if(changed)
         {
             oscParam[0] = tune;
-            oscParam[1] = minAmp/100.0f;
-            oscParam[2] = maxAmp/100.0f;
+            oscParam[1] = pan;
+            oscParam[2] = minAmp/100.0f;
+            oscParam[3] = maxAmp/100.0f;
+            sourceType = newSourceType;
             
             newVals = (newVals + 1) % 4;
         }
+        
+        if(newSourceType == sourceType)
+        {
+            sourceType = newSourceType;
+        }
+        
     };
     
     float getOscParams(int oscParamNum)
@@ -113,8 +121,14 @@ public:
         return oscParam[oscParamNum];
     };
     
-private:
-    float oscParam[3] = {0.0f, 0.5f, 0.9f};
+    int getSourceType()
+    {
+        return sourceType;
+    }
     
+private:
+    float oscParam[4] = {0.0f, 0.0f, 0.5f, 0.9f};
+    int sourceType = 1;
     int newVals = 0;
+    bool sourceChanged = true;
 };

@@ -26,25 +26,25 @@ SynthTesterAudioProcessor::SynthTesterAudioProcessor()
 parameters(*this, nullptr, "Parameters", {
     //Oscillator Params
     
-    std::make_unique<AudioParameterChoice>("osc1Options", "Source 1", StringArray({"None","Sine","Saw","Triangle","Square","Noise"}), 1),
+    std::make_unique<AudioParameterChoice>("osc1Source", "Source 1", StringArray({"None","Sine","Saw","Triangle","Square","Noise"}), 1),
     std::make_unique<AudioParameterFloat>("osc1Tune", "Osc 1 Tune (semiTones)", -24, 24, 0),
     std::make_unique<AudioParameterFloat>("osc1Pan", "Osc 1 Pan", -1, 1, 0),
     std::make_unique<AudioParameterFloat>("osc1MinAmp", "Osc 1 Min Amplitude", 0.0f, 100.0f, 0.0f),
     std::make_unique<AudioParameterFloat>("osc1MaxAmp", "Osc 1 Max Amplitude", 0.0f, 100.0f, 100.0f),
     
-    std::make_unique<AudioParameterChoice>("osc2Options", "Source 2", StringArray({"None","Sine","Saw","Triangle","Square","Noise"}), 2),
+    std::make_unique<AudioParameterChoice>("osc2Source", "Source 2", StringArray({"None","Sine","Saw","Triangle","Square","Noise"}), 2),
     std::make_unique<AudioParameterFloat>("osc2Tune", "Osc 2 Tune (semiTones)", -24, 24, 0),
     std::make_unique<AudioParameterFloat>("osc2Pan", "Osc 2 Pan", -1, 1, 0),
     std::make_unique<AudioParameterFloat>("osc2MinAmp", "Osc 2 Min Amplitude", 0.0f, 100.0f, 0.0f),
     std::make_unique<AudioParameterFloat>("osc2MaxAmp", "Osc 2 Max Amplitude", 0.0f, 100.0f, 100.0f),
     
-    std::make_unique<AudioParameterChoice>("osc3Options", "Source 3", StringArray({"None","Sine","Saw","Triangle","Square","Noise"}), 3),
+    std::make_unique<AudioParameterChoice>("osc3Source", "Source 3", StringArray({"None","Sine","Saw","Triangle","Square","Noise"}), 3),
     std::make_unique<AudioParameterFloat>("osc3Tune", "Osc 3 Tune (semiTones)", -24, 24, 0),
     std::make_unique<AudioParameterFloat>("osc3Pan", "Osc 3 Pan", -1, 1, 0),
     std::make_unique<AudioParameterFloat>("osc3MinAmp", "Osc 3 Min Amplitude", 0.0f, 100.0f, 0.0f),
     std::make_unique<AudioParameterFloat>("osc3MaxAmp", "Osc 3 Max Amplitude", 0.0f, 100.0f, 100.0f),
     
-    std::make_unique<AudioParameterChoice>("osc4Options", "Source 4", StringArray({"None","Sine","Saw","Triangle","Square","Noise"}), 4),
+    std::make_unique<AudioParameterChoice>("osc4Source", "Source 4", StringArray({"None","Sine","Saw","Triangle","Square","Noise"}), 4),
     std::make_unique<AudioParameterFloat>("osc4Tune", "Osc 4 Tune (semiTones)", -24, 24, 0),
     std::make_unique<AudioParameterFloat>("osc4Pan", "Osc 4 Pan", -1, 1, 0),
     std::make_unique<AudioParameterFloat>("osc4MinAmp", "Osc 4 Min Amplitude", 0.0f, 100.0f, 0.0f),
@@ -297,12 +297,13 @@ void SynthTesterAudioProcessor::setParamTargets()
     
     for(int i = 0; i < oscillatorParams.size(); ++i)
     {
-        float oscPar[3];
-        for(int j=0; j < 3; ++j)
+        float oscPar[5];
+        for(int j=0; j < 5; ++j)
         {
             oscPar[j] = *parameters.getRawParameterValue(paramID.getOscParamName(i, j));
         }
-        oscillatorParams[i] -> setParams(oscPar[0], oscPar[1], oscPar[2]);
+        oscillatorParams[i] -> setParams(oscPar[0],oscPar[1], oscPar[2], oscPar[3], oscPar[4]);
+        
     }
 }
 

@@ -51,7 +51,7 @@ public:
         for(int i = 0; i < numOscs; ++i)  //Initialising an owned array of parameter smoothers
         {
             synthOscs.add(new Oscillator());
-            smoothOscParams.add(new MultiSmooth(3));
+            smoothOscParams.add(new MultiSmooth(4));
         }
         
         for(int i = 0; i < numEnvs; ++i)  //Initialising an owned array of parameter smoothers
@@ -78,7 +78,7 @@ public:
             synthOscs[i] -> setSampleRate(sampleRate);
             synthOscs[i] -> setType(i);
             smoothOscParams[i] -> setSampleRate(sampleRate);
-            oscs.setSampleRate(sampleRate);
+            sourceOscs.setSampleRate(sampleRate);
         }
         
         for(int i = 0; i < smoothEnvParams.size(); ++i)
@@ -131,7 +131,8 @@ public:
         {
             if(oscs[i] -> getValSwitch() != oscUpdate[i])   //Check if env updated since last checked
             {
-                updateOsc(i, oscs[i] -> getOscParams(0), oscs[i] -> getOscParams(1), oscs[i] -> getOscParams(2));
+                sourceOscs.setOscType(i, oscs[i] -> getSourceType());
+                updateOsc(i, oscs[i] -> getOscParams(0), oscs[i] -> getOscParams(1), oscs[i] -> getOscParams(2), oscs[i] -> getOscParams(3));
                 oscUpdate[i] = oscs[i] -> getValSwitch();
             }
         }
@@ -155,9 +156,9 @@ public:
         }
     }
         
-    void updateOsc(int oscNum, float newTune, float newMinAmp, float newMaxAmp)
+    void updateOsc(int oscNum, float newTune, float newPan, float newMinAmp, float newMaxAmp)
     {
-        float oscParams[3] = {newTune, newMinAmp, newMaxAmp};
+        float oscParams[4] = {newTune, newPan, newMinAmp, newMaxAmp};
         
         //Update osc differently if playing or not playing
         if(!playing)
@@ -204,8 +205,8 @@ public:
             myEnvs[i] -> reset();
             myEnvs[i] -> noteOn();
         }
-        oscs.playMode(true);
-        oscs.setOscsMidiInput(midiNoteNumber);
+        sourceOscs.playMode(true);
+        sourceOscs.setOscsMidiInput(midiNoteNumber);
         //oscs.setMidi
         released = false;
         playing = true;
@@ -255,10 +256,10 @@ public:
                 //Updating synth parameters
                 updateParams();
                 
-                float osc1[3] = {0.0f, 0.0f, 0.0f};
-                float osc2[3]  = {0.0f, 0.0f, 0.0f};
-                float osc3[3] = {0.0f, 0.0f, 0.0f};
-                float osc4[3]  = {0.0f, 0.0f, 0.0f};
+                float osc1[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+                float osc2[4]  = {0.0f, 0.0f, 0.0f, 0.0f};
+                float osc3[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+                float osc4[4]  = {0.0f, 0.0f, 0.0f, 0.0f};
                 
                 
                 smoothOscParams[0] -> getNextVal(osc1);
@@ -266,22 +267,27 @@ public:
                 smoothOscParams[2] -> getNextVal(osc3);
                 smoothOscParams[3] -> getNextVal(osc4);
                 
-                oscs.setOscMinMaxVolume(0, osc1[1], osc1[2]);
-                oscs.setOscMinMaxVolume(1, osc2[1], osc2[2]);
-                oscs.setOscMinMaxVolume(2, osc3[1], osc3[2]);
-                oscs.setOscMinMaxVolume(3, osc4[1], osc4[2]);
+                sourceOscs.setOscMinMaxVolume(0, osc1[2], osc1[3]);
+                sourceOscs.setOscMinMaxVolume(1, osc2[2], osc2[3]);
+                sourceOscs.setOscMinMaxVolume(2, osc3[2], osc3[3]);
+                sourceOscs.setOscMinMaxVolume(3, osc4[2], osc4[3]);
                 
-                oscs.setTuneAmount(0, osc1[0]);
-                oscs.setTuneAmount(1, osc2[0]);
-                oscs.setTuneAmount(2, osc3[0]);
-                oscs.setTuneAmount(2, osc4[0]);
+                sourceOscs.setPanAmount(0, osc1[1]);
+                sourceOscs.setPanAmount(1, osc2[1]);
+                sourceOscs.setPanAmount(2, osc3[1]);
+                sourceOscs.setPanAmount(3, osc4[1]);
+                
+                sourceOscs.setTuneAmount(0, osc1[0]);
+                sourceOscs.setTuneAmount(1, osc2[0]);
+                sourceOscs.setTuneAmount(2, osc3[0]);
+                sourceOscs.setTuneAmount(2, osc4[0]);
                 
                 ampEnv = myEnvs[0] -> getNextSample();
                 float envVals[2] = {myEnvs[1] -> getNextSample(), myEnvs[2] -> getNextSample()};
                 //float envVal4 = myEnvs[3] -> getNextSample();
 
                 
-                oscs.getNextVal(envVals, currentSample);
+                sourceOscs.getNextVal(envVals, currentSample);
                 
                 if(released && ampEnv<0.0001f)
                 {
@@ -290,7 +296,7 @@ public:
                     playing = false;
                     released = false;
                     //resetAllEnvs();
-                    oscs.playMode(false);
+                    sourceOscs.playMode(false);
                 }
             }
             // for each channel, write the currentSample float to the output
@@ -428,6 +434,8 @@ private:
     OwnedArray<MultiSmooth> smoothEnvParams;
     OwnedArray<MultiSmooth> smoothOscParams;
     
-    XYEnvolopedOscs oscs;
+    int oscTypes[4] = {1, 2, 3, 4};
+    
+    XYEnvolopedOscs sourceOscs;
     
 };

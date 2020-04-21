@@ -56,9 +56,11 @@ private:
     };
     
     
-    std::string oscParamNames[3]
+    std::string oscParamNames[5]
     {
+        "Source",
         "Tune",
+        "Pan",
         "MinAmp",
         "MaxAmp"
     };
