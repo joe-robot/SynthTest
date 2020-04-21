@@ -28,6 +28,7 @@ public:
         return oscNames[oscNum] + oscParamNames[oscParamNum];
     };
     
+    const std::string typesOfOscs[6] = {"None", "Sine", "Saw", "Triangle", "Square", "Noise"};
     
 private:
     std::string envNames[5] =

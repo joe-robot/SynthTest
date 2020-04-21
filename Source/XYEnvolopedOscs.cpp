@@ -43,14 +43,19 @@ void XYEnvolopedOscs::setOscsMidiInput(int midiNote)
 
 void XYEnvolopedOscs::setTuneAmount(int oscNum, int newTuneAmount) //MAY NEED TO SMOOTH THIS
 {
+    
     if(!playing)
     {
         tuneAmount[oscNum] = newTuneAmount;
     }
     else
     {
-        targetTuneAmount[oscNum] = newTuneAmount;
-        smoothFreq[oscNum] -> init(MidiMessage::getMidiNoteInHertz(prevMidiInput + tuneAmount[oscNum]), MidiMessage::getMidiNoteInHertz(prevMidiInput + newTuneAmount));
+        if(newTuneAmount != targetTuneAmount[oscNum])
+        {
+            targetTuneAmount[oscNum] = newTuneAmount;
+            smoothFreq[oscNum] -> init(MidiMessage::getMidiNoteInHertz(prevMidiInput + tuneAmount[oscNum]), MidiMessage::getMidiNoteInHertz(prevMidiInput + newTuneAmount));
+            changeFreq[oscNum] = true;
+        }
     }
 }
 
@@ -95,7 +100,7 @@ void XYEnvolopedOscs::getNextVal(float *envs, float *outSamples)
         int envResult2 = i < 2 ? 2 : 3;
         oscSamples[i] = (minMaxVols[0][i] + (minMaxVols[1][i] - minMaxVols[0][i]) * envResults[envResult1] * envResults[envResult2]) * oscs[i] ->getNextSample();
         for(int j = 0; j < 2; ++j)
-            outSamples[j] = outSamples[i] + oscSamples[i] * pan(panAmount[i], j);
+            outSamples[j] = outSamples[j] + oscSamples[i] * pan(panAmount[i], j);
     }
 
 }

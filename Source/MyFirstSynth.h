@@ -14,6 +14,7 @@
 #include "Oscillator.h"
 #include "SmoothChanger.h"
 #include "ParamStore.h"
+#include "XYEnvolopedOscs.h"
 
 // ===========================
 // ===========================
@@ -77,6 +78,7 @@ public:
             synthOscs[i] -> setSampleRate(sampleRate);
             synthOscs[i] -> setType(i);
             smoothOscParams[i] -> setSampleRate(sampleRate);
+            oscs.setSampleRate(sampleRate);
         }
         
         for(int i = 0; i < smoothEnvParams.size(); ++i)
@@ -160,7 +162,7 @@ public:
         //Update osc differently if playing or not playing
         if(!playing)
         {
-            std::cout << "updatepls" << std::endl;
+            //std::cout << "updatepls" << std::endl;
             smoothOscParams[oscNum] -> init(oscParams, oscParams);
         }
         else
@@ -202,6 +204,9 @@ public:
             myEnvs[i] -> reset();
             myEnvs[i] -> noteOn();
         }
+        oscs.playMode(true);
+        oscs.setOscsMidiInput(midiNoteNumber);
+        //oscs.setMidi
         released = false;
         playing = true;
         //ADSR::Parameters theParamsandSHit =  myEnvs[0] -> getParameters();
@@ -241,7 +246,8 @@ public:
         // iterate through the necessary number of samples (from startSample up to startSample + numSamples)
         for (int sampleIndex = startSample;   sampleIndex < (startSample+numSamples);   sampleIndex++)
         {
-            float currentSample = 0;
+            float ampEnv = 0;
+            float currentSample[2] = {0, 0};
             // your sample-by-sample DSP code here!
             // An example white noise generater as a placeholder - replace with your own code
             if(playing)
@@ -260,33 +266,38 @@ public:
                 smoothOscParams[2] -> getNextVal(osc3);
                 smoothOscParams[3] -> getNextVal(osc4);
                 
-                float envVal1 = myEnvs[0] -> getNextSample();
-                float envVal2 = myEnvs[1] -> getNextSample();
-                float envVal3 = myEnvs[2] -> getNextSample();
+                oscs.setOscMinMaxVolume(0, osc1[1], osc1[2]);
+                oscs.setOscMinMaxVolume(1, osc2[1], osc2[2]);
+                oscs.setOscMinMaxVolume(2, osc3[1], osc3[2]);
+                oscs.setOscMinMaxVolume(3, osc4[1], osc4[2]);
+                
+                oscs.setTuneAmount(0, osc1[0]);
+                oscs.setTuneAmount(1, osc2[0]);
+                oscs.setTuneAmount(2, osc3[0]);
+                oscs.setTuneAmount(2, osc4[0]);
+                
+                ampEnv = myEnvs[0] -> getNextSample();
+                float envVals[2] = {myEnvs[1] -> getNextSample(), myEnvs[2] -> getNextSample()};
                 //float envVal4 = myEnvs[3] -> getNextSample();
+
                 
-                //currentSample = envVal1 * ((envVal2 * (oscParams[0][2] - oscParams[0][1]) + oscParams[0][1]) * myOsc1.getNextSample() + ((1 - envVal2) * (oscParams[1][2] -       oscParams[1][1]) + oscParams[1][1]) * myOsc2.getNextSample());
+                oscs.getNextVal(envVals, currentSample);
                 
-                //currentSample = envVal1 * ((envVal2 * (1.0f - 0.2f) + 0.2f) * myOsc2.getNextSample() + ((1.0f - envVal2) * (0.9f - 0.1f) + 0.1f) * myOsc1.getNextSample());
-                
-                currentSample = envVal1 * (((1.0f -envVal2) * (1.0f - envVal3) * (osc1[2] - osc1[1]) + osc1[1]) * synthOscs[0] -> getNextSample() + ((1.0f - envVal3) * (envVal2) * (osc2[2] - osc2[1]) + osc2[1]) * synthOscs[1] -> getNextSample() + ((1.0f -envVal2) * (envVal3) * (osc3[2] - osc3[1]) + osc3[1]) * synthOscs[2] -> getNextSample() + ((envVal3) * (envVal2) * (osc4[2] - osc4[1]) + osc4[1]) * synthOscs[3] -> getNextSample());
-                
-                //currentSample = envVal1 * myOsc1.getNextSample();
-                
-                if(released && envVal1<0.0001f)
+                if(released && ampEnv<0.0001f)
                 {
                     clearCurrentNote();
                     updateParams();
                     playing = false;
                     released = false;
                     //resetAllEnvs();
+                    oscs.playMode(false);
                 }
             }
             // for each channel, write the currentSample float to the output
             for (int chan = 0; chan<outputBuffer.getNumChannels(); chan++)
             {
                 // The output sample is scaled by 0.2 and note velocity so that it is not too loud by default
-                outputBuffer.addSample (chan, sampleIndex, currentSample * noteVelocity * 0.2);
+                outputBuffer.addSample (chan, sampleIndex, ampEnv * currentSample[chan] * noteVelocity * 0.2);
             }
         }
     }
@@ -417,5 +428,6 @@ private:
     OwnedArray<MultiSmooth> smoothEnvParams;
     OwnedArray<MultiSmooth> smoothOscParams;
     
+    XYEnvolopedOscs oscs;
     
 };
