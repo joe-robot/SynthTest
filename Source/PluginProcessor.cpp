@@ -79,7 +79,7 @@ parameters(*this, nullptr, "Parameters", {
     std::make_unique<AudioParameterFloat>("lpFilterFreq", "Low Pass Filter Frequency (Hz)", 30.0f, 20000.0f, 1000.0f),
     
     //HP Filter
-    std::make_unique<AudioParameterChoice>("hpFilterMode", "High Pass Filter Mode", StringArray({"None","-12dB/oct","-24dB/oct"}), 0),
+    std::make_unique<AudioParameterChoice>("hpFilterMode", "High Pass Filter Mode", StringArray({"None","-12dB/oct"}), 0),
     std::make_unique<AudioParameterFloat>("hpFilterFreq", "High Pass Filter Frequency (Hz)", 30.0f, 20000.0f, 1000.0f)
     
 })
@@ -339,10 +339,10 @@ void SynthTesterAudioProcessor::setParamTargets()
         lfoParams[i] -> setParams(lfoPar);
     }
     
-    for(int i = 0; i < lfoParams.size(); ++i)
+    for(int i = 0; i < filterParams.size(); ++i)
     {
         int choiceParam[1] = {(int)*parameters.getRawParameterValue(paramID.getFilterParamName(i, 0))};
-        float filterPar[1]= {*parameters.getRawParameterValue(paramID.getLfoParamName(i, 1))};
+        float filterPar[1]= {*parameters.getRawParameterValue(paramID.getFilterParamName(i, 1))};
         filterParams[i] -> setParams(choiceParam, filterPar);
     }
 }

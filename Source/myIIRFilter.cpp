@@ -9,6 +9,7 @@
 */
 
 #include "myIIRFilter.h"
+#include <iostream>
 
 myIIRFilter::myIIRFilter()
 {
@@ -215,8 +216,18 @@ void myIIRFilter::setFilterOrder(float newMinus24DbMode)
 
 void myIIRFilter::setFilterCutOffFreq(float newCutOffFreq)
 {
+    //std::cout << newCutOffFreq << std::endl;
     if(setCutOffFreq(newCutOffFreq))
     {
         calcDiffEqnCoeffs(false);
+    }
+}
+
+void myIIRFilter::resetFilter()
+{
+    for(int i = 0; i < 10; ++i)
+    {
+        prevInput[i] = 0.0f;
+        prevOutput[i] = 0.0f;
     }
 }

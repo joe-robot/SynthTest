@@ -63,7 +63,7 @@ public:
         
         for(int i = 0; i < numFilters; ++i)
         {
-            auto* filter = synthFilters.add(new myIIRFilter());
+            auto* filter = synthFilters.add(new StereoIIRFilters());
             filter -> setFilterType(i == 1);
             smoothFilterParams.add(new SmoothChanges());
         }
@@ -173,7 +173,7 @@ public:
         if(filterMode != 0)
         {
             filterEnable[filterNum] = true;
-            synthFilters[filterNum] -> setFilterOrder(filterMode == 2);
+            synthFilters[filterNum] -> setFilterOrder(filterMode==2); //TEPEOJEOIJIOEJF
         }
         else
         {
@@ -182,7 +182,7 @@ public:
         
         if(!playing || !filterEnable[filterNum])
         {
-            smoothFilterParams[filterNum] -> init(filterFreq, filterFreq, 500);
+            smoothFilterParams[filterNum] -> init(filterFreq, filterFreq);
             synthFilters[filterNum] -> setFilterCutOffFreq(filterFreq);
         }
         else
@@ -368,13 +368,18 @@ public:
                     currentSample[1] = (lfoVal + lfoDepthInv) * currentSample[1];
                 }
                 
-                /*for(int i = 0; i < 2; ++i)
+                for(int i = 0; i < 2; ++i)
                 {
                     if(filterEnable[i])
                     {
-                        //synthFilters[i] -> processNextSample(<#float nextSample#>)
+                        if(smoothFilterParams[i] -> checkChanging())
+                        {
+                            synthFilters[i] -> setFilterCutOffFreq(smoothFilterParams[i] -> getNextVal());
+                        }
+                        synthFilters[i] -> getNextSample(currentSample);
+                               // std::cout<<currentSample[0]<<std::endl;
                     }
-                }*/
+                }
                 
                 if(released && ampEnv<0.0001f)
                 {
@@ -478,7 +483,8 @@ private:
     OwnedArray<ADSR> myEnvs;
     
     //Filters
-    OwnedArray<myIIRFilter> synthFilters;
+//OwnedArray<myIIRFilter> synthFilters;
+    OwnedArray<StereoIIRFilters> synthFilters;
     
     int envUpdate[5] = {4, 4, 4, 4, 4};
     int oscUpdate[4] = {4, 4, 4, 4};

@@ -11,7 +11,6 @@
 #pragma once
 #include <cmath>
 
-
 class myIIRFilter
 {
 public:
@@ -55,4 +54,65 @@ private:
     double fourthOrderCoeff[2] = {2 * 0.7654, 2 * 1.8478};
 
     double differenceEQNCoeffs[2][5];
+};
+
+
+class StereoIIRFilters
+{
+public:
+    StereoIIRFilters(){};
+    ~StereoIIRFilters(){};
+    
+    void setSampleRate(float sampleRate)
+    {
+        for(int i = 0; i < 2; ++i)
+        {
+            filters[i].setSampleRate(sampleRate);
+        }
+    }
+    
+    void setFilterType(bool highPassMode)
+    {
+        for(int i = 0; i < 2; ++i)
+        {
+            filters[i].setFilterType(highPassMode);
+        }
+    }
+    
+    void setFilterOrder(bool minus24DbMode)
+    {
+        for(int i = 0; i < 2; ++i)
+        {
+            filters[i].setFilterOrder(minus24DbMode);
+        }
+    }
+    
+    void setFilterCutOffFreq(float freq)
+    {
+        for(int i = 0; i < 2; ++i)
+        {
+            filters[i].setFilterCutOffFreq(freq);
+        }
+    }
+    
+    void getNextSample(float* inputSamples)
+    {
+        for(int i = 0; i < 2; ++i)
+        {
+            inputSamples[i] = filters[i].processNextSample(inputSamples[i]);
+        }
+    }
+    
+    void resetFilter()
+    {
+        for(int i = 0; i < 2; ++i)
+        {
+            filters[i].resetFilter();
+        }
+    }
+    
+private:
+    
+    myIIRFilter filters[2];
+    
 };
