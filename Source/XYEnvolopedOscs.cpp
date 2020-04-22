@@ -10,9 +10,6 @@
 
 #include "XYEnvolopedOscs.h"
 
-
-
-
 XYEnvolopedOscs::XYEnvolopedOscs()
 {
     for(int i = 0; i < 4; ++i)

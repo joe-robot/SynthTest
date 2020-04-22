@@ -50,7 +50,6 @@ public:
         smoothOscParams.clear();
         for(int i = 0; i < numOscs; ++i)  //Initialising an owned array of parameter smoothers
         {
-            synthOscs.add(new Oscillator());
             smoothOscParams.add(new MultiSmooth(4));
         }
         
@@ -60,8 +59,6 @@ public:
             smoothEnvParams.add(new MultiSmooth());
             myEnvs.add(new ADSR());
         }
-        
-        //setADSR(); //Setting ADSR with attribute values
     }
     //--------------------------------------------------------------------------
     
@@ -73,10 +70,8 @@ public:
     
     void init(float sampleRate)
     {
-        for(int i = 0; i < synthOscs.size(); ++i)
+        for(int i = 0; i < smoothOscParams.size(); ++i)
         {
-            synthOscs[i] -> setSampleRate(sampleRate);
-            synthOscs[i] -> setType(i);
             smoothOscParams[i] -> setSampleRate(sampleRate);
             sourceOscs.setSampleRate(sampleRate);
         }
@@ -195,10 +190,6 @@ public:
     void startNote (int midiNoteNumber, float velocity, SynthesiserSound*, int /*currentPitchWheelPosition*/) override
     {
         float freq = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
-        for(int i = 0; i < synthOscs.size(); ++i)
-        {
-            synthOscs[i] -> setFrequency(freq);
-        }
         noteVelocity = velocity;
         for(int i = 0; i < myEnvs.size(); ++i)
         {
@@ -350,29 +341,6 @@ private:
         myEnvs[envNum] -> setParameters(adsrParams);   //Setting envolope with passed parameters
     }
     
-    /*
-    Checking if parameters have changed and if so updating them
-
-    */
-    /*void updateParams()
-    {
-        bool checkUpdate = false; //Initially set ADSR updated as false
-        
-        for(int i = 0; i < 4; ++i)
-        {
-            if(ADSRSmooth[i] -> checkChanging()) //If ADSR value is changing
-            {
-                ADSRparams[i] = ADSRSmooth[i] -> getNextVal(); //Update parameter value
-                checkUpdate = true;     //Mark ADSR as changed
-            }
-        }
-        
-        if(checkUpdate) //Update ADSR if values have changed
-        {
-            setADSR();
-        }
-    }*/
-    
     void updateParams()
     {
         for(int i = 0; i < myEnvs.size(); ++i)
@@ -393,10 +361,7 @@ private:
                 //std::cout<<"wehere"<<std::endl;
                 setADSR(i, adsrVals);
             }
-            //smoothEnvParams[i] -> getNextVal(ADSRparams[i]);
-            //smoothOscParams[i] -> getNextVal(oscParams[i]);
-            
-            //setADSR(i);
+
         }
     }
     
@@ -408,27 +373,16 @@ private:
     //Check Note released
     bool released = false;
     
-    /// a random object for use in our test noise function
-    Random random;
-    
     float noteVelocity=0;
     
     //Sine Oscillator
     //Oscillator myOsc1;
     //Oscillator myOsc2;
     
-    OwnedArray<Oscillator> synthOscs;
-    
     //ADSR
     OwnedArray<ADSR> myEnvs;
     int envUpdate[5] = {4, 4, 4, 4, 4};
     int oscUpdate[4] = {4, 4, 4, 4};
-    //float ADSRparams[2][4] = {{1.0f, 1.0f, 0.5f, 1.0f}, {1.0f, 1.0f, 0.5f, 1.0f}};
-    //float oscParams[2][3] ={{0.0f, 0.0f, 0.5f}, {0.0f, 0.0f, 0.5f}};
-    
-    //Parameter Smoother
-    //OwnedArray<SmoothChanges> ADSRSmooth;
-    
     
     //Owned array for smoothing all parameters
     OwnedArray<MultiSmooth> smoothEnvParams;
@@ -437,5 +391,4 @@ private:
     int oscTypes[4] = {1, 2, 3, 4};
     
     XYEnvolopedOscs sourceOscs;
-    
 };
