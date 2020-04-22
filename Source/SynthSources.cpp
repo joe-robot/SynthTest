@@ -23,7 +23,7 @@ void SynthSources::setSampleRate(float newSampleRate)
 void SynthSources::setType(float newType)
 {
     type = newType;
-    if(type > 1 && type < 5)
+    if(type > 0 && type < 5)
     {
         oscs.setType(type - 1);
     }

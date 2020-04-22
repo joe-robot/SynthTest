@@ -111,8 +111,4 @@ private:
     OwnedArray<OscParams> oscillatorParams;
     OwnedArray<SimpleParams> lfoParams;
     OwnedArray<SimpleParams> filterParams;
-    
-    
-    
-    
 };

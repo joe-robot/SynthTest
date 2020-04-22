@@ -56,7 +56,6 @@ public:
         
         for(int i = 0; i < numEnvs; ++i)  //Initialising an owned array of parameter smoothers
         {
-            //ADSRSmooth.add(new SmoothChanges());
             smoothEnvParams.add(new MultiSmooth());
             myEnvs.add(new ADSR());
         }
@@ -270,11 +269,9 @@ public:
         }
         sourceOscs.playMode(true);
         sourceOscs.setOscsMidiInput(midiNoteNumber);
-        //oscs.setMidi
+        
         released = false;
         playing = true;
-        //ADSR::Parameters theParamsandSHit =  myEnvs[0] -> getParameters();
-        //std::cout<< theParamsandSHit.attack <<std::endl;
         
     }
     //--------------------------------------------------------------------------
@@ -304,9 +301,6 @@ public:
      */
     void renderNextBlock(AudioSampleBuffer& outputBuffer, int startSample, int numSamples) override
     {
-        
-        //ADSR::Parameters checkParams = myEnvs[0] -> getParameters();
-        //std::cout << checkParams.attack << std::endl;
         // iterate through the necessary number of samples (from startSample up to startSample + numSamples)
         for (int sampleIndex = startSample;   sampleIndex < (startSample+numSamples);   sampleIndex++)
         {
@@ -318,77 +312,16 @@ public:
             {
                 //Updating synth parameters
                 updateParams();
+               
+                oscsNextSample(currentSample);
                 
-                float osc1[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-                float osc2[4]  = {0.0f, 0.0f, 0.0f, 0.0f};
-                float osc3[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-                float osc4[4]  = {0.0f, 0.0f, 0.0f, 0.0f};
-                
-                
-                smoothOscParams[0] -> getNextVal(osc1);
-                smoothOscParams[1] -> getNextVal(osc2);
-                smoothOscParams[2] -> getNextVal(osc3);
-                smoothOscParams[3] -> getNextVal(osc4);
-                
-                sourceOscs.setOscMinMaxVolume(0, osc1[2], osc1[3]);
-                sourceOscs.setOscMinMaxVolume(1, osc2[2], osc2[3]);
-                sourceOscs.setOscMinMaxVolume(2, osc3[2], osc3[3]);
-                sourceOscs.setOscMinMaxVolume(3, osc4[2], osc4[3]);
-                
-                sourceOscs.setPanAmount(0, osc1[1]);
-                sourceOscs.setPanAmount(1, osc2[1]);
-                sourceOscs.setPanAmount(2, osc3[1]);
-                sourceOscs.setPanAmount(3, osc4[1]);
-                
-                sourceOscs.setTuneAmount(0, osc1[0]);
-                sourceOscs.setTuneAmount(1, osc2[0]);
-                sourceOscs.setTuneAmount(2, osc3[0]);
-                sourceOscs.setTuneAmount(2, osc4[0]);
+                applyFX(currentSample);
                 
                 ampEnv = myEnvs[0] -> getNextSample();
-                float envVals[2] = {myEnvs[1] -> getNextSample(), myEnvs[2] -> getNextSample()};
-                //float envVal4 = myEnvs[3] -> getNextSample();
-
-                
-                sourceOscs.getNextVal(envVals, currentSample);
-                
-                float lfoParams[2] = {0,0};
-                
-                smoothLFOParams[0] -> getNextVal(lfoParams);
-                
-                lfoOsc.setFrequency(lfoParams[1]);
-                
-                if(lfoParams[0] > 0.0001f)
-                {
-                    float lfoVal = lfoOsc.getNextSample() * lfoParams[0];
-                    float lfoDepthInv = 1.0f - lfoParams[0];
-                    //lfoDepth * lfoOut * currentSample[0] + (1 - lfoDepth) * currentSample
-                    
-                    currentSample[0] = (lfoVal + lfoDepthInv) * currentSample[0];
-                    currentSample[1] = (lfoVal + lfoDepthInv) * currentSample[1];
-                }
-                
-                for(int i = 0; i < 2; ++i)
-                {
-                    if(filterEnable[i])
-                    {
-                        if(smoothFilterParams[i] -> checkChanging())
-                        {
-                            synthFilters[i] -> setFilterCutOffFreq(smoothFilterParams[i] -> getNextVal());
-                        }
-                        synthFilters[i] -> getNextSample(currentSample);
-                               // std::cout<<currentSample[0]<<std::endl;
-                    }
-                }
                 
                 if(released && ampEnv<0.0001f)
                 {
-                    clearCurrentNote();
-                    updateParams();
-                    playing = false;
-                    released = false;
-                    //resetAllEnvs();
-                    sourceOscs.playMode(false);
+                    resetVoice();
                 }
             }
             // for each channel, write the currentSample float to the output
@@ -417,6 +350,56 @@ public:
     //--------------------------------------------------------------------------
 private:
     //--------------------------------------------------------------------------
+    
+    void oscsNextSample(float* sample)
+    {
+        float envVals[2] = {myEnvs[1] -> getNextSample(), myEnvs[2] -> getNextSample()};
+
+        sourceOscs.getNextVal(envVals, sample);
+    }
+    
+    void applyFX(float* sample)
+    {
+        applyLFO(sample);
+        applyFilter(sample);
+    }
+    
+    void applyLFO(float* sample)
+    {
+        if(lfoAmp > 0.0001f)
+        {
+            float lfoVal = lfoOsc.getNextSample() * lfoAmp;
+            float lfoDepthInv = 1.0f - lfoAmp;
+        
+            for(int i = 0; i < 2; ++i)
+                sample[i] = (lfoVal + lfoDepthInv) * sample[i];
+        }
+    }
+    
+    void applyFilter(float* sample)
+    {
+        for(int i = 0; i < 2; ++i)
+        {
+            if(filterEnable[i])
+            {
+                if(smoothFilterParams[i] -> checkChanging())
+                {
+                    synthFilters[i] -> setFilterCutOffFreq(smoothFilterParams[i] -> getNextVal());
+                }
+                synthFilters[i] -> getNextSample(sample);
+            }
+        }
+    }
+    
+    void resetVoice()
+    {
+        clearCurrentNote();
+        updateParams();
+        playing = false;
+        released = false;
+        sourceOscs.playMode(false);
+    }
+    
     /*
     Setting ADSR parameters as attribute values
 
@@ -444,6 +427,9 @@ private:
     
     void updateParams()
     {
+        updateOscParams();
+        updateLFOParams();
+        
         for(int i = 0; i < myEnvs.size(); ++i)
         {
             if(smoothEnvParams[i] -> checkChanging())
@@ -466,7 +452,29 @@ private:
         }
     }
     
+    void updateOscParams()
+    {
+        for(int i = 0; i < 4; ++i)
+        {
+            float osc[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+            smoothOscParams[i] -> getNextVal(osc);
+            sourceOscs.setOscMinMaxVolume(0, osc[2], osc[3]);
+            sourceOscs.setPanAmount(0, osc[1]);
+            sourceOscs.setTuneAmount(0, osc[0]);
+        }
+    }
     
+    
+    void updateLFOParams()
+    {
+        float lfoParams[2] = {0,0};
+        
+        smoothLFOParams[0] -> getNextVal(lfoParams);
+        
+        lfoOsc.setFrequency(lfoParams[1]);
+        
+        lfoAmp = lfoParams[0];
+    }
     // Set up any necessary variables here
     /// Should the voice be playing?
     bool playing = false;
@@ -483,7 +491,6 @@ private:
     OwnedArray<ADSR> myEnvs;
     
     //Filters
-//OwnedArray<myIIRFilter> synthFilters;
     OwnedArray<StereoIIRFilters> synthFilters;
     
     int envUpdate[5] = {4, 4, 4, 4, 4};
@@ -492,6 +499,7 @@ private:
     int filterUpdate[2] = {4, 4};
     
     bool filterEnable[2] = {false, false};
+    
     //Owned array for smoothing all parameters
     OwnedArray<MultiSmooth> smoothEnvParams;
     OwnedArray<MultiSmooth> smoothOscParams;
@@ -499,6 +507,8 @@ private:
     OwnedArray<SmoothChanges> smoothFilterParams;
     
     int oscTypes[4] = {1, 2, 3, 4};
+    
+    float lfoAmp;
     
     XYEnvolopedOscs sourceOscs;
 };
