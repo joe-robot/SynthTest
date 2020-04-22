@@ -25,6 +25,9 @@
             file="Source/XYEnvolopedOscs.cpp"/>
       <FILE id="coTKZ3" name="XYEnvolopedOscs.h" compile="0" resource="0"
             file="Source/XYEnvolopedOscs.h"/>
+      <FILE id="tLxEtg" name="SynthSources.cpp" compile="1" resource="0"
+            file="Source/SynthSources.cpp"/>
+      <FILE id="swav74" name="SynthSources.h" compile="0" resource="0" file="Source/SynthSources.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>

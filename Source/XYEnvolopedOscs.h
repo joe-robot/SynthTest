@@ -12,7 +12,7 @@
 
 #include <JuceHeader.h>
 #include "SmoothChanger.h"
-#include "Oscillator.h"
+#include "SynthSources.h"
 
 
 class XYEnvolopedOscs
@@ -49,7 +49,7 @@ private:
     
     void resetParams();
     
-    OwnedArray<Oscillator> oscs;
+    OwnedArray<SynthSources> oscs;
     float minMaxVols[2][4]  =  {{0.1f, 0.1f, 0.1f, 0.1f},   //Min Oscillator Volumes
                                 {0.5f, 0.5f, 0.5f, 0.5f}};  //Max Oscillator Volumes
     
@@ -62,6 +62,7 @@ private:
     
     bool playing = false;
     bool changeFreq[4] = {false, false, false, false};
+    bool enableOsc[4] = {true, true, true, true};
     
     OwnedArray<SmoothChanges> smoothFreq;
     

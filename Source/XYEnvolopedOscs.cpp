@@ -17,7 +17,7 @@ XYEnvolopedOscs::XYEnvolopedOscs()
 {
     for(int i = 0; i < 4; ++i)
     {
-        auto* oscillator = oscs.add(new Oscillator());
+        auto* oscillator = oscs.add(new SynthSources());
         oscillator -> setType(i);
         smoothFreq.add(new SmoothChanges());
     }
