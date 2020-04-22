@@ -62,11 +62,25 @@ parameters(*this, nullptr, "Parameters", {
     std::make_unique<AudioParameterFloat>("oscYsustain", "Osc Y Sustain (%)", 0.0f, 100.0f, 50.0f),
     std::make_unique<AudioParameterFloat>("oscYrelease", "Osc Y Release (ms)", 0.001f, 2000.0f, 1000.0f),
     
+    //Lfo Paramters
+    std::make_unique<AudioParameterFloat>("lfo1Depth", "LFO Depth", 0.0f, 100.0f, 0.0f),
+    std::make_unique<AudioParameterFloat>("lfo1Freq", "LFO Frequency (Hz)", 0.001f, 20.0f, 10.0f),
+    
     //Envolope params for the whole note
     std::make_unique<AudioParameterFloat>("attack", "Master Attack (ms)", 0.001f, 2000.0f, 1000.0f),
     std::make_unique<AudioParameterFloat>("decay", "Master Decay (ms)", 0.001f, 2000.0f, 1000.0f),
     std::make_unique<AudioParameterFloat>("sustain", "Master Sustain (%)", 0.0f, 100.0f, 50.0f),
-    std::make_unique<AudioParameterFloat>("release", "Master Release (ms)", 0.001f, 2000.0f, 1000.0f)
+    std::make_unique<AudioParameterFloat>("release", "Master Release (ms)", 0.001f, 2000.0f, 1000.0f),
+    
+    //Filter params
+    
+    //LP Filter
+    std::make_unique<AudioParameterChoice>("lpFilterMode", "Low Pass Filter Mode", StringArray({"None","-12dB/oct","-24dB/oct"}), 0),
+    std::make_unique<AudioParameterFloat>("lpFilterFreq", "Low Pass Filter Frequency (Hz)", 30.0f, 20000.0f, 1000.0f),
+    
+    //HP Filter
+    std::make_unique<AudioParameterChoice>("hpFilterMode", "High Pass Filter Mode", StringArray({"None","-12dB/oct","-24dB/oct"}), 0),
+    std::make_unique<AudioParameterFloat>("hpFilterFreq", "High Pass Filter Frequency (Hz)", 30.0f, 20000.0f, 1000.0f)
     
 })
 {
@@ -74,7 +88,7 @@ parameters(*this, nullptr, "Parameters", {
     mySynth.addSound(new MyFirstSynthSound());
     for(int i = 0; i < numVoices; ++i)
     {
-        mySynth.addVoice(new MyFirstSynthVoice(numOscs, numEnvs));
+        mySynth.addVoice(new MyFirstSynthVoice(numOscs, numEnvs, numFilters));
     }
     
     parameters.state.addListener(this);
@@ -105,6 +119,16 @@ parameters(*this, nullptr, "Parameters", {
     Osc2MinAmp = parameters.getRawParameterValue("osc2MinAmp");
     Osc2MaxAmp = parameters.getRawParameterValue("osc2MaxAmp");*/
     //oscillatorParams.add(new OscParams());
+    
+    for(int i = 0; i < numLFOs; ++i)
+    {
+        lfoParams.add(new SimpleParams(0, 2));
+    }
+    
+    for(int i = 0; i < numFilters; ++i)
+    {
+        filterParams.add(new SimpleParams(1, 1));
+    }
 
     //Osc X Params
     /*OscXAttackParam = parameters.getRawParameterValue("oscXattack");
@@ -191,7 +215,7 @@ void SynthTesterAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
         MyFirstSynthVoice* v = dynamic_cast<MyFirstSynthVoice*>(mySynth.getVoice(i));
         v -> init(sampleRate);
         setParamTargets();
-        v -> setParams(envolopeParams, oscillatorParams);
+        v -> setParams(envolopeParams, oscillatorParams, lfoParams, filterParams);
         //v -> changeADSR(*attackParam, *decayParam, *sustainParam, *releaseParam);
     }
     
@@ -241,7 +265,7 @@ void SynthTesterAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBu
         if(paramsUpdated)
         {
             setParamTargets();
-            v -> setParams(envolopeParams, oscillatorParams);
+            v -> setParams(envolopeParams, oscillatorParams, lfoParams, filterParams);
         }
     }
     
@@ -302,8 +326,24 @@ void SynthTesterAudioProcessor::setParamTargets()
         {
             oscPar[j] = *parameters.getRawParameterValue(paramID.getOscParamName(i, j));
         }
-        oscillatorParams[i] -> setParams(oscPar[0],oscPar[1], oscPar[2], oscPar[3], oscPar[4]);
-        
+        oscillatorParams[i] -> setParams(oscPar[0],oscPar[1], oscPar[2], oscPar[3], oscPar[4]);  
+    }
+    
+    for(int i = 0; i < lfoParams.size(); ++i)
+    {
+        float lfoPar[2] = {0.01f, 1.0f};
+        for(int j = 0; j < 2; ++j)
+        {
+            lfoPar[j] = lfoPar[j] * (*parameters.getRawParameterValue(paramID.getLfoParamName(i, j)));
+        }
+        lfoParams[i] -> setParams(lfoPar);
+    }
+    
+    for(int i = 0; i < lfoParams.size(); ++i)
+    {
+        int choiceParam[1] = {(int)*parameters.getRawParameterValue(paramID.getFilterParamName(i, 0))};
+        float filterPar[1]= {*parameters.getRawParameterValue(paramID.getLfoParamName(i, 1))};
+        filterParams[i] -> setParams(choiceParam, filterPar);
     }
 }
 

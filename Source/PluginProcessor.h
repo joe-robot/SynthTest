@@ -100,19 +100,15 @@ private:
     
     int numOscs = 4;
     int numEnvs = 3;
-    
-    //Owned array for smoothing all parameters
-    //OwnedArray<MultiSmooth> smoothEnvParams;
-    //OwnedArray<MultiSmooth> smoothOscParams;
-    //OwnedArray<SmoothChanges> smoothParams;
-    
-    //float envolopeParams[2][4];
-    //float oscillatorParams[2][3];
+    int numLFOs = 1;
+    int numFilters = 2;
     
     std::atomic<bool> paramsUpdated {false};
     
     OwnedArray<EnvolopeParams> envolopeParams;
     OwnedArray<OscParams> oscillatorParams;
+    OwnedArray<SimpleParams> lfoParams;
+    OwnedArray<SimpleParams> filterParams;
     
     
     ParamNames paramID;

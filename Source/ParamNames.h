@@ -28,6 +28,16 @@ public:
         return oscNames[oscNum] + oscParamNames[oscParamNum];
     };
     
+    std::string getLfoParamName(int lfoNum, int lfoParamNum)
+    {
+        return lfoNames[lfoNum] + lfoParamNames[lfoParamNum];
+    };
+    
+    std::string getFilterParamName(int filterNum, int filterParamNum)
+    {
+        return filterNames[filterNum] + filterParamNames[filterParamNum];
+    };
+    
     const std::string typesOfOscs[6] = {"None", "Sine", "Saw", "Triangle", "Square", "Noise"};
     
 private:
@@ -63,6 +73,29 @@ private:
         "Pan",
         "MinAmp",
         "MaxAmp"
+    };
+    
+    std::string lfoNames[2]
+    {
+      "lfo1"
+    };
+    
+    std::string lfoParamNames[2]
+    {
+      "Depth",
+      "Freq"
+    };
+    
+    std::string filterNames[2]
+    {
+      "lpFilter",
+      "hpFilter"
+    };
+    
+    std::string filterParamNames[2]
+    {
+      "Mode",
+      "Freq"
     };
 
 };

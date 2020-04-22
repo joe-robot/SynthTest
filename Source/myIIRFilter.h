@@ -23,7 +23,7 @@ public:
     void resetFilter();
     
     void setFilterCutOffFreq(float newCutOffFreq);
-    void setFilterType(float highPassMode);
+    void setFilterType(bool highPassMode);
     void setFilterOrder(float newMinus24DbMode);
     void setFilterParams(float newCutOffFreq, bool newMinus24DbMode);
     void setFilterParams(float newCutOffFreq, bool newMinus24DbMode, bool highPassMode);

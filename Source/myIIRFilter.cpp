@@ -197,7 +197,7 @@ void myIIRFilter::setFilterParams(float newCutOffFreq, bool newMinus24DbMode)
     setFilterParams(newCutOffFreq, newMinus24DbMode, type);
 }
 
-void myIIRFilter::setFilterType(float highPassMode)
+void myIIRFilter::setFilterType(bool highPassMode)
 {
     if(setType(highPassMode))
     {

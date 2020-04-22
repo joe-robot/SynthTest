@@ -130,5 +130,131 @@ private:
     float oscParam[4] = {0.0f, 0.0f, 0.5f, 0.9f};
     int sourceType = 1;
     int newVals = 0;
-    bool sourceChanged = true;
+};
+
+/*class LFOParams
+{
+    LFOParams(){};
+    ~LFOParams(){};
+    
+    int getValSwitch()
+    {
+        return newVals;
+    }
+    
+    void setParams(float amp, float freq)
+    {
+        bool changed = false;
+        if(lfoParams[0] != amp || lfoParams[1] != freq)
+        {
+            changed = true;
+        }
+        
+        if(changed)
+        {
+            lfoParams[0] = amp;
+            lfoParams[1] = freq;
+            
+            newVals = (newVals + 1) % 4;
+        }
+        
+        
+    };
+    
+    float getLFOParams(int lfoParamNum)
+    {
+        return lfoParams[lfoParamNum];
+    };
+    
+private:
+    float lfoParams[2] = {0.0f, 10.0f};
+    int newVals = 0;
+    
+};*/
+
+
+
+class SimpleParams
+{
+public:
+     SimpleParams(int newNumChoiceParams, float numNumParams)
+    {
+        numParams = numNumParams;
+        numChoiceParams = newNumChoiceParams;
+        params.resize(numNumParams, 0);
+        choiceParams.resize(numChoiceParams, 0);
+    };
+    ~SimpleParams(){};
+        
+    int getValSwitch()
+    {
+        return newVals;
+    }
+    
+    int getChoiceValSwitch()
+    {
+        return newChoiceVals;
+    }
+        
+    void setParams(float* newParams)
+    {
+        if(checkParams(params, newParams))
+        {
+            newVals = (newVals + 1) % 4;
+        }
+    };
+    
+    void setParams(int* newChoiceParams, float* newParams)
+    {
+        if(numChoiceParams !=0)
+        {
+            if(checkParams(choiceParams, newChoiceParams))
+            {
+                newVals = (newVals + 1) % 4;   ///TEMP    EKPOEJFIJEWIOFJEWIOFJIOEWJFIOJEO
+                newChoiceVals = (newChoiceVals + 1) % 4;
+            }
+        }
+        
+        setParams(newParams);
+    }
+        
+    template<typename T>
+    bool checkParams(std::vector<T>& params2Check, T* arrayNewParams)
+    {
+        for(int i = 0; i < params2Check.size(); ++i)
+        {
+            if(params2Check[i] != arrayNewParams[i])
+            {
+                for(int i = 0; i < params2Check.size(); ++i)
+                {
+                    params2Check[i] = arrayNewParams[i];
+                }
+                return true;
+            }
+        }
+        
+        return false;
+        
+    }
+           
+           
+    float getParams(int paramNum)
+    {
+        return params[paramNum];
+    };
+    
+    int getChoiceParams(int paramNum)
+    {
+        return choiceParams[paramNum];
+    };
+        
+private:
+    float lfoParams[2] = {0.0f, 10.0f};
+    int newVals = 0;
+    int newChoiceVals = 0;
+    
+    std::vector<float> params;
+    std::vector<int> choiceParams;
+    int numParams = 0;
+    int numChoiceParams = 0;
 };

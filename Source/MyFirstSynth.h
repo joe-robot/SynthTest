@@ -15,6 +15,7 @@
 #include "SmoothChanger.h"
 #include "ParamStore.h"
 #include "XYEnvolopedOscs.h"
+#include "myIIRFilter.h"
 
 // ===========================
 // ===========================
@@ -45,7 +46,7 @@ public:
 class MyFirstSynthVoice : public SynthesiserVoice
 {
 public:
-    MyFirstSynthVoice(int numOscs, int numEnvs) {
+    MyFirstSynthVoice(int numOscs, int numEnvs, int numFilters) {
         smoothEnvParams.clear();
         smoothOscParams.clear();
         for(int i = 0; i < numOscs; ++i)  //Initialising an owned array of parameter smoothers
@@ -59,6 +60,16 @@ public:
             smoothEnvParams.add(new MultiSmooth());
             myEnvs.add(new ADSR());
         }
+        
+        for(int i = 0; i < numFilters; ++i)
+        {
+            auto* filter = synthFilters.add(new myIIRFilter());
+            filter -> setFilterType(i == 1);
+            smoothFilterParams.add(new SmoothChanges());
+        }
+        
+        smoothLFOParams.add(new MultiSmooth(2));
+        
     }
     //--------------------------------------------------------------------------
     
@@ -78,11 +89,18 @@ public:
         
         for(int i = 0; i < smoothEnvParams.size(); ++i)
         {
-           // ADSRSmooth[i] -> setSampleRate(sampleRate);
             smoothEnvParams[i] -> setSampleRate(sampleRate);
-            //smoothOscParams[i] -> setSampleRate(sampleRate);
             myEnvs[i] -> setSampleRate(sampleRate);
         }
+        
+        for(int i = 0; i < smoothFilterParams.size(); ++i)
+        {
+            smoothFilterParams[i] -> setSampleRate(sampleRate);
+            synthFilters[i] -> setSampleRate(sampleRate);
+        }
+        
+        smoothLFOParams[0] -> setSampleRate(sampleRate);
+        lfoOsc.setSampleRate(sampleRate);
         
     }
 
@@ -110,9 +128,8 @@ public:
         
     }*/
     
-    void setParams(OwnedArray<EnvolopeParams>& envs, OwnedArray<OscParams>& oscs)
+    void setParams(OwnedArray<EnvolopeParams>& envs, OwnedArray<OscParams>& oscs, OwnedArray<SimpleParams>& lfos, OwnedArray<SimpleParams>& filters)
     {
-        //NEED A BETTER WAY THAN MULTI DIMENSIONAL ARRAY I THINK
         for(int i = 0; i < envs.size(); ++i)
         {
             if(envs[i] -> getValSwitch() != envUpdate[i])   //Check if env updated since last checked
@@ -130,6 +147,61 @@ public:
                 updateOsc(i, oscs[i] -> getOscParams(0), oscs[i] -> getOscParams(1), oscs[i] -> getOscParams(2), oscs[i] -> getOscParams(3));
                 oscUpdate[i] = oscs[i] -> getValSwitch();
             }
+        }
+        
+        for(int i = 0; i < lfos.size(); ++i)
+        {
+            if(lfos[i] -> getValSwitch() != lfoUpdate)
+            {
+                updateLFOs(lfos[i] -> getParams(0), lfos[i] -> getParams(1));
+                lfoUpdate = lfos[i] -> getValSwitch();
+            }
+        }
+        
+        for(int i = 0; i < filters.size(); ++i)
+        {
+            if(filters[i] -> getValSwitch() != filterUpdate[i])
+            {
+                updateFilters(i, filters[i] -> getChoiceParams(0), filters[i] -> getParams(0));
+                filterUpdate[i] = filters[i] -> getValSwitch();
+            }
+        }
+    }
+    
+    void updateFilters(int filterNum, int filterMode, float filterFreq)
+    {
+        if(filterMode != 0)
+        {
+            filterEnable[filterNum] = true;
+            synthFilters[filterNum] -> setFilterOrder(filterMode == 2);
+        }
+        else
+        {
+            filterEnable[filterNum] = false;
+        }
+        
+        if(!playing || !filterEnable[filterNum])
+        {
+            smoothFilterParams[filterNum] -> init(filterFreq, filterFreq, 500);
+            synthFilters[filterNum] -> setFilterCutOffFreq(filterFreq);
+        }
+        else
+        {
+            smoothFilterParams[filterNum] -> setTargetVal(filterFreq);
+        }
+    }
+    
+    void updateLFOs(float lfoAmp, float lfoFreq)
+    {
+        float lfoPar[2] = {lfoAmp, lfoFreq};
+        if(!playing)
+        {
+            smoothLFOParams[0] -> init(lfoPar, lfoPar);
+            lfoOsc.setFrequency(lfoFreq);
+        }
+        else
+        {
+            smoothLFOParams[0] -> setTargetVal(lfoPar);
         }
     }
     
@@ -280,6 +352,30 @@ public:
                 
                 sourceOscs.getNextVal(envVals, currentSample);
                 
+                float lfoParams[2] = {0,0};
+                
+                smoothLFOParams[0] -> getNextVal(lfoParams);
+                
+                lfoOsc.setFrequency(lfoParams[1]);
+                
+                if(lfoParams[0] > 0.0001f)
+                {
+                    float lfoVal = lfoOsc.getNextSample() * lfoParams[0];
+                    float lfoDepthInv = 1.0f - lfoParams[0];
+                    //lfoDepth * lfoOut * currentSample[0] + (1 - lfoDepth) * currentSample
+                    
+                    currentSample[0] = (lfoVal + lfoDepthInv) * currentSample[0];
+                    currentSample[1] = (lfoVal + lfoDepthInv) * currentSample[1];
+                }
+                
+                /*for(int i = 0; i < 2; ++i)
+                {
+                    if(filterEnable[i])
+                    {
+                        //synthFilters[i] -> processNextSample(<#float nextSample#>)
+                    }
+                }*/
+                
                 if(released && ampEnv<0.0001f)
                 {
                     clearCurrentNote();
@@ -375,18 +471,26 @@ private:
     
     float noteVelocity=0;
     
-    //Sine Oscillator
-    //Oscillator myOsc1;
-    //Oscillator myOsc2;
+    //LFO Oscillator
+    Oscillator lfoOsc;
     
     //ADSR
     OwnedArray<ADSR> myEnvs;
+    
+    //Filters
+    OwnedArray<myIIRFilter> synthFilters;
+    
     int envUpdate[5] = {4, 4, 4, 4, 4};
     int oscUpdate[4] = {4, 4, 4, 4};
+    int lfoUpdate = 4;
+    int filterUpdate[2] = {4, 4};
     
+    bool filterEnable[2] = {false, false};
     //Owned array for smoothing all parameters
     OwnedArray<MultiSmooth> smoothEnvParams;
     OwnedArray<MultiSmooth> smoothOscParams;
+    OwnedArray<MultiSmooth> smoothLFOParams;
+    OwnedArray<SmoothChanges> smoothFilterParams;
     
     int oscTypes[4] = {1, 2, 3, 4};
     
