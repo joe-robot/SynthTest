@@ -255,23 +255,25 @@ bool SynthTesterAudioProcessor::isBusesLayoutSupported (const BusesLayout& layou
 void SynthTesterAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
     ScopedNoDenormals noDenormals;
-    
-    
+    bool updateParams = false;
+    if(paramsUpdated)
+    {
+        updateParams = true;
+        paramsUpdated = false;
+    }
     
     for(int i=0; i < numVoices; ++i)
     {
         
         MyFirstSynthVoice* v = dynamic_cast<MyFirstSynthVoice*>(mySynth.getVoice(i));
-        if(paramsUpdated)
+        if(updateParams)
         {
-            setParamTargets();
+            //setParamTargets();
             v -> setParams(envolopeParams, oscillatorParams, lfoParams, filterParams);
         }
     }
     
     mySynth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
-    
-    paramsUpdated = false;
 }
 
 //==============================================================================
@@ -282,8 +284,8 @@ bool SynthTesterAudioProcessor::hasEditor() const
 
 AudioProcessorEditor* SynthTesterAudioProcessor::createEditor()
 {
-    //return new SynthTesterAudioProcessorEditor (*this);
-    return new GenericAudioProcessorEditor (*this);
+    return new SynthTesterAudioProcessorEditor (*this);
+    //return new GenericAudioProcessorEditor (*this);
 }
 
 //==============================================================================
@@ -349,5 +351,7 @@ void SynthTesterAudioProcessor::setParamTargets()
 
 void SynthTesterAudioProcessor::valueTreePropertyChanged(ValueTree& valTree, const Identifier& property)
 {
-    paramsUpdated = true;
+    //std::cout<<"Change?????  "<<std::endl;
+    setParamTargets();
+    paramsUpdated = (paramsUpdated + 1) % 4;
 }

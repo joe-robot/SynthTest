@@ -63,8 +63,10 @@ public:
     void setParamTargets();
     
     void valueTreePropertyChanged(ValueTree& treeWhosePropertyHasChanged, const Identifier& property) override;
+    //Parameters
+    AudioProcessorValueTreeState parameters;
+    ParamNames paramID;
     
-
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SynthTesterAudioProcessor)
@@ -74,8 +76,8 @@ private:
     //Synthesiser
     Synthesiser mySynth;
     
-    //Parametes
-    AudioProcessorValueTreeState parameters;
+    
+    
     
     //Params for oscillators
     /*std::atomic<float>* Osc1Tune;
@@ -111,6 +113,6 @@ private:
     OwnedArray<SimpleParams> filterParams;
     
     
-    ParamNames paramID;
+    
     
 };
