@@ -364,6 +364,9 @@ private:
         applyFilter(sample);
     }
     
+    
+    //Have a parameter for each parameter that is added on the end of the changes in update parameter method, which is changed based on the update other envolopes method
+    
     void applyLFO(float* sample)
     {
         if(lfoAmp > 0.0001f)

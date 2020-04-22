@@ -36,7 +36,7 @@ public:
         g.fillEllipse(centrex, centrey, 5, 5);*/
         
         Path dialTick;
-        dialTick.addRectangle(0, -radius, dialWidth, (radius/2));
+        dialTick.addRectangle(-dialWidth/2,-radius+(diameter * 0.025), dialWidth, (2 * radius/3.0f));//-(diameter * 0.025), -radius
         g.setColour(Colours::black);
         g.fillPath(dialTick, AffineTransform::rotation(angle).translated(centrex, centrey));
         
