@@ -38,24 +38,32 @@ public:
         return filterNames[filterNum] + filterParamNames[filterParamNum];
     };
     
-    const std::string typesOfOscs[6] = {"None", "Sine", "Saw", "Triangle", "Square", "Noise"};
+    std::string getMaxParamName(int paramNum)
+    {
+        return maxParams[paramNum];
+    }
+    
+    std::string typesOfOscs[6] = {"None", "Sine", "Saw", "Triangle", "Square", "Noise"};
+    
+    int numMaxParams = 12;
     
 private:
-    std::string envNames[5] =
+    std::string envNames[6] =
     {
         "",
         "oscX",
         "oscY",
-        "env1",
-        "env2"
+        "custEnv1",
+        "custEnv2"
     };
     
-    std::string adsrNames[4] =
+    std::string adsrNames[5] =
     {
         "attack",
         "decay",
         "sustain",
-        "release"
+        "release",
+        "Choice"
     };
     std::string oscNames[4]
     {
@@ -96,6 +104,22 @@ private:
     {
       "Mode",
       "Freq"
+    };
+    
+    std::string maxParams[12]
+    {
+        "osc1TuneMax",
+        "osc1PanMax",
+        "osc2TuneMax",
+        "osc1PanMax",
+        "osc3TuneMax",
+        "osc3PanMax",
+        "osc4TuneMax",
+        "osc4PanMax",
+        "lfo1DepthMax",
+        "lfo1FreqMax",
+        "lpFilterFreqMax",
+        "hpFilterFreqMax"
     };
 
 };

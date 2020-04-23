@@ -32,9 +32,6 @@ public:
         g.setColour(Colours::black);
         g.drawEllipse(rx+(diameter * 0.025), ry + (diameter * 0.025), diameter-(diameter * 0.05), diameter-(diameter * 0.05),0.05 * diameter);
         
-        /*g.setColour(Colours::green);
-        g.fillEllipse(centrex, centrey, 5, 5);*/
-        
         Path dialTick;
         dialTick.addRectangle(-dialWidth/2,-radius+(diameter * 0.025), dialWidth, (2 * radius/3.0f));//-(diameter * 0.025), -radius
         g.setColour(Colours::black);
@@ -50,7 +47,8 @@ private:
 //==============================================================================
 /**
 */
-class SynthTesterAudioProcessorEditor  : public AudioProcessorEditor
+class SynthTesterAudioProcessorEditor  : public AudioProcessorEditor,
+public ComboBox::Listener
 {
 public:
     SynthTesterAudioProcessorEditor (SynthTesterAudioProcessor&);
@@ -64,6 +62,8 @@ public:
     void addSlider(OwnedArray<Slider>& sliderArray, LookAndFeel* const newLookAndFeel, std::string labelName, bool labelToLeft = true);
     
     void addComboBox(OwnedArray<ComboBox>& comboArray, std::string* comboFill, int numComboElements, std::string labelName);
+    
+    void comboBoxChanged (ComboBox *comboBoxThatHasChanged) override;
     
 private:
     
@@ -189,9 +189,12 @@ private:
 
     OwnedArray<ComboBox> comboBoxes;
     std::string comboBoxFill[6] = {"None", "Sine", "Saw", "Triangle", "Square", "Noise"};
+    std::string comboBoxFillcustEnv[13] = {"None","Osc 1 Tune", "Osc 1 Pan", "Osc 2 Tune", "Osc 2 Pan", "Osc 3 Tune", "Osc 3 Pan", "Osc 4 Tune", "Osc 4 Pan", "Lfo Depth", "Lfo Frequency","Low pass Filter Frequency", "High pass Filter Frequency"};
     
     OwnedArray<AudioProcessorValueTreeState::SliderAttachment> sliderAttachment;
     OwnedArray<AudioProcessorValueTreeState::ComboBoxAttachment> comboAttachment;
+    
+    int storeSlider = 0;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SynthTesterAudioProcessorEditor)
 };

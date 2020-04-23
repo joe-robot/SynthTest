@@ -127,7 +127,7 @@ public:
         
     }*/
     
-    void setParams(OwnedArray<EnvolopeParams>& envs, OwnedArray<OscParams>& oscs, OwnedArray<SimpleParams>& lfos, OwnedArray<SimpleParams>& filters)
+    void setParams(OwnedArray<EnvolopeParams>& envs, OwnedArray<OscParams>& oscs, OwnedArray<SimpleParams>& lfos, OwnedArray<SimpleParams>& filters, OwnedArray<SimpleParams>& customEnvsChoice)
     {
         for(int i = 0; i < envs.size(); ++i)
         {
@@ -163,6 +163,15 @@ public:
             {
                 updateFilters(i, filters[i] -> getChoiceParams(0), filters[i] -> getParams(0));
                 filterUpdate[i] = filters[i] -> getValSwitch();
+            }
+        }
+        
+        for(int i = 0; i < customEnvsChoice.size(); ++i)
+        {
+            if(customEnvsChoice[i] -> getValSwitch() != customEnvUpdate[i])
+            {
+                updateCustomEnvs(i, customEnvsChoice[i] -> getChoiceParams(0), customEnvsChoice[i] -> getParams(0));
+                customEnvUpdate[i] = customEnvsChoice[i] -> getValSwitch();
             }
         }
     }
@@ -260,7 +269,7 @@ public:
      */
     void startNote (int midiNoteNumber, float velocity, SynthesiserSound*, int /*currentPitchWheelPosition*/) override
     {
-        float freq = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
+        //float freq = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
         noteVelocity = velocity;
         for(int i = 0; i < myEnvs.size(); ++i)
         {
@@ -385,10 +394,10 @@ private:
         {
             if(filterEnable[i])
             {
-                if(smoothFilterParams[i] -> checkChanging())
-                {
-                    synthFilters[i] -> setFilterCutOffFreq(smoothFilterParams[i] -> getNextVal());
-                }
+                //if(smoothFilterParams[i] -> checkChanging())
+                //{
+                    synthFilters[i] -> setFilterCutOffFreq(getParamVal(10 + i, smoothFilterParams[i] -> getNextVal()));
+                //}
                 synthFilters[i] -> getNextSample(sample);
             }
         }
@@ -428,8 +437,99 @@ private:
         myEnvs[envNum] -> setParameters(adsrParams);   //Setting envolope with passed parameters
     }
     
+    
+    void updateCustomEnvs(int customEnvNum, int envChoice, float paramResult)
+    {
+        int oldEnvChoice = customEnvParamsChosen[customEnvNum];
+        if(customEnvParamsChosen[customEnvNum] != (envChoice - 1))    //Checking if same as previously chosen param
+        {
+            if(oldEnvChoice != -1)  //Updating las chosen value paramters
+            {
+                numTimesChosen[oldEnvChoice] --;
+                if(numTimesChosen[oldEnvChoice] < 1)
+                {
+                    envolopedParam[oldEnvChoice] = false;
+                    numTimesChosen[oldEnvChoice] = 0;
+                }
+            }
+                
+            //Updating new paramters
+            customEnvParamsChosen[customEnvNum] = envChoice - 1;
+            
+            if(envChoice > 0)
+            {
+                numTimesChosen[customEnvParamsChosen[customEnvNum]]++;
+                envolopedParam[customEnvParamsChosen[customEnvNum]] = true;
+                maxParamVals[customEnvParamsChosen[customEnvNum]] = paramResult;
+            }
+        }
+        
+        else
+        {
+            if(oldEnvChoice != -1)
+            {
+                maxParamVals[oldEnvChoice] = paramResult;
+            }
+        }
+    }
+    
+    void getNextCustomEnvVals()
+    {
+        std::vector<int> alreadyPickedVals;
+        for(int i = 0; i < 1; ++i)
+        {
+            if( customEnvParamsChosen[i] > -1)
+            {
+                int chosenParam = customEnvParamsChosen[i];
+                bool valAlreadyChosen = false;
+                for( int val : alreadyPickedVals)
+                {
+                    if(val == chosenParam)
+                    {
+                        valAlreadyChosen = true;
+                        break;
+                    }
+                }
+                if(valAlreadyChosen)
+                {
+                    envolopedParamVals[chosenParam] = envolopedParamVals[chosenParam] * myEnvs[i+3] -> getNextSample();
+                }
+                else
+                {
+                    envolopedParamVals[chosenParam] = myEnvs[i+3] -> getNextSample();
+                    alreadyPickedVals.push_back(chosenParam);
+                }
+            }
+        
+        }
+        
+        
+    }
+    
+   float getParamVal(int paramNum, float paramVal)
+    {
+        if(envolopedParam[paramNum])
+        {
+           return (paramVal + (maxParamVals[paramNum] - paramVal) * envolopedParamVals[paramNum]);
+        }
+        
+        return paramVal;
+    }
+    
+   /* void checkParamEnvoloped(int paramNum)
+    {
+        for(int i = 0; i < myEnvs.size()-3; ++i)
+        {
+            if(customEnvParamsChosen[i] == paramNum)
+            {
+                
+            }
+        }
+    }*/
+    
     void updateParams()
     {
+        getNextCustomEnvVals();
         updateOscParams();
         updateLFOParams();
         
@@ -461,9 +561,9 @@ private:
         {
             float osc[4] = {0.0f, 0.0f, 0.0f, 0.0f};
             smoothOscParams[i] -> getNextVal(osc);
-            sourceOscs.setOscMinMaxVolume(0, osc[2], osc[3]);
-            sourceOscs.setPanAmount(0, osc[1]);
-            sourceOscs.setTuneAmount(0, osc[0]);
+            sourceOscs.setOscMinMaxVolume(i, osc[2], osc[3]);
+            sourceOscs.setPanAmount(i, getParamVal(2 * i + 1, osc[1]));
+            sourceOscs.setTuneAmount(i, getParamVal(2 * i, osc[0]));
         }
     }
     
@@ -474,9 +574,9 @@ private:
         
         smoothLFOParams[0] -> getNextVal(lfoParams);
         
-        lfoOsc.setFrequency(lfoParams[1]);
+        lfoOsc.setFrequency(getParamVal(9, lfoParams[1]));
         
-        lfoAmp = lfoParams[0];
+        lfoAmp = getParamVal(8, lfoParams[0]);
     }
     // Set up any necessary variables here
     /// Should the voice be playing?
@@ -496,10 +596,11 @@ private:
     //Filters
     OwnedArray<StereoIIRFilters> synthFilters;
     
-    int envUpdate[5] = {4, 4, 4, 4, 4};
+    int envUpdate[6] = {4, 4, 4, 4, 4, 4};
     int oscUpdate[4] = {4, 4, 4, 4};
     int lfoUpdate = 4;
     int filterUpdate[2] = {4, 4};
+    int customEnvUpdate[3] = {4, 4, 4};
     
     bool filterEnable[2] = {false, false};
     
@@ -514,4 +615,12 @@ private:
     float lfoAmp;
     
     XYEnvolopedOscs sourceOscs;
+    
+    
+    int customEnvParamsChosen[4] = {0, 0, 0, 0};
+    float maxParamVals[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    int numTimesChosen[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    float envolopedParamVals[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    bool envolopedParam[14] = {false, false, false, false, false, false, false, false, false, false, false, false, false, false};
+    
 };

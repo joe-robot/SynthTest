@@ -74,6 +74,16 @@ SynthTesterAudioProcessorEditor::SynthTesterAudioProcessorEditor (SynthTesterAud
         comboAttachment.add(new AudioProcessorValueTreeState::ComboBoxAttachment(processor.parameters, processor.paramID.getOscParamName(i, 0), *comboBoxes[comboBoxes.size()-1]));
     }
     
+    addComboBox(comboBoxes, comboBoxFillcustEnv, 13, "Custom Env:  ");
+    comboAttachment.add(new AudioProcessorValueTreeState::ComboBoxAttachment(processor.parameters, "custEnv1Choice", *comboBoxes[comboBoxes.size()-1]));
+    
+    comboBoxes[comboBoxes.size()-1] -> addListener(this);
+    
+    addSlider(uiSliders, rotaryDesign[1], oscLabelNames[2]);
+               sliderAttachment.add(new AudioProcessorValueTreeState::SliderAttachment(processor.parameters, processor.paramID.getOscParamName(1, 1), *uiSliders[uiSliders.size()-1]));
+    storeSlider = uiSliders.size()-1;
+    
+    
     setSize (1080, 600);
     isResizable();
 }
@@ -152,10 +162,12 @@ void SynthTesterAudioProcessorEditor::resized()
     }
     
     //----Positioning up comboBoxes----//
-    for(int i = 0; i < comboBoxes.size(); ++i)
+    for(int i = 0; i < 4; ++i)
     {
         setComboPosition(comboBoxes, i, sliderContainerPositions[2 * i], sliderContainerPositions[2 * i + 1], sliderContainerSizes[1], sliderContainerSizes[2], 3, 3, 1, ((int)i/2) * 2, 1.95, 0.5);
     }
+    
+    setComboPosition(comboBoxes, 4, 0.2, 0.8, sliderContainerSizes[1], sliderContainerSizes[2], 3, 3, 1, 1, 1.95, 0.5);
     
     int workingSliderNum = 0;
     for(int i = 0; i < 11; ++i)
@@ -170,6 +182,10 @@ void SynthTesterAudioProcessorEditor::resized()
         
         workingSliderNum = workingSliderNum + sliderLayout[sliderLayoutRef];
     }
+    
+    
+    setSliderPositions(uiSliders, uiSliders.size()-1, 1, 0.8, 0.8, 0.2, 0.2, 1, 1, 1, 0, 0);
+    
 }
 
 
@@ -183,8 +199,6 @@ void SynthTesterAudioProcessorEditor::addSlider(OwnedArray<Slider> &sliderArray,
     auto* label = uiLabels.add(new Label("", labelName));
     label -> attachToComponent(slider, labelOnLeft);
     addAndMakeVisible(label);
-    
-    //sattach -> se
     
 }
 
@@ -219,8 +233,6 @@ void SynthTesterAudioProcessorEditor::setSliderPositions(OwnedArray<Slider> &sli
     
     float xIncrement = (containerWidth * width - 2.0f * xBorder) / (float)numXDiv;
     float yIncrement = (containerHeight * height - 2.0f * yBorder)  / (float)numYDiv;
-     
-    std::cout<<containerWidth<<xIncrement<<std::endl;
     
     bool move2FitX = false;
     bool move2FitY = false;
@@ -310,4 +322,18 @@ void SynthTesterAudioProcessorEditor::setFontHeight(Font& thisFont, float height
 {
     thisFont.setHeight(getLocalBounds().getHeight() * height);
     thisFont.setBold(bold);
+}
+
+
+void SynthTesterAudioProcessorEditor::comboBoxChanged (ComboBox *comboBoxThatHasChanged)
+{
+    int currentVal = comboBoxThatHasChanged -> getSelectedId();
+    
+    //std::cout << "We here: " << currentVal << std::endl;
+    
+    if(currentVal != 1)
+    {
+        sliderAttachment.remove(storeSlider);
+        sliderAttachment.add(new AudioProcessorValueTreeState::SliderAttachment(processor.parameters, processor.paramID.getMaxParamName(currentVal-2), *uiSliders[uiSliders.size()-1]));
+    }
 }

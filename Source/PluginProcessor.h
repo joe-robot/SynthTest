@@ -73,42 +73,21 @@ private:
     
     int numVoices = 16; //Setting number of synth voices
     
+    std::atomic<bool> paramsUpdated {false};
+    
     //Synthesiser
     Synthesiser mySynth;
     
-    
-    
-    
-    //Params for oscillators
-    /*std::atomic<float>* Osc1Tune;
-    std::atomic<float>* Osc1MinAmp;
-    std::atomic<float>* Osc1MaxAmp;
-    
-    std::atomic<float>* Osc2Tune;
-    std::atomic<float>* Osc2MinAmp;
-    std::atomic<float>* Osc2MaxAmp;
-    
-    //Defining params for oscillator envolopes
-    std::atomic<float>* OscXAttackParam;
-    std::atomic<float>* OscXDecayParam;
-    std::atomic<float>* OscXSustainParam;
-    std::atomic<float>* OscXReleaseParam;
-    
-    //Defining parameter to store the param value
-    std::atomic<float>* attackParam;
-    std::atomic<float>* decayParam;
-    std::atomic<float>* sustainParam;
-    std::atomic<float>* releaseParam;*/
-    
     int numOscs = 4;
-    int numEnvs = 3;
+    int numEnvs = 4;
     int numLFOs = 1;
     int numFilters = 2;
     
-    std::atomic<bool> paramsUpdated {false};
     
     OwnedArray<EnvolopeParams> envolopeParams;
     OwnedArray<OscParams> oscillatorParams;
     OwnedArray<SimpleParams> lfoParams;
     OwnedArray<SimpleParams> filterParams;
+    OwnedArray<SimpleParams> customEnvChoice;
+    
 };
