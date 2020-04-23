@@ -394,10 +394,7 @@ private:
         {
             if(filterEnable[i])
             {
-                //if(smoothFilterParams[i] -> checkChanging())
-                //{
-                    synthFilters[i] -> setFilterCutOffFreq(getParamVal(10 + i, smoothFilterParams[i] -> getNextVal()));
-                //}
+                synthFilters[i] -> setFilterCutOffFreq(getParamVal(10 + i, smoothFilterParams[i] -> getNextVal()));
                 synthFilters[i] -> getNextSample(sample);
             }
         }
@@ -419,7 +416,6 @@ private:
     
     void setADSR(int envNum, float adsrVals[4])
     {
-        //std::cout<< adsrVals[0] <<std::endl;
         //Setting ADSR parameters
         ADSR::Parameters myADSR;
         
@@ -596,11 +592,11 @@ private:
     //Filters
     OwnedArray<StereoIIRFilters> synthFilters;
     
-    int envUpdate[6] = {4, 4, 4, 4, 4, 4};
+    int envUpdate[8] = {4, 4, 4, 4, 4, 4, 4, 4};
     int oscUpdate[4] = {4, 4, 4, 4};
     int lfoUpdate = 4;
     int filterUpdate[2] = {4, 4};
-    int customEnvUpdate[3] = {4, 4, 4};
+    int customEnvUpdate[5] = {4, 4, 4, 4, 4};
     
     bool filterEnable[2] = {false, false};
     
@@ -617,7 +613,7 @@ private:
     XYEnvolopedOscs sourceOscs;
     
     
-    int customEnvParamsChosen[4] = {0, 0, 0, 0};
+    int customEnvParamsChosen[5] = {0, 0, 0, 0, 0};
     float maxParamVals[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     int numTimesChosen[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     float envolopedParamVals[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
