@@ -83,6 +83,8 @@ private:
     int numLFOs = 1;
     int numFilters = 2;
     
+    std::atomic<float>* gainParam;
+    float prevGain = 1;
     
     OwnedArray<EnvolopeParams> envolopeParams;
     OwnedArray<OscParams> oscillatorParams;

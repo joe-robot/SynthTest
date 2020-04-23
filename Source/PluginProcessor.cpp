@@ -126,7 +126,10 @@ parameters(*this, nullptr, "Parameters", {
     std::make_unique<AudioParameterFloat>("custEnv5attack", "Custom Env 5 Attack (ms)", 0.001f, 2000.0f, 1000.0f),
     std::make_unique<AudioParameterFloat>("custEnv5decay", "Custom Env 5 Decay (ms)", 0.001f, 2000.0f, 1000.0f),
     std::make_unique<AudioParameterFloat>("custEnv5sustain", "Custom Env 5 Sustain (%)", 0.0f, 100.0f, 50.0f),
-    std::make_unique<AudioParameterFloat>("custEnv5release", "Custom Env 5 Release (ms)", 0.001f, 2000.0f, 1000.0f)
+    std::make_unique<AudioParameterFloat>("custEnv5release", "Custom Env 5 Release (ms)", 0.001f, 2000.0f, 1000.0f),
+    
+    std::make_unique<AudioParameterFloat>("masterGain", "Master Gain", 0, 2.0f, 1.0f)
+    
 
 })
 {
@@ -169,10 +172,7 @@ parameters(*this, nullptr, "Parameters", {
         customEnvChoice.add(new SimpleParams(1, 1));
     }
     
-    //Additional envs
-    
-    //RangedAudioParameter* par = parameters.getParameter("env3choice");
-   // par -> addListener(this);
+    gainParam = parameters.getRawParameterValue("masterGain");
     
 }
 
@@ -291,26 +291,37 @@ bool SynthTesterAudioProcessor::isBusesLayoutSupported (const BusesLayout& layou
 
 void SynthTesterAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
-    ScopedNoDenormals noDenormals;
-    bool updateParams = false;
+    //Checking if parameters updated
+    bool updateParams = false;  //Ensure update params intially false and only activated if params updated
     if(paramsUpdated)
     {
         paramsUpdated = false;
-        updateParams = true;
+        updateParams = true;    //Mark update params value as true
     }
     
-    for(int i=0; i < numVoices; ++i)
+    for(int i=0; i < numVoices; ++i)    //Iterating through each synth voice
     {
         
         MyFirstSynthVoice* v = dynamic_cast<MyFirstSynthVoice*>(mySynth.getVoice(i));
-        if(updateParams)
+        if(updateParams)    //If parameters updated then set the params for each voice
         {
-            //setParamTargets();
             v -> setParams(envolopeParams, oscillatorParams, lfoParams, filterParams, customEnvChoice);
         }
     }
-    
+    //Rendering synths next block
     mySynth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+    
+    //Applying master gain to samples
+    if(prevGain!=*gainParam)    //Checking if gain has changed
+    {
+        buffer.applyGainRamp(0, buffer.getNumSamples(), prevGain, *gainParam);  //If changed ramping the gain
+        prevGain = *gainParam;      //Setting prev gain to new gain
+    }
+    else
+    {
+        buffer.applyGain(0, buffer.getNumSamples(), prevGain);  //Otherwise just apply previous gain
+    }
+    
 }
 
 //==============================================================================

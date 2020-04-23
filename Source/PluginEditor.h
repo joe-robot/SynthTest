@@ -59,7 +59,7 @@ public:
     void resized() override;
     void drawContainer(float posX, float posY, float sizeX, float sizeY, Colour color, Graphics&);
 
-    void addSlider(OwnedArray<Slider>& sliderArray, LookAndFeel* const newLookAndFeel, std::string labelName, bool labelToLeft = true);
+    void addSlider(OwnedArray<Slider>& sliderArray, LookAndFeel* const newLookAndFeel, std::string labelName, bool labelToLeft = true, bool noLabel = false);
     
     void addComboBox(OwnedArray<ComboBox>& comboArray, std::string* comboFill, int numComboElements, std::string labelName, std::string comboBoxName = "");
     
@@ -97,16 +97,17 @@ private:
     
     float hDecrease = 0.87f;
     
-    float containerSizes[14] = {0.6, 0.55f * hDecrease, //Osc Container
+    float containerSizes[16] = {0.6, 0.55f * hDecrease, //Osc Container
                                 0.6, 0.2f * hDecrease,  //Env X Container
                                 0.15, 0.55f * hDecrease,   //Env Y Container
                                 0.15, 0.2f * hDecrease,     //Lfo Container
                                 0.25, 0.35f * hDecrease,    //Amp Env Container
                                 0.25, 0.4f * hDecrease,     //Filter Container
+                                0.1, 0.3475,           //Master Gain Container
                                 0.9, 0.3475            //Param Env Container
                                 };
     
-    float sliderContainerSizes[27] =   {4, 0.288, 0.235f * hDecrease, //Osc Slider Container
+    float sliderContainerSizes[30] =   {4, 0.288, 0.235f * hDecrease, //Osc Slider Container
                                         1, 0.15, 0.3f * hDecrease, //XY graph box
         
                                         1, 0.584, 0.2f * hDecrease, //EnvX SLider Container
@@ -115,11 +116,12 @@ private:
                                         1, 0.14, 0.14f * hDecrease, //Lfo slider container
                                         1, 0.225, 0.28f * hDecrease,    //Amp env elider container
                                         2, 0.2375, 0.1f * hDecrease, //LP HP Slider Container
-                                        5, 0.8f, 0.0655,    //Param Env Slider Container 0.0695
-                                        1, 0.8f, 0.0655    //Max Param Env Slider Container 0.0695
+                                        1, 0.1f, 0.3475,    //Master Gain Slider Container
+                                        5, 0.8f, 0.0655,    //Param Env Slider Container
+                                        1, 0.8f, 0.0655    //Max Param Env Slider Container
                                         };
     
-    float sliderContainerPositions[32] =   {0.008, 0.06f * hDecrease, //Osc 1 Slider Container
+    float sliderContainerPositions[34] =   {0.008, 0.06f * hDecrease, //Osc 1 Slider Container
                                             0.304, 0.06f * hDecrease, //Osc 2 Slider Container
                                             0.008, 0.305f * hDecrease, //Osc 3 Slider Container
                                             0.304, 0.305f * hDecrease, //Osc 4 Slider Container
@@ -133,11 +135,13 @@ private:
                                             0.75625, 0.45f * hDecrease, //LP slider Container
                                             0.75625, 0.62f * hDecrease, //HP slider Container
                                             
+                                            0.9f, 0.6545f, //Master Gain Slider Container
+        
                                             0.1f, 0.6545f,  //Param 1 slider Env Container
                                             0.1f, 0.724f,  //Param 2 slider Env Container
                                             0.1f, 0.7935f, //Param 3 slider Env Container
                                             0.1f, 0.863f,  //Param 4 slider Env Container
-                                            0.1f, 0.9325f //Param 5 slider Env Container
+                                            0.1f, 0.9325f, //Param 5 slider Env Container
                                             };
     
     /*
@@ -150,18 +154,19 @@ private:
      */
     
     
-    float containerPositions[14] = {0, 0.0f * hDecrease, //Osc Container
+    float containerPositions[16] = {0, 0.0f * hDecrease, //Osc Container
                                     0, 0.55f * hDecrease,  //Env X Container
                                     0.6, 0.0f * hDecrease,   //Env Y Container
                                     0.6, 0.55f * hDecrease,     //Lfo Container
                                     0.75, 0.0f * hDecrease,    //Amp Env Container
                                     0.75, 0.35f * hDecrease,     //Filter Container
-                                    0, 0.6525f          //Param env Container
+                                    0.9, 0.6525f, //Master Gain Container
+                                    0, 0.6525f,          //Param env Container
                                     };
     
     float sliderSizes[2] = {0.0929, 0.072f * hDecrease}; //Slider Sizes
     
-    int sliderArrangeInfo[105] ={0, 0, 0, 0, 0,//Osc 1   position ref, size ref, layout ref, offset ref, label pos
+    int sliderArrangeInfo[110] ={0, 0, 0, 0, 0,//Osc 1   position ref, size ref, layout ref, offset ref, label pos
                                 1, 0, 0, 1, 0,//Osc 2
                                 2, 0, 0, 2, 0,//Osc 3
                                 3, 0, 0, 3, 0,//Osc 4
@@ -169,11 +174,11 @@ private:
                                 6, 3, 2, 5, 1,//Env Y
                                 8, 5, 4, 8, 0,//Amp Env
         
-                                11, 7, 6, 10, 0, //Param 1 slider Env
-                                12, 7, 6, 10, 0, //Param 2 slider Env
-                                13, 7, 6, 10, 0, //Param 3 slider Env
-                                14, 7, 6, 10, 0,//Param 4 slider Env
-                                15, 7, 6, 10, 0,//Param 4 slider Env
+                                12, 8, 6, 10, 0, //Param 1 slider Env
+                                13, 8, 6, 10, 0, //Param 2 slider Env
+                                14, 8, 6, 10, 0, //Param 3 slider Env
+                                15, 8, 6, 10, 0,//Param 4 slider Env
+                                16, 8, 6, 10, 0,//Param 4 slider Env
         
                                 7, 4, 3, 6, 0,//Lfo row 1
                                 7, 4, 3, 7, 0,//Lfo row 2
@@ -181,24 +186,27 @@ private:
                                 9, 6, 5, 9, 0,//Low Pass Filter
                                 10,6, 5, 9, 0,//High Pass Filter
                                 
-                                11, 8, 7, 11, 0, //Param 1 max slider
-                                12, 8, 7, 11, 0, //Param 2 max slider Env
-                                13, 8, 7, 11, 0, //Param 3 max slider Env
-                                14, 8, 7, 11, 0, //Param 4 max slider Env
-                                15, 8, 7, 11, 0 //Param 4 max slider Env
+                                11, 7, 8, 12, 1, //Master Gain Slider
+        
+                                12, 9, 7, 11, 0, //Param 1 max slider
+                                13, 9, 7, 11, 0, //Param 2 max slider Env
+                                14, 9, 7, 11, 0, //Param 3 max slider Env
+                                15, 9, 7, 11, 0, //Param 4 max slider Env
+                                16, 9, 7, 11, 0 //Param 4 max slider Env
                                 };
     
-    float sliderLayout[32] =   {4, 3, 3, 2, //Num sliders, x div, y div, num sliders per horizintal
+    float sliderLayout[36] =   {4, 3, 3, 2, //Num sliders, x div, y div, num sliders per horizintal
                                 4, 4, 3, 4,
                                 4, 3, 4, 1,
                                 1, 2, 2, 1,
                                 4, 2, 2, 2,
                                 2, 2, 1, 2,
                                 4, 7, 1, 4,
-                                1, 7, 1, 1
+                                1, 7, 1, 1,
+                                1, 1, 1, 1
                                 };
     
-    float sliderOffsets[24] =  {0, 1,   //x offset, y offset
+    float sliderOffsets[26] =  {0, 1,   //x offset, y offset
                                 1, 1,
                                 0, 0,
                                 1, 0,
@@ -209,11 +217,12 @@ private:
                                 0, 0,
                                 0, 0,
                                 3, 0,
-                                2, 0
+                                2, 0,
+                                0, 0
                                 };
                 
-    Colour containerColours[7] = {Colours::darkgrey, Colours::slategrey, Colours::slategrey, Colours::darkgrey, Colours::darkgrey, Colours::dimgrey, Colours::grey};
-    Colour sliderContainerColours[8] = {Colours::dimgrey, Colours::lightgrey, Colours::slategrey, Colours::slategrey,  Colours::dimgrey, Colours::dimgrey, Colours::darkgrey, Colours::darkgrey};
+    Colour containerColours[8] = {Colours::darkgrey, Colours::slategrey, Colours::slategrey, Colours::darkgrey, Colours::darkgrey, Colours::dimgrey, Colours::darkgrey, Colours::grey};
+    Colour sliderContainerColours[9] = {Colours::dimgrey, Colours::lightgrey, Colours::slategrey, Colours::slategrey,  Colours::dimgrey, Colours::dimgrey, Colours::darkgrey, Colours::black, Colours::darkgrey};
     
     Colour sliderColours[4] = {Colours::red, Colours::blue, Colours::yellow, Colours::green};
 
@@ -221,7 +230,7 @@ private:
     std::string  envLabelNames[4] = {"Attack", "Decay", "Sustain", "Release"};
     std::string  filterLabels[2] = {"Filter Mode", "Cut-Off Freq"};
     std::string  lfoLabels[2] = {"Amp", "Freq"};
-    std::string  nameLabels[8] = {"Sources", "X Axis Envolope", "Y Axis Envolope", "Lfo", "Amplitude Envolope", "Filters"};
+    std::string  nameLabels[7] = {"Sources", "X Axis Envolope", "Y Axis Envolope", "Lfo", "Amplitude Envolope", "Filters","Master Volume"};
     std::string filterNames[2] = {"Low Pass Filter", "High Pass Filter"};
     Font textFont = {12.0f};
     Font componentFont = {12.0f};

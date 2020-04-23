@@ -61,7 +61,10 @@ SynthTesterAudioProcessorEditor::SynthTesterAudioProcessorEditor (SynthTesterAud
         }
     }
 
-    for(int i = 0; i < 6; ++i)
+    addSlider(uiSliders, rotaryDesign[0], "Master Volume", false, true);
+    sliderAttachment.add(new AudioProcessorValueTreeState::SliderAttachment(processor.parameters, "masterGain", *uiSliders[uiSliders.size()-1]));
+    
+    for(int i = 0; i < 7; ++i)
     {
         auto* label = titleLabels.add(new Label("", nameLabels[i]));
         addAndMakeVisible(label);
@@ -117,7 +120,7 @@ void SynthTesterAudioProcessorEditor::paint (Graphics& g)
     }
     
     int sliderContainerNum = 0;
-    for(int i = 0; i < 8; ++i)
+    for(int i = 0; i < 9; ++i)
     {
         for(int j = 0; j < sliderContainerSizes[3 * i]; ++j)
         {
@@ -158,7 +161,7 @@ void SynthTesterAudioProcessorEditor::resized()
     setLabelFonts(titleLabels, titleFont);
     
     auto area = getLocalBounds();
-    for(int i = 0; i< 6; ++i)
+    for(int i = 0; i< 7; ++i)
     {
         titleLabels[i] -> setBounds(containerPositions[2*i] * area.getWidth(), containerPositions[2*i+1] * area.getHeight(), containerSizes[2*i] * area.getWidth(), 0.05 * area.getHeight());
     }
@@ -176,11 +179,11 @@ void SynthTesterAudioProcessorEditor::resized()
     
     for(int i = 0; i < numEnvs - 3; ++i)
     {
-        setComboPosition(comboBoxes, i+4, sliderContainerPositions[2 * i + 22], sliderContainerPositions[2 * i + 23], sliderContainerSizes[22], sliderContainerSizes[23], 7, 1, 0, 0, 1.95, 0.7);
+        setComboPosition(comboBoxes, i+4, sliderContainerPositions[2 * i + 24], sliderContainerPositions[2 * i + 25], sliderContainerSizes[25], sliderContainerSizes[26], 7, 1, 0, 0, 1.95, 0.7);
     }
     
     int workingSliderNum = 0;
-    for(int i = 0; i < 21; ++i)
+    for(int i = 0; i < 22; ++i)
     {
         int arrangePos = i * 5;
         int sliderLayoutRef = sliderArrangeInfo[arrangePos + 2] * 4;
@@ -200,16 +203,18 @@ void SynthTesterAudioProcessorEditor::resized()
 }
 
 
-void SynthTesterAudioProcessorEditor::addSlider(OwnedArray<Slider> &sliderArray, LookAndFeel *const newLookAndFeel, std::string labelName, bool labelOnLeft)
+void SynthTesterAudioProcessorEditor::addSlider(OwnedArray<Slider> &sliderArray, LookAndFeel *const newLookAndFeel, std::string labelName, bool labelOnLeft, bool noLabel)
 {
     auto* slider = sliderArray.add(new Slider(Slider::RotaryHorizontalVerticalDrag, Slider::TextBoxBelow));
     slider -> setRange(0, 5.0);
     slider -> setLookAndFeel(newLookAndFeel);
     addAndMakeVisible(slider);
-    
-    auto* label = uiLabels.add(new Label("", labelName));
-    label -> attachToComponent(slider, labelOnLeft);
-    addAndMakeVisible(label);
+    if(!noLabel)
+    {
+        auto* label = uiLabels.add(new Label("", labelName));
+        label -> attachToComponent(slider, labelOnLeft);
+        addAndMakeVisible(label);
+    }
     
 }
 
