@@ -48,13 +48,17 @@ public:
     int numMaxParams = 12;
     
 private:
-    std::string envNames[6] =
+    std::string envNames[8] =
     {
         "",
         "oscX",
         "oscY",
         "custEnv1",
-        "custEnv2"
+        "custEnv2",
+        "custEnv3",
+        "custEnv4",
+        "custEnv5"
+        
     };
     
     std::string adsrNames[5] =

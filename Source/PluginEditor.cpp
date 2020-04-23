@@ -37,7 +37,7 @@ SynthTesterAudioProcessorEditor::SynthTesterAudioProcessorEditor (SynthTesterAud
         bool labelPos = i == 1 ? false : true;
         for(int j = 0; j < 4; ++j)
         {
-            addSlider(uiSliders, rotaryDesign[i], envLabelNames[j], labelPos);
+            addSlider(uiSliders, rotaryDesign[i%4], envLabelNames[j], labelPos);
             sliderAttachment.add(new AudioProcessorValueTreeState::SliderAttachment(processor.parameters, processor.paramID.getEnvolopeParamName(i, j), *uiSliders[uiSliders.size()-1]));
         }
     }
@@ -74,14 +74,20 @@ SynthTesterAudioProcessorEditor::SynthTesterAudioProcessorEditor (SynthTesterAud
         comboAttachment.add(new AudioProcessorValueTreeState::ComboBoxAttachment(processor.parameters, processor.paramID.getOscParamName(i, 0), *comboBoxes[comboBoxes.size()-1]));
     }
     
-    addComboBox(comboBoxes, comboBoxFillcustEnv, 13, "Custom Env:  ");
-    comboAttachment.add(new AudioProcessorValueTreeState::ComboBoxAttachment(processor.parameters, "custEnv1Choice", *comboBoxes[comboBoxes.size()-1]));
+    for(int i =0; i < numEnvs - 3; ++i)
+    {
+        addComboBox(comboBoxes, comboBoxFillcustEnv, 13, "Parameter "+ std::to_string(i+1) +" Env:  ",std::to_string(i));
+        comboAttachment.add(new AudioProcessorValueTreeState::ComboBoxAttachment(processor.parameters, processor.paramID.getEnvolopeParamName(i+3, 4), *comboBoxes[comboBoxes.size()-1]));
     
-    comboBoxes[comboBoxes.size()-1] -> addListener(this);
+        comboBoxes[comboBoxes.size()-1] -> addListener(this);
+    }
     
-    addSlider(uiSliders, rotaryDesign[1], oscLabelNames[2]);
-               sliderAttachment.add(new AudioProcessorValueTreeState::SliderAttachment(processor.parameters, processor.paramID.getOscParamName(1, 1), *uiSliders[uiSliders.size()-1]));
-    storeSlider = uiSliders.size()-1;
+    for(int i =0; i < numEnvs - 3; ++i)
+    {
+        addSlider(uiSliders, rotaryDesign[(i+3)%4], "Max Val");
+        sliderAttachment.add(new AudioProcessorValueTreeState::SliderAttachment(processor.parameters, processor.paramID.getMaxParamName(i), *uiSliders[uiSliders.size()-1]));
+        storeSlider = uiSliders.size()-1;
+    }
     
     
     setSize (1080, 600);
@@ -105,13 +111,13 @@ void SynthTesterAudioProcessorEditor::paint (Graphics& g)
     float height = getLocalBounds().getHeight();
     float width = getLocalBounds().getWidth();
     
-    for(int i = 0; i < 6; ++i)
+    for(int i = 0; i < 7; ++i)
     {
         drawContainer(width * containerPositions[2 * i], containerPositions[2 * i + 1] * height, containerSizes[2 * i] * width, containerSizes[2 * i + 1] * height, containerColours[i], g);
     }
     
     int sliderContainerNum = 0;
-    for(int i = 0; i < 7; ++i)
+    for(int i = 0; i < 8; ++i)
     {
         for(int j = 0; j < sliderContainerSizes[3 * i]; ++j)
         {
@@ -138,11 +144,12 @@ void SynthTesterAudioProcessorEditor::resized()
     if (uiSliders.isEmpty())
         return;
     
-    
+    width = getLocalBounds().getWidth();
+    height = getLocalBounds().getHeight();
     //-----Setting Up Fonts----//
     //Setting Font Heights
     setFontHeight(textFont, sliderContainerSizes[2]/9.0f, true);
-    setFontHeight(componentFont, sliderContainerSizes[2]/12.0f, false);
+    setFontHeight(componentFont, sliderContainerSizes[2]/11.0f, false);
     setFontHeight(titleFont, sliderContainerSizes[2]/8.0f, true);
     
     //Attaching fonts to labels
@@ -167,10 +174,13 @@ void SynthTesterAudioProcessorEditor::resized()
         setComboPosition(comboBoxes, i, sliderContainerPositions[2 * i], sliderContainerPositions[2 * i + 1], sliderContainerSizes[1], sliderContainerSizes[2], 3, 3, 1, ((int)i/2) * 2, 1.95, 0.5);
     }
     
-    setComboPosition(comboBoxes, 4, 0.2, 0.8, sliderContainerSizes[1], sliderContainerSizes[2], 3, 3, 1, 1, 1.95, 0.5);
+    for(int i = 0; i < numEnvs - 3; ++i)
+    {
+        setComboPosition(comboBoxes, i+4, sliderContainerPositions[2 * i + 22], sliderContainerPositions[2 * i + 23], sliderContainerSizes[22], sliderContainerSizes[23], 7, 1, 0, 0, 1.95, 0.7);
+    }
     
     int workingSliderNum = 0;
-    for(int i = 0; i < 11; ++i)
+    for(int i = 0; i < 21; ++i)
     {
         int arrangePos = i * 5;
         int sliderLayoutRef = sliderArrangeInfo[arrangePos + 2] * 4;
@@ -180,11 +190,12 @@ void SynthTesterAudioProcessorEditor::resized()
         
         setSliderPositions(uiSliders, workingSliderNum, sliderLayout[sliderLayoutRef], sliderContainerPositions[sliderPosRef], sliderContainerPositions[sliderPosRef + 1], sliderContainerSizes[sliderSizeRef + 1], sliderContainerSizes[sliderSizeRef + 2], sliderLayout[sliderLayoutRef + 1], sliderLayout[sliderLayoutRef + 2], sliderLayout[sliderLayoutRef + 3], sliderOffsets[sliderOffsetRef], sliderOffsets[sliderOffsetRef + 1], sliderArrangeInfo[arrangePos + 4] == 1 ? true : false, true);
         
+        
         workingSliderNum = workingSliderNum + sliderLayout[sliderLayoutRef];
     }
     
     
-    setSliderPositions(uiSliders, uiSliders.size()-1, 1, 0.8, 0.8, 0.2, 0.2, 1, 1, 1, 0, 0);
+    //setSliderPositions(uiSliders, uiSliders.size()-1, 1, 0.8, 0.8, 0.2, 0.2, 1, 1, 1, 0, 0);
     
 }
 
@@ -203,9 +214,9 @@ void SynthTesterAudioProcessorEditor::addSlider(OwnedArray<Slider> &sliderArray,
 }
 
 
-void SynthTesterAudioProcessorEditor::addComboBox(OwnedArray<ComboBox> &comboArray, std::string *comboFill, int numComboElements, std::string labelName)
+void SynthTesterAudioProcessorEditor::addComboBox(OwnedArray<ComboBox> &comboArray, std::string *comboFill, int numComboElements, std::string labelName, std::string comboBoxName)
 {
-    auto* combo = comboBoxes.add(new ComboBox());
+    auto* combo = comboBoxes.add(new ComboBox(comboBoxName));
     combo -> setSelectedId(1);
     for(int i=0; i < numComboElements; ++i)
     {
@@ -222,11 +233,13 @@ void SynthTesterAudioProcessorEditor::setSliderPositions(OwnedArray<Slider> &sli
 {   //Might need a few additional parameters like slider offset(could be included in x pos though tbf)
     //Can remove right positioning and bottom positionig and border stuff!!!
     
-    float width = getLocalBounds().getWidth();
-    float height = getLocalBounds().getHeight();
+    //float width = getLocalBounds().getWidth();
+    //float height = getLocalBounds().getHeight();
     
     float xBorder = containerWidth * borderXpecentage * width;
     float yBorder = containerHeight * borderYpercentage * height;
+    
+    std::cout<< "here for: "<<minSliderNum<<std::endl;
     
     float containerX = containerWidth * width - 2.0f * xBorder;
     float containerY = containerHeight * height - 2.0f * yBorder;
@@ -288,6 +301,8 @@ void SynthTesterAudioProcessorEditor::setSliderPositions(OwnedArray<Slider> &sli
         }
         
     }
+    
+    std::cout<< "finished for: "<<minSliderNum<<std::endl;
 }
 
 void SynthTesterAudioProcessorEditor::setLabelFonts(OwnedArray<Label> &labels, Font labelFont)
@@ -329,11 +344,15 @@ void SynthTesterAudioProcessorEditor::comboBoxChanged (ComboBox *comboBoxThatHas
 {
     int currentVal = comboBoxThatHasChanged -> getSelectedId();
     
-    //std::cout << "We here: " << currentVal << std::endl;
+    int comboNum = (comboBoxThatHasChanged -> Component::getName()).getIntValue();
+    
+std::cout<<comboNum<<std::endl;
+    
+    int sliderNum = uiSliders.size() - 5 +comboNum;
     
     if(currentVal != 1)
     {
-        sliderAttachment.remove(storeSlider);
-        sliderAttachment.add(new AudioProcessorValueTreeState::SliderAttachment(processor.parameters, processor.paramID.getMaxParamName(currentVal-2), *uiSliders[uiSliders.size()-1]));
+        sliderAttachment.remove(sliderNum);
+        sliderAttachment.insert(sliderNum, new AudioProcessorValueTreeState::SliderAttachment(processor.parameters, processor.paramID.getMaxParamName(currentVal-2), *uiSliders[sliderNum]));
     }
 }

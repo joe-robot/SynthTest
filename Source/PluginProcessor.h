@@ -71,7 +71,7 @@ private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SynthTesterAudioProcessor)
     
-    int numVoices = 16; //Setting number of synth voices
+    int numVoices = 6; //Setting number of synth voices
     
     std::atomic<bool> paramsUpdated {false};
     
@@ -79,7 +79,7 @@ private:
     Synthesiser mySynth;
     
     int numOscs = 4;
-    int numEnvs = 4;
+    int numEnvs = 8;
     int numLFOs = 1;
     int numFilters = 2;
     
