@@ -2,13 +2,7 @@
 
 #pragma once
 
-#include "Oscillator.h"
-#include "SmoothChanger.h"
-#include "ParamStore.h"
-#include "XYEnvolopedOscs.h"
-#include "myIIRFilter.h"
-
-#include "MyFirstSynth.h"
+#include "PostBoxSynth.h"
 
 // =================================
 // =================================
@@ -217,7 +211,7 @@ void PostBoxSynth::updateOsc(int oscNum, float newTune, float newPan, float newM
      @param SynthesiserSound unused variable
      @param / unused variable
      */
-void PostBoxSynth::startNote (int midiNoteNumber, float velocity, SynthesiserSound*, int /*currentPitchWheelPosition*/) override
+void PostBoxSynth::startNote (int midiNoteNumber, float velocity, SynthesiserSound*, int /*currentPitchWheelPosition*/)
 {
     //float freq = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
     noteVelocity = velocity;
@@ -241,7 +235,7 @@ void PostBoxSynth::startNote (int midiNoteNumber, float velocity, SynthesiserSou
      @param / unused variable
      @param allowTailOff bool to decie if the should be any volume decay
      */
-void PostBoxSynth::stopNote(float /*velocity*/, bool allowTailOff) override
+void PostBoxSynth::stopNote(float /*velocity*/, bool allowTailOff)
 {
     for(int i = 0; i < myEnvs.size(); ++i)
         myEnvs[i] -> noteOff();
@@ -259,7 +253,7 @@ void PostBoxSynth::stopNote(float /*velocity*/, bool allowTailOff) override
      @param startSample position of first sample in buffer
      @param numSamples number of smaples in output buffer
      */
-void PostBoxSynth::renderNextBlock(AudioSampleBuffer& outputBuffer, int startSample, int numSamples) override
+void PostBoxSynth::renderNextBlock(AudioSampleBuffer& outputBuffer, int startSample, int numSamples)
 {
     // iterate through the necessary number of samples (from startSample up to startSample + numSamples)
     for (int sampleIndex = startSample;   sampleIndex < (startSample+numSamples);   sampleIndex++)
@@ -293,6 +287,11 @@ void PostBoxSynth::renderNextBlock(AudioSampleBuffer& outputBuffer, int startSam
     }
 }
 
+
+bool PostBoxSynth::canPlaySound (SynthesiserSound* sound)
+{
+    return dynamic_cast<PostBoxSynthSound*> (sound) != nullptr;
+}
 
 void PostBoxSynth::oscsNextSample(float* sample)
 {
@@ -390,7 +389,7 @@ void PostBoxSynth::updateCustomEnvs(int customEnvNum, int envChoice, float param
         {
             numTimesChosen[customEnvParamsChosen[customEnvNum]]++;
             envolopedParam[customEnvParamsChosen[customEnvNum]] = true;
-            maxParamVals[customEnvParamsChosen[customEnvNum]] = paramResult
+            maxParamVals[customEnvParamsChosen[customEnvNum]] = paramResult;
         }
     }
         
