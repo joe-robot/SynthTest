@@ -17,7 +17,18 @@
 #include "PluginProcessor.h"
 
 
-//Defining a class for making the sliders a cutom design
+// =================================
+// =================================
+// New Rotary Design
+
+/*!
+ @class NewRotaryDesign
+ @abstract Class for defining new slider look and feel
+ @discussion called multiple times by the editor to set look of sliders
+ 
+ @namespace none
+ @updated 2020-04-24
+ */
 class NewRotaryDesign : public LookAndFeel_V4   //Inheriting from look and feel and overriding required methods
 {
 public:
@@ -83,10 +94,19 @@ private:
 };
 
 
-//==============================================================================
-//==============================================================================
 
-//Main editor class that deals with drawing each part into the plugin
+// =================================
+// =================================
+// SynthTesterAudioProcessorEditor
+
+/*!
+ @class SynthTesterAudioProcessorEditor
+ @abstract The main editor that creates the UI for the plugin
+ @discussion creates plugin UI
+ 
+ @namespace none
+ @updated 2020-04-24
+ */
 class SynthTesterAudioProcessorEditor  : public AudioProcessorEditor,   //Inheriting from juce editor, to make it an editor
                                          public ComboBox::Listener      //Inheriting from combobox listener to make changes based on a combo box selection
 {

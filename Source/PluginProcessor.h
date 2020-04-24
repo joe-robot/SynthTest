@@ -1,10 +1,10 @@
 /*
   ==============================================================================
 
-    This file was auto-generated!
+    JUCE plugin processor.
 
-    It contains the basic framework code for a JUCE plugin processor.
-
+    Created: 12 Apr 2020
+    Author:  B159113
   ==============================================================================
 */
 
@@ -19,6 +19,18 @@
 //==============================================================================
 /**
 */
+
+// =================================
+// =================================
+// SynthTesterAudioProcessor
+
+/*!
+ @class SynthTesterAudioProcessor
+ @abstract The main processor of the plugin that holds the main DSP process loop
+ 
+ @namespace none
+ @updated 2020-04-24
+ */
 class SynthTesterAudioProcessor  : public AudioProcessor,
                                    public ValueTree::Listener
 {
@@ -105,6 +117,6 @@ private:
     OwnedArray<SimpleParams> oscillatorParams;
     OwnedArray<SimpleParams> lfoParams;
     OwnedArray<SimpleParams> filterParams;
-    OwnedArray<SimpleParams> customEnvChoice;
+    OwnedArray<SimpleParams> paramEnvChoice;
     
 };

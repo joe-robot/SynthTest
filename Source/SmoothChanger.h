@@ -4,6 +4,9 @@
     SmoothChanger.h
     This class is used to smooth changes of parameters from a current value to
     a target value in a specified amount of time
+ 
+    The file contains two classes one for smoothing for singular paramters and
+    one for smoothing for multiple parameters
     Created: 20 Mar 2020 2:15:17pm
     Author:  Joseph Cresswell
 
@@ -12,8 +15,21 @@
 
 #pragma once
 
+//Include juce
 #include <JuceHeader.h>
 
+// =================================
+// =================================
+// Smooth Changes
+
+/*!
+ @class SmoothChanges
+ @abstract smooth parameters from current to a target value in a set amount of time
+ @discussion called to avoid clicking when user is changing parameters
+ 
+ @namespace none
+ @updated 2020-04-24
+ */
 class SmoothChanges
 {
 public:
@@ -30,9 +46,9 @@ public:
      * Initialises the smoother with a new target and the current position
      * also setting the time the smooth should occur over
      *
-     * @param the current value
-     * @param the target value
-     * @param the time to transition bettween points
+     * @param currentVal is the current value
+     * @param targetVal is the target value
+     * @param time is the time to transition bettween points
      *
     */
     void init(float currentVal, float targetVal, float time);
@@ -40,8 +56,8 @@ public:
     /**
      * Initialises the smoother with a new target and the current position
      *
-     * @param the current value
-     * @param the target value
+     * @param currentVal is the current value
+     * @param targetVal is the target value
      *
     */
     void init(float currentVal, float targetVal);
@@ -49,7 +65,7 @@ public:
     /**
      * Initialises the smoother with a new target position assuming current position is unchanged
      *
-     * @param the target value
+     * @param targetVal is the target value
      *
     */
     void setTargetVal(float targetVal);
@@ -57,7 +73,7 @@ public:
     /**
      * Sets the sample rate of the processor
      *
-     * @param sample rate
+     * @param newSampleRate is the sample rate sample/s
      *
     */
     void setSampleRate(float newSampleRate);
@@ -65,7 +81,7 @@ public:
     /**
      * Sets the smoothing time bettween values
      *
-     * @param smoothing time in MS
+     * @param timeMS which is the smoothing time in MS
      *
     */
     void setSmoothTime(float timeMS);
@@ -116,45 +132,62 @@ private:
 
 };
 
+
+// =================================
+// =================================
+// Multi Smooth
+
+/*!
+ @class MultiSmooth
+ @abstract smooth multiple parameters from current to a target value in a set amount of time
+ @discussion called to avoid clicking when user is changing parameters
+ 
+ @namespace none
+ @updated 2020-04-24
+ */
 class MultiSmooth
 {
 public:
+    //==============================================================================
+    /** Constructors*/
     MultiSmooth();
     MultiSmooth(int numParams);
+    /** Destructors*/
     ~MultiSmooth();
+    //==============================================================================
     
     /**
      * Initialises the smoother with a new target and the current position
      * also setting the time the smooth should occur over
      *
-     * @param the current value
-     * @param the target value
-     * @param the time to transition bettween points
+     * @param currentVal is a array of current values
+     * @param targetVal is a array of target values
+     * @param time is the time to transition bettween points
      *
     */
-    void init(float currentVal[4], float targetVal[4], float time);
+    void init(float* currentVal, float* targetVal, float time);
     
     /**
      * Initialises the smoother with a new target and the current position
      *
-     * @param the current value
-     * @param the target value
+     * @param currentVal is a array of current values
+     * @param targetVal is a array of target values
      *
     */
-    void init(float currentVal[4], float targetVal[4]);
+    void init(float* currentVal, float* targetVal);
     
     /**
      * Initialises the smoother with a new target position assuming current position is unchanged
      *
-     * @param the target value
+     * @param targetVal is a array of target values
      *
     */
-    void setTargetVal(float targetVals[4]);
+    void setTargetVal(float* targetVals);
     
     /**
      * Sets the sample rate of the processor
      *
-     * @param sample rate
+     * @param newSampleRate the sample rate in sample/s
      *
     */
     void setSampleRate(float newSampleRate);
@@ -162,7 +195,7 @@ public:
     /**
      * Sets the number of parameters that are being smoothed
      *
-     * @param numParams
+     * @param numParams the number of parameters to use
      *
     */
     void setNumParams(int numParams);
@@ -170,10 +203,10 @@ public:
     /**
      * Gets the next value of the smoothed param parameters
      *
-     * @return next Parameter value according to settings
+     * @param params a array that returns the next valies of the parameters
      *
     */
-    void getNextVal(float params[4]);
+    void getNextVal(float* params);
     
     /**
      * Checks if any values being smoothed are still changing
@@ -193,8 +226,6 @@ public:
     
 private:
     OwnedArray<SmoothChanges> paramSmooth;   //Owned array of parameter smoothing class to smooth each param
-    
-    //float paramParams[4] = {1.0f, 1.0f, 1.0f, 1.0f}; //Setting default values for the param params
     
     float smoothTime = 50.0f;
     

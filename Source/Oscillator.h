@@ -16,7 +16,18 @@
 #include <stdio.h>  //Including the standard library
 #include <cmath>    //Including the math library to calculate maths operations
 
-//Defining the class methods and attributes
+// =================================
+// =================================
+// Oscillator
+
+/*!
+ @class Oscillator
+ @abstract source for generating waves of different types
+ @discussion used as main sound sources for synth
+ 
+ @namespace none
+ @updated 2020-04-24
+ */
 class Oscillator
 {
 public:
@@ -40,7 +51,7 @@ public:
     /**
      * Sets the sample Rate of the oscillator
      *
-     * @param sampleRate in samples / s
+     * @param newSampleRate in samples / s
      *
      */
     void setSampleRate(float newSampleRate);
@@ -56,7 +67,7 @@ public:
     /**
      * Sets the type of the oscillator
      *
-     * @param type is a value from 0- 6
+     * @param newType is a value from 0- 6
      * 0 = sine Oscillator
      * 1 = square wave Oscillator
      * 2 = triangle wave Oscillator

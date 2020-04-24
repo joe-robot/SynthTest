@@ -35,12 +35,9 @@ void SmoothChanges::setTargetVal(float targetVal)
 {
     if(targetVal != targetValue) //Checking target value changed
     {
-        //std::cout<<"Old Target: "<<targetValue  << "Target Val: "<< targetVal << " LastValue: " << lastValue;
         targetValue = targetVal;
         if(lastValue != targetVal) //Checking not already reached target
         {
-            //targetValue = targetVal;    //Update target value
-            //std::cout<<"   New Target: "<<targetValue;
             float valDiff = targetValue - lastValue;     //Get the difference and calculate the increment each sample
             increment = valDiff / transitionTime;       //Calculate the increment
             valueChanging = true;
@@ -102,7 +99,7 @@ float SmoothChanges::getNextVal()
 
 bool SmoothChanges::checkChanging()
 {
-    return valueChanging;
+    return valueChanging;   //Return if value is changing
 }
 
 
@@ -113,7 +110,7 @@ float SmoothChanges::getTargetVal() //getting the target value
 
 void SmoothChanges::setToTarget()
 {
-    if(valueChanging)
+    if(valueChanging)   //If value is still changing set it to target value
     {
         lastValue = targetValue;
         valueChanging = false;
@@ -129,14 +126,14 @@ MultiSmooth::MultiSmooth()
 
 MultiSmooth::MultiSmooth(int numParams)
 {
-    setNumParams(numParams);
+    setNumParams(numParams); //Constructor that allows for setting up with custom number of parameters
 }
 
 MultiSmooth::~MultiSmooth(){}
 
 void MultiSmooth::init(float* currentVal, float* targetVal, float time)
 {
-    smoothTime = time > 0 ? time : smoothTime;  //Updating the smooth time attribute with user input
+    smoothTime = time > 0 ? time : smoothTime;  //Updating the smooth time attribute with desired
     init(currentVal, targetVal);                //Initialising the current and target times of param smoothign
 }
 
@@ -158,7 +155,7 @@ void MultiSmooth::setTargetVal(float* targetVal)
 
 void MultiSmooth::getNextVal(float *params)
 {
-    for(int i = 0; i < numberParams; ++i)  //Update param params with next smoothed value
+    for(int i = 0; i < numberParams; ++i)  //Update params with next smoothed value
     {
         params[i] = paramSmooth[i] -> getNextVal();
     }
@@ -174,9 +171,9 @@ void MultiSmooth::setSampleRate(float newSampleRate)
 
 void MultiSmooth::setNumParams(int numParams)
 {
-    paramSmooth.clear();
-    //paramSmooth.clearQuick(true);
-    numberParams = numParams;
+    paramSmooth.clear();    //Clear param array
+
+    numberParams = numParams;   //Update number of parameters
     
     for(int i = 0; i < numberParams; ++i)  //Initialising an owned array of parameter smoothers
     {
@@ -187,7 +184,7 @@ void MultiSmooth::setNumParams(int numParams)
 
 bool MultiSmooth::checkChanging()
 {
-    for(int i = 0; i < numberParams; ++i)
+    for(int i = 0; i < numberParams; ++i)   //Returns true if any values are still changing
     {
         if(paramSmooth[i] -> checkChanging())
         {
@@ -202,7 +199,7 @@ bool MultiSmooth::checkChanging()
 
 void MultiSmooth::setToTarget()
 {
-    for(int i = 0; i < numberParams; ++i)
+    for(int i = 0; i < numberParams; ++i)   //Iterate through all params and set them to target value
     {
         paramSmooth[i] -> setToTarget();
     }
