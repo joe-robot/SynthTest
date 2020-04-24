@@ -72,7 +72,7 @@ public:
      * @param filters is an array of filter parameters
      * @param costmEnvsChoice  is an array of parameter envolope parameters
     */
-    void setParams(OwnedArray<EnvolopeParams>& envs, OwnedArray<OscParams>& oscs, OwnedArray<SimpleParams>& lfos, OwnedArray<SimpleParams>& filters, OwnedArray<SimpleParams>& paramEnvsChoice);
+    void setParams(OwnedArray<EnvolopeParams>& envs, OwnedArray<SimpleParams>& oscs, OwnedArray<SimpleParams>& lfos, OwnedArray<SimpleParams>& filters, OwnedArray<SimpleParams>& paramEnvsChoice);
     
      /**
       * What should be done when a note starts

@@ -15,12 +15,23 @@
 #include <cmath>    //Including cmath for maths functions
 
 
-//Defining the class methods and attributes
+// =================================
+// =================================
+// my IIR Filter
+
+/*!
+ @class myIIRFilter
+ @abstract a IIR filter HP or LP that can processes mone samples
+ @discussion multiple created with the StereoIIRFilters class
+ 
+ @namespace none
+ @updated 2020-04-24
+ */
 class myIIRFilter
 {
 public:
     //==============================================================================
-    /** Constructors*/
+    /** Constructor*/
     myIIRFilter();
     
     /** Destructor*/
@@ -30,7 +41,7 @@ public:
     /**
      * Set the sample rate of the filter
      *
-     * @param the updated sample rate
+     * @param newSampleRate is the updated sample rate
      *
     */
     void setSampleRate(float newSampleRate);
@@ -38,7 +49,7 @@ public:
     /**
      * Get's the next sample from the filter inputing the most recent sample
      *
-     * @param next sample which is the most recent unfiltered output sample
+     * @param nextSample which is the most recent unfiltered output sample
      *
      * @return float of the next sample value
      *
@@ -54,7 +65,7 @@ public:
     /**
      * Set the filters cut off frequency
      *
-     * @param new cut off frequency in Hz
+     * @param newCutOffFrequency  is the new cut off frequency in Hz
      *
     */
     void setFilterCutOffFreq(float newCutOffFreq);
@@ -62,8 +73,8 @@ public:
     /**
      * Set the filter type bettween high pass and low pass and update difference eqns
      *
-     * @param true makes the filter a high pass filter
-     *        false makes the filter a low pass filter
+     * @param highPassMode    true makes the filter a high pass filter
+     *                      false makes the filter a low pass filter
      *
     */
     void setFilterType(bool highPassMode);
@@ -71,8 +82,8 @@ public:
     /**
      * Set the filter order to -12Db/oct or -24dB/oct and update difference eqns
      *
-     * @param true makes the filter -24Db/oct
-     *        false makes the filter -12Db/oct
+     * @param newMinus24DbMode    true makes the filter -24Db/oct
+     *                          false makes the filter -12Db/oct
      *
     */
     void setFilterOrder(float newMinus24DbMode);
@@ -82,9 +93,9 @@ public:
      * to avoid recalculating the difference equations multiple times when setting
      * multiple parameters and update difference eqns
      *
-     * @param new cut off frequency in Hz
-     * @param true makes the filter -24Db/oct
-     *        false makes the filter -12Db/oct
+     * @param newCutOffFreq is the new cut off frequency in Hz
+     * @param newMinus24DbMode    true makes the filter -24Db/oct
+     *                          false makes the filter -12Db/oct
      *
     */
     void setFilterParams(float newCutOffFreq, bool newMinus24DbMode);
@@ -94,11 +105,11 @@ public:
      * to avoid recalculating the difference equations multiple times when setting
      * multiple parameters and update difference eqns
      *
-     * @param new cut off frequency in Hz
-     * @param true makes the filter -24Db/oct
-     *        false makes the filter -12Db/oct
-     * @param true makes the filter a high pass filter
-     *        false makes the filter a low pass filter
+     * @param newCutOffFreq frequency in Hz
+     * @param newMinus24DbMode  true makes the filter -24Db/oct
+     *                         false makes the filter -12Db/oct
+     * @param highPassMode    true makes the filter a high pass filter
+     *                      false makes the filter a low pass filter
      *
     */
     void setFilterParams(float newCutOffFreq, bool newMinus24DbMode, bool highPassMode);
@@ -106,9 +117,9 @@ public:
 private:
     
     /**
-     * Function to callculate the difference equations for the filter
+     * Function to calculate the difference equations for the filter
      *
-     * @param type changed marks if the filter type or order has recently changed requiring additional calculations
+     * @param typeChanged  marks if the filter type or order has recently changed requiring additional calculations
      *
     */
     void calcDiffEqnCoeffs(bool typeChanged);
@@ -116,7 +127,7 @@ private:
     /**
      * Set the filters cut off frequency
      *
-     * @param new cut off frequency in Hz
+     * @param newCutOffFreq is the new cut off frequency in Hz
      *
      * @return return bool is true if value has changed if not it is false
      *
@@ -126,8 +137,8 @@ private:
     /**
      * Set the filters cut off frequency
      *
-     * @param true makes the filter -24Db/oct
-     *        false makes the filter -12Db/oct
+     * @param newMinus24DbMode  true makes the filter -24Db/oct
+     *                         false makes the filter -12Db/oct
      *
      * @return return bool is true if value has changed if not it is false
      *
@@ -138,8 +149,8 @@ private:
     /**
      * Set the filters type
      *
-     * @param true makes the filter a high pass filter
-     *        false makes the filter a low pass filter
+     * @param highPass Mode  true makes the filter a high pass filter
+     *                      false makes the filter a low pass filter
      *
      * @return return bool is true if value has changed if not it is false
      *
@@ -179,7 +190,18 @@ private:
 
 //==============================================================================
 
-//Defining the class methods and attributes
+// =================================
+// =================================
+// Stereo IIR Filters
+
+/*!
+ @class StereoIIRFilters
+ @abstract processes a stereo sample with a high pass or low pass filter
+ @discussion ustilises two instances of the myIIRFilter class
+ 
+ @namespace none
+ @updated 2020-04-24
+ */
 class StereoIIRFilters
 {
 public:
@@ -193,7 +215,7 @@ public:
     /**
      * Set the sample rate of the filter
      *
-     * @param the updated sample rate
+     * @param sampleRate is the updated sample rate
      *
     */
     void setSampleRate(float sampleRate)
@@ -207,8 +229,8 @@ public:
     /**
      * Set the filter type bettween high pass and low pass and update difference eqns
      *
-     * @param true makes the filter a high pass filter
-     *        false makes the filter a low pass filter
+     * @param highPassMode true makes the filter a high pass filter
+     *                    false makes the filter a low pass filter
      *
     */
     void setFilterType(bool highPassMode)
@@ -222,8 +244,8 @@ public:
     /**
      * Set the filter order to -12Db/oct or -24dB/oct and update difference eqns
      *
-     * @param true makes the filter -24Db/oct
-     *        false makes the filter -12Db/oct
+     * @param minus24DbMode true makes the filter -24Db/oct
+     *                     false makes the filter -12Db/oct
      *
     */
     void setFilterOrder(bool minus24DbMode)
@@ -237,7 +259,7 @@ public:
     /**
      * Set the filters cut off frequency
      *
-     * @param new cut off frequency in Hz
+     * @param freq is the new cut off frequency in Hz
      *
     */
     void setFilterCutOffFreq(float freq)
@@ -251,7 +273,7 @@ public:
     /**
      * Get's the next sample from the filter inputing the most recent sample
      *
-     * @param array of stereo samples which is the most recent unfiltered output samples
+     * @param input samples is an array of stereo samples which is the most recent unfiltered output samples
      *
      *
     */

@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    myIIRFilter.h
+    myIIRFilter.cpp
     This class creates a filter to filter incoming samples using a IIR filter
     Filters can be -12db/oct or -24db/oct, high pass or low pass
     Created: 15 Apr 2020

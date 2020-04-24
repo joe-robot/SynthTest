@@ -68,7 +68,7 @@ public:
     /**
      * Overrided create Slider Text Box method as to avoid having slider values being cut off
      *
-     * @params slider is the sider the text box is connected
+     * @param slider is the sider the text box is connected
      *
     */
     Label* createSliderTextBox (Slider& slider) override

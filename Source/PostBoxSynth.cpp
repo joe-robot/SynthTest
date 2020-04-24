@@ -74,7 +74,7 @@ void PostBoxSynth::setSampleRate(float sampleRate)
 }
 
     
-void PostBoxSynth::setParams(OwnedArray<EnvolopeParams>& envs, OwnedArray<OscParams>& oscs, OwnedArray<SimpleParams>& lfos, OwnedArray<SimpleParams>& filters, OwnedArray<SimpleParams>& paramEnvsChoice)
+void PostBoxSynth::setParams(OwnedArray<EnvolopeParams>& envs, OwnedArray<SimpleParams>& oscs, OwnedArray<SimpleParams>& lfos, OwnedArray<SimpleParams>& filters, OwnedArray<SimpleParams>& paramEnvsChoice)
 {
     for(int i = 0; i < envs.size(); ++i)    //Iterating through all envolope parameters
     {
@@ -89,8 +89,8 @@ void PostBoxSynth::setParams(OwnedArray<EnvolopeParams>& envs, OwnedArray<OscPar
     {
         if(oscs[i] -> getValSwitch() != oscUpdate[i])   //Check if osc updated since last checked
         {
-            sourceOscs.setSourceType(i, oscs[i] -> getSourceType());   //updating source type immediatly
-            updateOsc(i, oscs[i] -> getOscParams(0), oscs[i] -> getOscParams(1), oscs[i] -> getOscParams(2), oscs[i] -> getOscParams(3)); //Update Osc params
+            sourceOscs.setSourceType(i, oscs[i] -> getChoiceParams(0));   //updating source type immediatly
+            updateOsc(i, oscs[i] -> getParams(0), oscs[i] -> getParams(1), oscs[i] -> getParams(2), oscs[i] -> getParams(3)); //Update Osc params
             oscUpdate[i] = oscs[i] -> getValSwitch();   //update value switch
         }
     }

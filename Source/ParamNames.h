@@ -2,8 +2,9 @@
   ==============================================================================
 
     ParamNames.h
-    Created: 11 Apr 2020 10:04:21am
-    Author:  Joseph Cresswell
+    Contains all parameter names for quick access to parameters
+    Created: 17 Apr 2020
+    Author:  B159113
 
   ==============================================================================
 */

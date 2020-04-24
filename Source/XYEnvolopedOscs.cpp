@@ -2,8 +2,10 @@
   ==============================================================================
 
     XYEnvolopedOscs.cpp
-    Created: 21 Apr 2020 11:02:03am
-    Author:  Joseph Cresswell
+    Generates a 4 source sound source that changes bettween 4 sources using an
+    input X, Y value
+    Created: 19 Apr 2020
+    Author:  B159113
 
   ==============================================================================
 */

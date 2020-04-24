@@ -158,7 +158,7 @@ parameters(*this, nullptr, "Parameters", {
     //Adding oscillator parameters storing objects
     for(int i = 0; i < numOscs; ++i)
     {
-        oscillatorParams.add(new OscParams());
+        oscillatorParams.add(new SimpleParams(1, 4));
     }
 
     //Adding LFO parameter storing objects
@@ -385,12 +385,13 @@ void SynthTesterAudioProcessor::setParamTargets()
     //Getting all oscillator parameters
     for(int i = 0; i < oscillatorParams.size(); ++i)
     {
-        float oscPar[5];
-        for(int j=0; j < 5; ++j)
+        int oscChoicePar[1] = {(int)*parameters.getRawParameterValue(paramID.getOscParamName(i, 0))};   //Getting choice param
+        float oscPar[4] = {1, 1, 0.01f ,0.01f};
+        for(int j=1; j < 5; ++j)
         {
-            oscPar[j] = *parameters.getRawParameterValue(paramID.getOscParamName(i, j));    //Getting oscillator parameters
+            oscPar[j] = oscPar[j-1] * (*parameters.getRawParameterValue(paramID.getOscParamName(i, j)));    //Getting oscillator parameters
         }
-        oscillatorParams[i] -> setParams(oscPar[0],oscPar[1], oscPar[2], oscPar[3], oscPar[4]);     //Updating oscillator parameters
+        oscillatorParams[i] -> setParams(oscChoicePar, oscPar);     //Updating oscillator parameters
     }
     
     //Getting LFO parameters

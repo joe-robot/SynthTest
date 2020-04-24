@@ -102,7 +102,7 @@ private:
     
     //Defining owned arrays for storing the parameters
     OwnedArray<EnvolopeParams> envolopeParams;
-    OwnedArray<OscParams> oscillatorParams;
+    OwnedArray<SimpleParams> oscillatorParams;
     OwnedArray<SimpleParams> lfoParams;
     OwnedArray<SimpleParams> filterParams;
     OwnedArray<SimpleParams> customEnvChoice;
