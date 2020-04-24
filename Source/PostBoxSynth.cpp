@@ -89,7 +89,7 @@ void PostBoxSynth::setParams(OwnedArray<EnvolopeParams>& envs, OwnedArray<OscPar
     {
         if(oscs[i] -> getValSwitch() != oscUpdate[i])   //Check if osc updated since last checked
         {
-            sourceOscs.setOscType(i, oscs[i] -> getSourceType());   //updating source type immediatly
+            sourceOscs.setSourceType(i, oscs[i] -> getSourceType());   //updating source type immediatly
             updateOsc(i, oscs[i] -> getOscParams(0), oscs[i] -> getOscParams(1), oscs[i] -> getOscParams(2), oscs[i] -> getOscParams(3)); //Update Osc params
             oscUpdate[i] = oscs[i] -> getValSwitch();   //update value switch
         }

@@ -1,9 +1,9 @@
 /*
   ==============================================================================
 
-    SynthSources.h
+    SynthSources.cpp
     Definition of synth source using oscillator class and random number objects
-    Created: 15 Apr 2020
+    Created: 20 Apr 2020
     Author:  B159113
 
   ==============================================================================
