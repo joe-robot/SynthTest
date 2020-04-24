@@ -20,7 +20,7 @@
 // ===========================
 // ===========================
 // SOUND
-class MyFirstSynthSound : public SynthesiserSound
+class PostBoxSynthSound : public SynthesiserSound
 {
 public:
     bool appliesToNote      (int) override      { return true; }
@@ -43,10 +43,10 @@ public:
  @namespace none
  @updated 2019-06-18
  */
-class MyFirstSynthVoice : public SynthesiserVoice
+class PostBoxSynth : public SynthesiserVoice
 {
 public:
-    MyFirstSynthVoice(int numOscs, int numEnvs, int numFilters) {
+    PostBoxSynth(int numOscs, int numEnvs, int numFilters) {
         smoothEnvParams.clear();
         smoothOscParams.clear();
         for(int i = 0; i < numOscs; ++i)  //Initialising an owned array of parameter smoothers
@@ -345,7 +345,7 @@ public:
      */
     bool canPlaySound (SynthesiserSound* sound) override
     {
-        return dynamic_cast<MyFirstSynthSound*> (sound) != nullptr;
+        return dynamic_cast<PostBoxSynthSound*> (sound) != nullptr;
     }
     //--------------------------------------------------------------------------
 private:

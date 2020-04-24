@@ -12,7 +12,7 @@
 
 #include <JuceHeader.h>
 #include "SmoothChanger.h"
-#include "MyFirstSynth.h"
+#include "PostBoxSynth.h"
 #include "ParamNames.h"
 #include "ParamStore.h"
 

@@ -4,6 +4,7 @@
               pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn">
   <MAINGROUP id="Aacam0" name="SynthTester">
     <GROUP id="{43BE7F63-082E-918B-6EAA-688A478D15D8}" name="Source">
+      <FILE id="NMCgxs" name="PostBoxSynth.h" compile="0" resource="0" file="Source/PostBoxSynth.h"/>
       <FILE id="SoimzY" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="BmRNzy" name="PluginProcessor.h" compile="0" resource="0"
@@ -11,7 +12,6 @@
       <FILE id="v5M9hc" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
       <FILE id="ONCh2Y" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
-      <FILE id="T3U2aK" name="MyFirstSynth.h" compile="0" resource="0" file="Source/MyFirstSynth.h"/>
       <FILE id="t2XYjs" name="Oscillator.cpp" compile="1" resource="0" file="Source/Oscillator.cpp"/>
       <FILE id="xEYnPY" name="Oscillator.h" compile="0" resource="0" file="Source/Oscillator.h"/>
       <FILE id="cZAKGf" name="SmoothChanger.cpp" compile="1" resource="0"
@@ -28,6 +28,8 @@
       <FILE id="tLxEtg" name="SynthSources.cpp" compile="1" resource="0"
             file="Source/SynthSources.cpp"/>
       <FILE id="swav74" name="SynthSources.h" compile="0" resource="0" file="Source/SynthSources.h"/>
+      <FILE id="hAtNs0" name="PostBoxSynth.cpp" compile="1" resource="0"
+            file="Source/PostBoxSynth.cpp"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>

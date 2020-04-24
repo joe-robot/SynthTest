@@ -140,10 +140,10 @@ parameters(*this, nullptr, "Parameters", {
 })
 {
     //Setting up the synth
-    mySynth.addSound(new MyFirstSynthSound());
+    mySynth.addSound(new PostBoxSynthSound());
     for(int i = 0; i < numVoices; ++i)
     {
-        mySynth.addVoice(new MyFirstSynthVoice(numOscs, numEnvs, numFilters));
+        mySynth.addVoice(new PostBoxSynth(numOscs, numEnvs, numFilters));
     }
     
     //Adding a listener for all the parameters
@@ -257,7 +257,7 @@ void SynthTesterAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     
     for(int i=0; i < numVoices; ++i)    //Initalising the synth voices
     {
-        MyFirstSynthVoice* v = dynamic_cast<MyFirstSynthVoice*>(mySynth.getVoice(i));   //Getting the voice
+        PostBoxSynth* v = dynamic_cast<PostBoxSynth*>(mySynth.getVoice(i));   //Getting the voice
         v -> init(sampleRate);  //Initilising voice sample rate
         setParamTargets();      //Getting update parameter targets
         v -> setParams(envolopeParams, oscillatorParams, lfoParams, filterParams, customEnvChoice); //Updating voice parameters
@@ -309,7 +309,7 @@ void SynthTesterAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBu
     for(int i=0; i < numVoices; ++i)    //Iterating through each synth voice
     {
         
-        MyFirstSynthVoice* v = dynamic_cast<MyFirstSynthVoice*>(mySynth.getVoice(i));
+        PostBoxSynth* v = dynamic_cast<PostBoxSynth*>(mySynth.getVoice(i));
         if(updateParams)    //If parameters updated then set the params for each voice
         {
             v -> setParams(envolopeParams, oscillatorParams, lfoParams, filterParams, customEnvChoice);
