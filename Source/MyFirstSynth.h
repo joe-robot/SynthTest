@@ -247,17 +247,7 @@ public:
         }
     }
     
-   /* void setInitalParams()
-    {
-        for(int i = 0; i < 2; ++i)
-        {
-            float initialEnv[4] = {1.0, 1.0, 0.5f, 1.0f};
-            float initialOsc[3] = {0.0f, 0.2f, 1.0f};
-            smoothEnvParams[i] -> init(initialEnv ,initialEnv);
-            smoothOscParams[i] -> init(initialOsc ,initialOsc);
-            setADSR(i, initialEnv);
-        }
-    }*/
+
      //--------------------------------------------------------------------------
      /**
      What should be done when a note starts
@@ -293,8 +283,9 @@ public:
      */
     void stopNote(float /*velocity*/, bool allowTailOff) override
     {
-        myEnvs[0] -> noteOff();
-        myEnvs[1] -> noteOff();
+        for(int i = 0; i < myEnvs.size(); ++i)
+            myEnvs[i] -> noteOff();
+
         released = true;
     }
     
@@ -511,17 +502,7 @@ private:
         
         return paramVal;
     }
-    
-   /* void checkParamEnvoloped(int paramNum)
-    {
-        for(int i = 0; i < myEnvs.size()-3; ++i)
-        {
-            if(customEnvParamsChosen[i] == paramNum)
-            {
-                
-            }
-        }
-    }*/
+
     
     void updateParams()
     {

@@ -51,7 +51,7 @@ parameters(*this, nullptr, "Parameters", {
     std::make_unique<AudioParameterFloat>("osc4MaxAmp", "Osc 4 Max Amplitude", 0.0f, 100.0f, 100.0f),
     
     //Envolope parameters for x oscillators
-    std::make_unique<AudioParameterFloat>("oscXattack", "Osc X Attack (ms)", 0.001f, 2000.0f, 1000.0f),
+    std::make_unique<AudioParameterFloat>("oscXattack", "Osc X Attack (ms)", NormalisableRange<float>(0.001f, 4000.0f), 1000.0f, "ms"),
     std::make_unique<AudioParameterFloat>("oscXdecay", "Osc X Decay (ms)", 0.001f, 2000.0f, 1000.0f),
     std::make_unique<AudioParameterFloat>("oscXsustain", "Osc X Sustain (%)", 0.0f, 100.0f, 50.0f),
     std::make_unique<AudioParameterFloat>("oscXrelease", "Osc X Release (ms)", 0.001f, 2000.0f, 1000.0f),
