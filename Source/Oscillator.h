@@ -32,7 +32,7 @@ public:
     /**
      * Sets the frequnecy of the oscillator
      *
-     * @param frequency in Hz
+     * @param newFrequency in Hz
      *
     */
     void setFrequency(float newFrequency);
@@ -40,7 +40,7 @@ public:
     /**
      * Sets the sample Rate of the oscillator
      *
-     * @param sample Rate in samples / s
+     * @param sampleRate in samples / s
      *
      */
     void setSampleRate(float newSampleRate);

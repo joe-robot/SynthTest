@@ -258,7 +258,7 @@ void SynthTesterAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     for(int i=0; i < numVoices; ++i)    //Initalising the synth voices
     {
         PostBoxSynth* v = dynamic_cast<PostBoxSynth*>(mySynth.getVoice(i));   //Getting the voice
-        v -> init(sampleRate);  //Initilising voice sample rate
+        v -> setSampleRate(sampleRate);  //Initilising voice sample rate
         setParamTargets();      //Getting update parameter targets
         v -> setParams(envolopeParams, oscillatorParams, lfoParams, filterParams, customEnvChoice); //Updating voice parameters
     }
