@@ -22,10 +22,10 @@
 
 // =================================
 // =================================
-// SynthTesterAudioProcessor
+// PostBoxSynthesiserProcessor
 
 /*!
- @class SynthTesterAudioProcessor
+ @class PostBoxSynthesiserProcessor
  @abstract The main processor of the plugin that holds the main DSP process loop
  
  @namespace none

@@ -97,10 +97,10 @@ private:
 
 // =================================
 // =================================
-// SynthTesterAudioProcessorEditor
+// PostBoxSynthAudioProcessorEditor
 
 /*!
- @class SynthTesterAudioProcessorEditor
+ @class PostBoxSynthProcessorEditor
  @abstract The main editor that creates the UI for the plugin
  @discussion creates plugin UI
  
@@ -285,7 +285,7 @@ private:
                                             0.304, 0.06f * hDecrease, //Osc 2 Slider Container
                                             0.008, 0.305f * hDecrease, //Osc 3 Slider Container
                                             0.304, 0.305f * hDecrease, //Osc 4 Slider Container
-                                            0.2, 0.15f * hDecrease, //XY graph box
+                                            0.225, 0.15f * hDecrease, //XY graph box
         
                                             0.008, 0.55f * hDecrease, //EnvX SLider Container
                                             0.6, 0.05f * hDecrease, //EnvY SliderContainer

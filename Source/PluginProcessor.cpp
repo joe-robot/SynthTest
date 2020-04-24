@@ -1,10 +1,11 @@
 /*
   ==============================================================================
 
-    This file was auto-generated!
+    JUCE plugin processor.
 
-    It contains the basic framework code for a JUCE plugin processor.
-
+    Created: 12 Apr 2020
+    Author:  B159113
+ 
   ==============================================================================
 */
 
@@ -387,9 +388,9 @@ void PostBoxSynthesiserProcessor::setParamTargets()
     {
         int oscChoicePar[1] = {(int)*parameters.getRawParameterValue(paramID.getOscParamName(i, 0))};   //Getting choice param
         float oscPar[4] = {1, 1, 0.01f ,0.01f};
-        for(int j=1; j < 5; ++j)
+        for(int j=0; j < 4; ++j)
         {
-            oscPar[j] = oscPar[j-1] * (*parameters.getRawParameterValue(paramID.getOscParamName(i, j)));    //Getting oscillator parameters
+            oscPar[j] = oscPar[j] * (*parameters.getRawParameterValue(paramID.getOscParamName(i, j+1)));    //Getting oscillator parameters
         }
         oscillatorParams[i] -> setParams(oscChoicePar, oscPar);     //Updating oscillator parameters
     }

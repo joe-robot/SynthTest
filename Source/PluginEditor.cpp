@@ -36,7 +36,7 @@ PostBoxSynthesiserProcessorEditor::PostBoxSynthesiserProcessorEditor (PostBoxSyn
         bool labelPos = i == 1 ? false : true;  //Placing the ENV Y sliders label above
         for(int j = 0; j < 4; ++j)
         {
-            addSlider(uiSliders, rotaryDesign[i%4], envLabelNames[j], "ms", labelPos);
+            addSlider(uiSliders, rotaryDesign[i%4], envLabelNames[j], j == 2 ? "":"ms", labelPos);
             int envNum = i < 3 ? (i+1) % 3 : i;         //Fixing issue caused by how parameters were named so that the amp env is 0
             sliderAttachment.add(new AudioProcessorValueTreeState::SliderAttachment(processor.parameters, processor.paramID.getEnvolopeParamName(envNum, j), *uiSliders[uiSliders.size()-1]));  //Attaching slider to appopriate parameter
         }
