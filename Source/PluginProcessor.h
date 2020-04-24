@@ -60,8 +60,20 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
     
+    /**
+     * Updates the parameter arrays with update parameter values
+     *
+    */
     void setParamTargets();
     
+    /**
+     * Called when any parmeter in the value tree is updated, to ensire that parameters are passed to the synth when updated
+     * and avoid passing them when they have not changed. Is an override required when inheriting from the value tree lisetener class
+     *
+     * @param treeWhosePropertyhasChanged tells which value tree has changed
+     * @param propery tells which value tree property has cahnged
+     *
+    */
     void valueTreePropertyChanged(ValueTree& treeWhosePropertyHasChanged, const Identifier& property) override;
     //Parameters
     AudioProcessorValueTreeState parameters;
@@ -78,14 +90,17 @@ private:
     //Synthesiser
     Synthesiser mySynth;
     
+    //Defining the number of each type used in the synth
     int numOscs = 4;
     int numEnvs = 8;
     int numLFOs = 1;
     int numFilters = 2;
     
+    //Atomic float to point to gain parameter
     std::atomic<float>* gainParam;
-    float prevGain = 1;
+    float prevGain = 1; //Parameter for storing previous gain
     
+    //Defining owned arrays for storing the parameters
     OwnedArray<EnvolopeParams> envolopeParams;
     OwnedArray<OscParams> oscillatorParams;
     OwnedArray<SimpleParams> lfoParams;

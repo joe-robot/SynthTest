@@ -24,8 +24,8 @@ SynthTesterAudioProcessor::SynthTesterAudioProcessor()
                        ),
 #endif
 parameters(*this, nullptr, "Parameters", {
-    //Oscillator Params
     
+    //Oscillator Params
     std::make_unique<AudioParameterChoice>("osc1Source", "Source 1", StringArray({"None","Sine","Square","Triangle","Saw","Noise"}), 1),
     std::make_unique<AudioParameterInt>("osc1Tune", "Osc 1 Tune (semiTones)", -24, 24, 0),
     std::make_unique<AudioParameterFloat>("osc1Pan", "Osc 1 Pan", -1, 1, 0),
@@ -98,36 +98,42 @@ parameters(*this, nullptr, "Parameters", {
     std::make_unique<AudioParameterFloat>("lpFilterFreqMax", "Low Pass Filter Frequency Max(Hz)", 30.0f, 20000.0f, 1000.0f),
     std::make_unique<AudioParameterFloat>("hpFilterFreqMax", "High Pass Filter Frequency Max (Hz)", 30.0f, 20000.0f, 1000.0f),
     
+    //Additional env 1
     std::make_unique<AudioParameterChoice>("custEnv1Choice","customEnv 1 choice", StringArray({"None","Osc 1 Tune", "Osc 1 Pan", "Osc 2 Tune", "Osc 2 Pan", "Osc 3 Tune", "Osc 3 Pan", "Osc 4 Tune", "Osc 4 Pan", "Lfo Depth", "Lfo Frequency","Low pass Filter Frequency", "High pass Filter Frequency"}), 0),
     std::make_unique<AudioParameterFloat>("custEnv1attack", "Custom Env Attack (ms)", 0.001f, 2000.0f, 1000.0f),
     std::make_unique<AudioParameterFloat>("custEnv1decay", "Custom Env Decay (ms)", 0.001f, 2000.0f, 1000.0f),
     std::make_unique<AudioParameterFloat>("custEnv1sustain", "Custom Env Sustain (%)", 0.0f, 100.0f, 50.0f),
     std::make_unique<AudioParameterFloat>("custEnv1release", "Custom Env Release (ms)", 0.001f, 2000.0f, 1000.0f),
     
+    //Additional env 2
     std::make_unique<AudioParameterChoice>("custEnv2Choice","customEnv 2 choice", StringArray({"None","Osc 1 Tune", "Osc 1 Pan", "Osc 2 Tune", "Osc 2 Pan", "Osc 3 Tune", "Osc 3 Pan", "Osc 4 Tune", "Osc 4 Pan", "Lfo Depth", "Lfo Frequency","Low pass Filter Frequency", "High pass Filter Frequency"}), 0),
     std::make_unique<AudioParameterFloat>("custEnv2attack", "Custom Env 2 Attack (ms)", 0.001f, 2000.0f, 1000.0f),
     std::make_unique<AudioParameterFloat>("custEnv2decay", "Custom Env 2 Decay (ms)", 0.001f, 2000.0f, 1000.0f),
     std::make_unique<AudioParameterFloat>("custEnv2sustain", "Custom Env 2 Sustain (%)", 0.0f, 100.0f, 50.0f),
     std::make_unique<AudioParameterFloat>("custEnv2release", "Custom Env 2 Release (ms)", 0.001f, 2000.0f, 1000.0f),
     
+    //Additional env 3
     std::make_unique<AudioParameterChoice>("custEnv3Choice","customEnv 3 choice", StringArray({"None","Osc 1 Tune", "Osc 1 Pan", "Osc 2 Tune", "Osc 2 Pan", "Osc 3 Tune", "Osc 3 Pan", "Osc 4 Tune", "Osc 4 Pan", "Lfo Depth", "Lfo Frequency","Low pass Filter Frequency", "High pass Filter Frequency"}), 0),
     std::make_unique<AudioParameterFloat>("custEnv3attack", "Custom Env 3 Attack (ms)", 0.001f, 2000.0f, 1000.0f),
     std::make_unique<AudioParameterFloat>("custEnv3decay", "Custom Env 3 Decay (ms)", 0.001f, 2000.0f, 1000.0f),
     std::make_unique<AudioParameterFloat>("custEnv3sustain", "Custom Env 3 Sustain (%)", 0.0f, 100.0f, 50.0f),
     std::make_unique<AudioParameterFloat>("custEnv3release", "Custom Env 3 Release (ms)", 0.001f, 2000.0f, 1000.0f),
     
+    //Additional env 4
     std::make_unique<AudioParameterChoice>("custEnv4Choice","customEnv 4 choice", StringArray({"None","Osc 1 Tune", "Osc 1 Pan", "Osc 2 Tune", "Osc 2 Pan", "Osc 3 Tune", "Osc 3 Pan", "Osc 4 Tune", "Osc 4 Pan", "Lfo Depth", "Lfo Frequency","Low pass Filter Frequency", "High pass Filter Frequency"}), 0),
     std::make_unique<AudioParameterFloat>("custEnv4attack", "Custom Env 4 Attack (ms)", 0.001f, 2000.0f, 1000.0f),
     std::make_unique<AudioParameterFloat>("custEnv4decay", "Custom Env 4 Decay (ms)", 0.001f, 2000.0f, 1000.0f),
     std::make_unique<AudioParameterFloat>("custEnv4sustain", "Custom Env 4 Sustain (%)", 0.0f, 100.0f, 50.0f),
     std::make_unique<AudioParameterFloat>("custEnv4release", "Custom Env 4 Release (ms)", 0.001f, 2000.0f, 1000.0f),
     
+    //Additional env 5
     std::make_unique<AudioParameterChoice>("custEnv5Choice","customEnv 5 choice", StringArray({"None","Osc 1 Tune", "Osc 1 Pan", "Osc 2 Tune", "Osc 2 Pan", "Osc 3 Tune", "Osc 3 Pan", "Osc 4 Tune", "Osc 4 Pan", "Lfo Depth", "Lfo Frequency","Low pass Filter Frequency", "High pass Filter Frequency"}), 0),
     std::make_unique<AudioParameterFloat>("custEnv5attack", "Custom Env 5 Attack (ms)", 0.001f, 2000.0f, 1000.0f),
     std::make_unique<AudioParameterFloat>("custEnv5decay", "Custom Env 5 Decay (ms)", 0.001f, 2000.0f, 1000.0f),
     std::make_unique<AudioParameterFloat>("custEnv5sustain", "Custom Env 5 Sustain (%)", 0.0f, 100.0f, 50.0f),
     std::make_unique<AudioParameterFloat>("custEnv5release", "Custom Env 5 Release (ms)", 0.001f, 2000.0f, 1000.0f),
     
+    //Master Gain
     std::make_unique<AudioParameterFloat>("masterGain", "Master Gain", 0, 2.0f, 1.0f)
     
 
@@ -140,38 +146,40 @@ parameters(*this, nullptr, "Parameters", {
         mySynth.addVoice(new MyFirstSynthVoice(numOscs, numEnvs, numFilters));
     }
     
+    //Adding a listener for all the parameters
     parameters.state.addListener(this);
     
-    envolopeParams.clear();
-    oscillatorParams.clear();
-    
+    //Adding the envolope parameters storing objects
     for(int i = 0; i < numEnvs; ++i)
     {
         envolopeParams.add(new EnvolopeParams());
     }
     
-
+    //Adding oscillator parameters storing objects
     for(int i = 0; i < numOscs; ++i)
     {
         oscillatorParams.add(new OscParams());
     }
 
-    
+    //Adding LFO parameter storing objects
     for(int i = 0; i < numLFOs; ++i)
     {
         lfoParams.add(new SimpleParams(0, 2));
     }
     
+    //Adding filter parameter storing objects
     for(int i = 0; i < numFilters; ++i)
     {
         filterParams.add(new SimpleParams(1, 1));
     }
 
+    //Adding custom envolope storing objects
     for(int i = 0; i < numEnvs-3; ++i)  //CustomEnvChoice Setup
     {
         customEnvChoice.add(new SimpleParams(1, 1));
     }
     
+    //Adding parameter for the master gain
     gainParam = parameters.getRawParameterValue("masterGain");
     
 }
@@ -245,15 +253,14 @@ void SynthTesterAudioProcessor::changeProgramName (int index, const String& newN
 //==============================================================================
 void SynthTesterAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    mySynth.setCurrentPlaybackSampleRate(sampleRate);
+    mySynth.setCurrentPlaybackSampleRate(sampleRate); //Setting synth sample rate
     
-    for(int i=0; i < numVoices; ++i)
+    for(int i=0; i < numVoices; ++i)    //Initalising the synth voices
     {
-        MyFirstSynthVoice* v = dynamic_cast<MyFirstSynthVoice*>(mySynth.getVoice(i));
-        v -> init(sampleRate);
-        setParamTargets();
-        v -> setParams(envolopeParams, oscillatorParams, lfoParams, filterParams, customEnvChoice);
-        //v -> changeADSR(*attackParam, *decayParam, *sustainParam, *releaseParam);
+        MyFirstSynthVoice* v = dynamic_cast<MyFirstSynthVoice*>(mySynth.getVoice(i));   //Getting the voice
+        v -> init(sampleRate);  //Initilising voice sample rate
+        setParamTargets();      //Getting update parameter targets
+        v -> setParams(envolopeParams, oscillatorParams, lfoParams, filterParams, customEnvChoice); //Updating voice parameters
     }
     
 
@@ -339,15 +346,19 @@ AudioProcessorEditor* SynthTesterAudioProcessor::createEditor()
 //==============================================================================
 void SynthTesterAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+    //Getting saved parameters
+    auto state = parameters.copyState();
+    std::unique_ptr<XmlElement> xml (state.createXml());
+    copyXmlToBinary (*xml, destData);
 }
 
 void SynthTesterAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+    //Saving presets
+    std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+    if (xmlState.get() != nullptr)
+        if (xmlState->hasTagName (parameters.state.getType()))
+            parameters.replaceState (ValueTree::fromXml (*xmlState));
 }
 
 //==============================================================================
@@ -359,61 +370,63 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 
 void SynthTesterAudioProcessor::setParamTargets()
 {
+    
+    //Getting all envolope parameters
     for(int i = 0; i < envolopeParams.size(); ++i)
     {
         float adsr[4];
         for(int j=0; j < 4; ++j)
         {
-            adsr[j] = *parameters.getRawParameterValue(paramID.getEnvolopeParamName(i, j));
+            adsr[j] = *parameters.getRawParameterValue(paramID.getEnvolopeParamName(i, j));     //Getting envolope parameter
         }
-        envolopeParams[i] -> setParams(adsr[0], adsr[1], adsr[2], adsr[3]);
+        envolopeParams[i] -> setParams(adsr[0], adsr[1], adsr[2], adsr[3]); //Updating this envolopes parameter
     }
     
+    //Getting all oscillator parameters
     for(int i = 0; i < oscillatorParams.size(); ++i)
     {
         float oscPar[5];
         for(int j=0; j < 5; ++j)
         {
-            oscPar[j] = *parameters.getRawParameterValue(paramID.getOscParamName(i, j));
+            oscPar[j] = *parameters.getRawParameterValue(paramID.getOscParamName(i, j));    //Getting oscillator parameters
         }
-        oscillatorParams[i] -> setParams(oscPar[0],oscPar[1], oscPar[2], oscPar[3], oscPar[4]);  
+        oscillatorParams[i] -> setParams(oscPar[0],oscPar[1], oscPar[2], oscPar[3], oscPar[4]);     //Updating oscillator parameters
     }
     
+    //Getting LFO parameters
     for(int i = 0; i < lfoParams.size(); ++i)
     {
         float lfoPar[2];
         for(int j = 0; j < 2; ++j)
         {
-            lfoPar[j] = (*parameters.getRawParameterValue(paramID.getLfoParamName(i, j)));
+            lfoPar[j] = (*parameters.getRawParameterValue(paramID.getLfoParamName(i, j)));  //Getting most recent LFO params
         }
-        lfoParams[i] -> setParams(lfoPar);
+        lfoParams[i] -> setParams(lfoPar);  //Updating lfo params
     }
     
+    //Getting filter parameters
     for(int i = 0; i < filterParams.size(); ++i)
     {
-        int choiceParam[1] = {(int)*parameters.getRawParameterValue(paramID.getFilterParamName(i, 0))};
-        float filterPar[1]= {*parameters.getRawParameterValue(paramID.getFilterParamName(i, 1))};
-        filterParams[i] -> setParams(choiceParam, filterPar);
+        int choiceParam[1] = {(int)*parameters.getRawParameterValue(paramID.getFilterParamName(i, 0))}; //Getting filter choice value
+        float filterPar[1]= {*parameters.getRawParameterValue(paramID.getFilterParamName(i, 1))};   //Getting filter frequency value
+        filterParams[i] -> setParams(choiceParam, filterPar);   //Updating filter parameters
     }
     
+    //Getting custom envolope choice parameters
     for(int i = 0; i < numEnvs - 3; ++i)
     {
-        int customEnvChosen[1] = {(int)*parameters.getRawParameterValue(paramID.getEnvolopeParamName(3+i, 4))};
+        int customEnvChosen[1] = {(int)*parameters.getRawParameterValue(paramID.getEnvolopeParamName(3+i, 4))}; //Getting custom env choice
         float customEnvMax[1] = {0};
-        if(customEnvChosen[0] > 0 && customEnvChosen[0] < paramID.numMaxParams+1)
+        if(customEnvChosen[0] > 0 && customEnvChosen[0] < paramID.numMaxParams+1)   //Getting the specific parameter value that the choice is pointing to if in range
         {
-        //std::cout<<customEnvChosen[0]<<std::endl;
             customEnvMax[0] = *parameters.getRawParameterValue(paramID.getMaxParamName(customEnvChosen[0]-1));
         }
-        customEnvChoice[i] -> setParams(customEnvChosen, customEnvMax);
+        customEnvChoice[i] -> setParams(customEnvChosen, customEnvMax);         //Updating custom env parameters
     }
-    //RangedAudioParameter* myParam =  parameters.getParameter("hllo");
-   // myParam -> setValueNotifyingHost(10);
 }
 
 void SynthTesterAudioProcessor::valueTreePropertyChanged(ValueTree& valTree, const Identifier& property)
 {
-    //std::cout<<"Change?????  "<<std::endl;
-    setParamTargets();
-    paramsUpdated = true;
+    setParamTargets();      //Update params if the the parameters have changed
+    paramsUpdated = true;   //Set parameters as updated
 }
