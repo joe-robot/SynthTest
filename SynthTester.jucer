@@ -31,6 +31,8 @@
       <FILE id="swav74" name="SynthSources.h" compile="0" resource="0" file="Source/SynthSources.h"/>
       <FILE id="hAtNs0" name="PostBoxSynth.cpp" compile="1" resource="0"
             file="Source/PostBoxSynth.cpp"/>
+      <FILE id="Gmt5LA" name="PostBoxSynthLogo.png" compile="0" resource="1"
+            file="Source/PostBoxSynthLogo.png"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>

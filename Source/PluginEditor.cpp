@@ -138,6 +138,15 @@ void PostBoxSynthesiserProcessorEditor::paint (Graphics& g)
         }
     }
     
+    //Image thisPiccy = ImageFileFormat::loadFrom(File::createLegalPathName("/Users/josephcresswell/Documents/University/Sound Design Msc/AudioProgramming/SynthTester/Source/PostBoxSynthLogo.png"));
+    Image thisPiccy = ImageCache::getFromMemory (BinaryData::PostBoxSynthLogo_png, BinaryData::PostBoxSynthLogo_pngSize );
+    //std::cout<<BinaryData::getNamedResourceOriginalFilename("PostBoxSynthLogo.png")<<std::endl;
+    
+    //Image thisPiccy = ImageFileFormat::loadFrom(File::getFullPathName()));
+    //std::cout<<File::<<std::endl;
+    //std::cout<<File::getCurrentWorkingDirectory().getChildFile("PostBoxSynthLogo.png")getFileName()<<std::endl;
+    g.drawImage(thisPiccy, sliderContainerPositions[8]*width, sliderContainerPositions[9]*height, sliderContainerSizes[4]*width, sliderContainerSizes[5]*height, 0, 0, 1687, 1641);
+    
 }
 
 void PostBoxSynthesiserProcessorEditor::drawContainer(float posX, float posY, float sizeX, float sizeY, Colour colour, Graphics& g)
