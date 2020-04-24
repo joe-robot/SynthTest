@@ -12,7 +12,7 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-SynthTesterAudioProcessor::SynthTesterAudioProcessor()
+PostBoxSynthesiserProcessor::PostBoxSynthesiserProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
      : AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
@@ -184,17 +184,17 @@ parameters(*this, nullptr, "Parameters", {
     
 }
 
-SynthTesterAudioProcessor::~SynthTesterAudioProcessor()
+PostBoxSynthesiserProcessor::~PostBoxSynthesiserProcessor()
 {
 }
 
 //==============================================================================
-const String SynthTesterAudioProcessor::getName() const
+const String PostBoxSynthesiserProcessor::getName() const
 {
     return JucePlugin_Name;
 }
 
-bool SynthTesterAudioProcessor::acceptsMidi() const
+bool PostBoxSynthesiserProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
     return true;
@@ -203,7 +203,7 @@ bool SynthTesterAudioProcessor::acceptsMidi() const
    #endif
 }
 
-bool SynthTesterAudioProcessor::producesMidi() const
+bool PostBoxSynthesiserProcessor::producesMidi() const
 {
    #if JucePlugin_ProducesMidiOutput
     return true;
@@ -212,7 +212,7 @@ bool SynthTesterAudioProcessor::producesMidi() const
    #endif
 }
 
-bool SynthTesterAudioProcessor::isMidiEffect() const
+bool PostBoxSynthesiserProcessor::isMidiEffect() const
 {
    #if JucePlugin_IsMidiEffect
     return true;
@@ -221,37 +221,37 @@ bool SynthTesterAudioProcessor::isMidiEffect() const
    #endif
 }
 
-double SynthTesterAudioProcessor::getTailLengthSeconds() const
+double PostBoxSynthesiserProcessor::getTailLengthSeconds() const
 {
     return 0.0;
 }
 
-int SynthTesterAudioProcessor::getNumPrograms()
+int PostBoxSynthesiserProcessor::getNumPrograms()
 {
     return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
                 // so this should be at least 1, even if you're not really implementing programs.
 }
 
-int SynthTesterAudioProcessor::getCurrentProgram()
+int PostBoxSynthesiserProcessor::getCurrentProgram()
 {
     return 0;
 }
 
-void SynthTesterAudioProcessor::setCurrentProgram (int index)
+void PostBoxSynthesiserProcessor::setCurrentProgram (int index)
 {
 }
 
-const String SynthTesterAudioProcessor::getProgramName (int index)
+const String PostBoxSynthesiserProcessor::getProgramName (int index)
 {
     return {};
 }
 
-void SynthTesterAudioProcessor::changeProgramName (int index, const String& newName)
+void PostBoxSynthesiserProcessor::changeProgramName (int index, const String& newName)
 {
 }
 
 //==============================================================================
-void SynthTesterAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void PostBoxSynthesiserProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     mySynth.setCurrentPlaybackSampleRate(sampleRate); //Setting synth sample rate
     
@@ -266,14 +266,14 @@ void SynthTesterAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
 
 }
 
-void SynthTesterAudioProcessor::releaseResources()
+void PostBoxSynthesiserProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
-bool SynthTesterAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+bool PostBoxSynthesiserProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
   #if JucePlugin_IsMidiEffect
     ignoreUnused (layouts);
@@ -296,7 +296,7 @@ bool SynthTesterAudioProcessor::isBusesLayoutSupported (const BusesLayout& layou
 }
 #endif
 
-void SynthTesterAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
+void PostBoxSynthesiserProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
     //Checking if parameters updated
     bool updateParams = false;  //Ensure update params intially false and only activated if params updated
@@ -332,19 +332,19 @@ void SynthTesterAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBu
 }
 
 //==============================================================================
-bool SynthTesterAudioProcessor::hasEditor() const
+bool PostBoxSynthesiserProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)
 }
 
-AudioProcessorEditor* SynthTesterAudioProcessor::createEditor()
+AudioProcessorEditor* PostBoxSynthesiserProcessor::createEditor()
 {
-    return new SynthTesterAudioProcessorEditor (*this);
+    return new PostBoxSynthesiserProcessorEditor (*this);
     //return new GenericAudioProcessorEditor (*this);
 }
 
 //==============================================================================
-void SynthTesterAudioProcessor::getStateInformation (MemoryBlock& destData)
+void PostBoxSynthesiserProcessor::getStateInformation (MemoryBlock& destData)
 {
     //Getting saved parameters
     auto state = parameters.copyState();
@@ -352,7 +352,7 @@ void SynthTesterAudioProcessor::getStateInformation (MemoryBlock& destData)
     copyXmlToBinary (*xml, destData);
 }
 
-void SynthTesterAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void PostBoxSynthesiserProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     //Saving presets
     std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
@@ -365,10 +365,10 @@ void SynthTesterAudioProcessor::setStateInformation (const void* data, int sizeI
 // This creates new instances of the plugin..
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new SynthTesterAudioProcessor();
+    return new PostBoxSynthesiserProcessor();
 }
 
-void SynthTesterAudioProcessor::setParamTargets()
+void PostBoxSynthesiserProcessor::setParamTargets()
 {
     
     //Getting all envolope parameters
@@ -426,7 +426,7 @@ void SynthTesterAudioProcessor::setParamTargets()
     }
 }
 
-void SynthTesterAudioProcessor::valueTreePropertyChanged(ValueTree& valTree, const Identifier& property)
+void PostBoxSynthesiserProcessor::valueTreePropertyChanged(ValueTree& valTree, const Identifier& property)
 {
     setParamTargets();      //Update params if the the parameters have changed
     paramsUpdated = true;   //Set parameters as updated

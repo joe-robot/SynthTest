@@ -107,15 +107,15 @@ private:
  @namespace none
  @updated 2020-04-24
  */
-class SynthTesterAudioProcessorEditor  : public AudioProcessorEditor,   //Inheriting from juce editor, to make it an editor
+class PostBoxSynthesiserProcessorEditor  : public AudioProcessorEditor,   //Inheriting from juce editor, to make it an editor
                                          public ComboBox::Listener      //Inheriting from combobox listener to make changes based on a combo box selection
 {
 public:
     //==============================================================================
     /** Constructors*/
-    SynthTesterAudioProcessorEditor (SynthTesterAudioProcessor&);   //Editor requires reference to processor to get the parameters
+    PostBoxSynthesiserProcessorEditor (PostBoxSynthesiserProcessor&);   //Editor requires reference to processor to get the parameters
     /** Destructor*/
-    ~SynthTesterAudioProcessorEditor();
+    ~PostBoxSynthesiserProcessorEditor();
 
     //==============================================================================
     void paint (Graphics&) override;    //Method to paint ui components
@@ -233,7 +233,7 @@ private:
     
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
-    SynthTesterAudioProcessor& processor;
+    PostBoxSynthesiserProcessor& processor;
 
     //Array of sliders
     OwnedArray<Slider> uiSliders;
@@ -413,7 +413,7 @@ private:
     //Storing the value at which the max sliders exist
     int storeSlider = 0;
     
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SynthTesterAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PostBoxSynthesiserProcessorEditor)
 };
 
 

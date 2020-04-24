@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="LVcfO4" name="SynthTester" projectType="audioplug" jucerVersion="5.4.7"
-              pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn">
-  <MAINGROUP id="Aacam0" name="SynthTester">
+<JUCERPROJECT id="LVcfO4" name="PostBoxSynthesiser" projectType="audioplug"
+              jucerVersion="5.4.7" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
+              companyName="JoeRobot">
+  <MAINGROUP id="Aacam0" name="PostBoxSynthesiser">
     <GROUP id="{43BE7F63-082E-918B-6EAA-688A478D15D8}" name="Source">
       <FILE id="NMCgxs" name="PostBoxSynth.h" compile="0" resource="0" file="Source/PostBoxSynth.h"/>
       <FILE id="SoimzY" name="PluginProcessor.cpp" compile="1" resource="0"

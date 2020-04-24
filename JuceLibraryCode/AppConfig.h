@@ -332,13 +332,13 @@
  #define JucePlugin_Enable_IAA             0
 #endif
 #ifndef  JucePlugin_Name
- #define JucePlugin_Name                   "SynthTester"
+ #define JucePlugin_Name                   "PostBoxSynthesiser"
 #endif
 #ifndef  JucePlugin_Desc
- #define JucePlugin_Desc                   "SynthTester"
+ #define JucePlugin_Desc                   "PostBoxSynthesiser"
 #endif
 #ifndef  JucePlugin_Manufacturer
- #define JucePlugin_Manufacturer           "yourcompany"
+ #define JucePlugin_Manufacturer           "JoeRobot"
 #endif
 #ifndef  JucePlugin_ManufacturerWebsite
  #define JucePlugin_ManufacturerWebsite    ""
@@ -392,16 +392,16 @@
  #define JucePlugin_AUSubType              JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_AUExportPrefix
- #define JucePlugin_AUExportPrefix         SynthTesterAU
+ #define JucePlugin_AUExportPrefix         PostBoxSynthesiserAU
 #endif
 #ifndef  JucePlugin_AUExportPrefixQuoted
- #define JucePlugin_AUExportPrefixQuoted   "SynthTesterAU"
+ #define JucePlugin_AUExportPrefixQuoted   "PostBoxSynthesiserAU"
 #endif
 #ifndef  JucePlugin_AUManufacturerCode
  #define JucePlugin_AUManufacturerCode     JucePlugin_ManufacturerCode
 #endif
 #ifndef  JucePlugin_CFBundleIdentifier
- #define JucePlugin_CFBundleIdentifier     com.yourcompany.SynthTester
+ #define JucePlugin_CFBundleIdentifier     com.JoeRobot.PostBoxSynthesiser
 #endif
 #ifndef  JucePlugin_RTASCategory
  #define JucePlugin_RTASCategory           2048
@@ -419,7 +419,7 @@
  #define JucePlugin_RTASDisableMultiMono   0
 #endif
 #ifndef  JucePlugin_AAXIdentifier
- #define JucePlugin_AAXIdentifier          com.yourcompany.SynthTester
+ #define JucePlugin_AAXIdentifier          com.JoeRobot.PostBoxSynthesiser
 #endif
 #ifndef  JucePlugin_AAXManufacturerCode
  #define JucePlugin_AAXManufacturerCode    JucePlugin_ManufacturerCode
@@ -443,7 +443,7 @@
  #define JucePlugin_IAASubType             JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_IAAName
- #define JucePlugin_IAAName                "yourcompany: SynthTester"
+ #define JucePlugin_IAAName                "JoeRobot: PostBoxSynthesiser"
 #endif
 #ifndef  JucePlugin_VSTNumMidiInputs
  #define JucePlugin_VSTNumMidiInputs       16

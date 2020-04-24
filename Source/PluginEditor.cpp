@@ -10,7 +10,7 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-SynthTesterAudioProcessorEditor::SynthTesterAudioProcessorEditor (SynthTesterAudioProcessor& p)
+PostBoxSynthesiserProcessorEditor::PostBoxSynthesiserProcessorEditor (PostBoxSynthesiserProcessor& p)
     : AudioProcessorEditor (&p), processor (p)
 {
     //Filling array with possible slider styles to be used by all sliders
@@ -102,7 +102,7 @@ SynthTesterAudioProcessorEditor::SynthTesterAudioProcessorEditor (SynthTesterAud
     setSize (1080, 600);
 }
 
-SynthTesterAudioProcessorEditor::~SynthTesterAudioProcessorEditor()
+PostBoxSynthesiserProcessorEditor::~PostBoxSynthesiserProcessorEditor()
 {
     //Setting the look and feel parameters to null to stop crashing when plugin window is closed
     setLookAndFeel(nullptr);
@@ -112,7 +112,7 @@ SynthTesterAudioProcessorEditor::~SynthTesterAudioProcessorEditor()
 }
 
 //==============================================================================
-void SynthTesterAudioProcessorEditor::paint (Graphics& g)
+void PostBoxSynthesiserProcessorEditor::paint (Graphics& g)
 {
     //Filling all with a background colour
     g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
@@ -140,7 +140,7 @@ void SynthTesterAudioProcessorEditor::paint (Graphics& g)
     
 }
 
-void SynthTesterAudioProcessorEditor::drawContainer(float posX, float posY, float sizeX, float sizeY, Colour colour, Graphics& g)
+void PostBoxSynthesiserProcessorEditor::drawContainer(float posX, float posY, float sizeX, float sizeY, Colour colour, Graphics& g)
 {
     Rectangle<float> rectContainer; //intialising a rectangle
     g.setColour(colour);    //Setting rectangle colour
@@ -151,7 +151,7 @@ void SynthTesterAudioProcessorEditor::drawContainer(float posX, float posY, floa
 }
 
 
-void SynthTesterAudioProcessorEditor::resized()
+void PostBoxSynthesiserProcessorEditor::resized()
 {
     //Exit if sliders are not yet defined
     if (uiSliders.isEmpty())
@@ -215,7 +215,7 @@ void SynthTesterAudioProcessorEditor::resized()
 }
 
 
-void SynthTesterAudioProcessorEditor::addSlider(OwnedArray<Slider> &sliderArray, LookAndFeel *const newLookAndFeel, std::string labelName, std::string suffix ,bool labelOnLeft, bool noLabel)
+void PostBoxSynthesiserProcessorEditor::addSlider(OwnedArray<Slider> &sliderArray, LookAndFeel *const newLookAndFeel, std::string labelName, std::string suffix ,bool labelOnLeft, bool noLabel)
 {
     auto* slider = sliderArray.add(new Slider(Slider::RotaryHorizontalVerticalDrag, Slider::TextBoxBelow)); //Adding new slider
     slider -> setRange(0, 5.0); //Setting default range
@@ -233,7 +233,7 @@ void SynthTesterAudioProcessorEditor::addSlider(OwnedArray<Slider> &sliderArray,
 }
 
 
-void SynthTesterAudioProcessorEditor::addComboBox(OwnedArray<ComboBox> &comboArray, std::string *comboFill, int numComboElements, std::string labelName, std::string comboBoxName)
+void PostBoxSynthesiserProcessorEditor::addComboBox(OwnedArray<ComboBox> &comboArray, std::string *comboFill, int numComboElements, std::string labelName, std::string comboBoxName)
 {
     auto* combo = comboBoxes.add(new ComboBox(comboBoxName));   //Adding new comboBox with a defined name
     combo -> setSelectedId(1);                      //Setting default combo ID
@@ -249,7 +249,7 @@ void SynthTesterAudioProcessorEditor::addComboBox(OwnedArray<ComboBox> &comboArr
     addAndMakeVisible(label);
 }
 
-void SynthTesterAudioProcessorEditor::setSliderPositions(OwnedArray<Slider> &sliderArray, int minSliderNum, int numSliders, float containerPosX, float containerPosY, float containerWidth, float containerHeight, int numXDiv, float numYDiv, int numHorizontal, int rowOffset, int columnOffset, bool labelAbove, bool centred, float borderXpecentage, float borderYpercentage)
+void PostBoxSynthesiserProcessorEditor::setSliderPositions(OwnedArray<Slider> &sliderArray, int minSliderNum, int numSliders, float containerPosX, float containerPosY, float containerWidth, float containerHeight, int numXDiv, float numYDiv, int numHorizontal, int rowOffset, int columnOffset, bool labelAbove, bool centred, float borderXpecentage, float borderYpercentage)
 {
     //Gettting border size
     float xBorder = containerWidth * borderXpecentage * width;
@@ -325,13 +325,13 @@ void SynthTesterAudioProcessorEditor::setSliderPositions(OwnedArray<Slider> &sli
     }
 }
 
-void SynthTesterAudioProcessorEditor::setLabelFonts(OwnedArray<Label> &labels, Font labelFont)
+void PostBoxSynthesiserProcessorEditor::setLabelFonts(OwnedArray<Label> &labels, Font labelFont)
 {
     for(auto* label : labels)       //iterating through all labels and setting them to the desired font
         label -> setFont(labelFont);
 }
 
-void SynthTesterAudioProcessorEditor::setComboPosition(OwnedArray<ComboBox>& newComboBoxes, int comboNum, float containerPosX, float containerPosY, float containerWidth, float containerHeight, int numXDiv, int numYDiv, int xDivPos, int yDivPos, float xFillPercentage, float yFillPercentage)
+void PostBoxSynthesiserProcessorEditor::setComboPosition(OwnedArray<ComboBox>& newComboBoxes, int comboNum, float containerPosX, float containerPosY, float containerWidth, float containerHeight, int numXDiv, int numYDiv, int xDivPos, int yDivPos, float xFillPercentage, float yFillPercentage)
 {
     //Getting x and y increments based on the set x and y divisions
     float xIncrement = containerWidth * width  / (float)numXDiv;
@@ -354,14 +354,14 @@ void SynthTesterAudioProcessorEditor::setComboPosition(OwnedArray<ComboBox>& new
 }
 
 
-void SynthTesterAudioProcessorEditor::setFontHeight(Font& thisFont, float fontHeight, bool bold)
+void PostBoxSynthesiserProcessorEditor::setFontHeight(Font& thisFont, float fontHeight, bool bold)
 {
     thisFont.setHeight(height * fontHeight);  //Setting the height of the font
     thisFont.setBold(bold); //Setting font bold status
 }
 
 
-void SynthTesterAudioProcessorEditor::comboBoxChanged (ComboBox *comboBoxThatHasChanged)
+void PostBoxSynthesiserProcessorEditor::comboBoxChanged (ComboBox *comboBoxThatHasChanged)
 {
     int currentVal = comboBoxThatHasChanged -> getSelectedId();     //Getting selected value in combobox
         

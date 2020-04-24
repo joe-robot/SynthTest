@@ -31,13 +31,13 @@
  @namespace none
  @updated 2020-04-24
  */
-class SynthTesterAudioProcessor  : public AudioProcessor,
+class PostBoxSynthesiserProcessor  : public AudioProcessor,
                                    public ValueTree::Listener
 {
 public:
     //==============================================================================
-    SynthTesterAudioProcessor();
-    ~SynthTesterAudioProcessor();
+    PostBoxSynthesiserProcessor();
+    ~PostBoxSynthesiserProcessor();
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -93,7 +93,7 @@ public:
     
 private:
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SynthTesterAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PostBoxSynthesiserProcessor)
     
     int numVoices = 6; //Setting number of synth voices
     
