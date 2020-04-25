@@ -145,7 +145,7 @@ void PostBoxSynthesiserProcessorEditor::paint (Graphics& g)
     //Image thisPiccy = ImageFileFormat::loadFrom(File::getFullPathName()));
     //std::cout<<File::<<std::endl;
     //std::cout<<File::getCurrentWorkingDirectory().getChildFile("PostBoxSynthLogo.png")getFileName()<<std::endl;
-    g.drawImage(thisPiccy, sliderContainerPositions[8]*width, sliderContainerPositions[9]*height, sliderContainerSizes[4]*width, sliderContainerSizes[5]*height, 0, 0, 1687, 1641);
+    g.drawImage(thisPiccy, sliderContainerPositions[8]*width, sliderContainerPositions[9]*height, sliderContainerSizes[4]*width, sliderContainerSizes[5]*height, 0, 0, 1200, 1167);
     
 }
 

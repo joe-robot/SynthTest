@@ -5,6 +5,8 @@
               companyName="JoeRobot" pluginFormats="buildAU,buildStandalone,buildVST3">
   <MAINGROUP id="Aacam0" name="PostBoxSynthesiser">
     <GROUP id="{43BE7F63-082E-918B-6EAA-688A478D15D8}" name="Source">
+      <FILE id="i0ALBs" name="PostBoxSynthLogo.png" compile="0" resource="1"
+            file="Source/PostBoxSynthLogo.png"/>
       <FILE id="NMCgxs" name="PostBoxSynth.h" compile="0" resource="0" file="Source/PostBoxSynth.h"/>
       <FILE id="SoimzY" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
@@ -31,8 +33,6 @@
       <FILE id="swav74" name="SynthSources.h" compile="0" resource="0" file="Source/SynthSources.h"/>
       <FILE id="hAtNs0" name="PostBoxSynth.cpp" compile="1" resource="0"
             file="Source/PostBoxSynth.cpp"/>
-      <FILE id="Gmt5LA" name="PostBoxSynthLogo.png" compile="0" resource="1"
-            file="Source/PostBoxSynthLogo.png"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
