@@ -100,39 +100,39 @@ parameters(*this, nullptr, "Parameters", {
     std::make_unique<AudioParameterFloat>("hpFilterFreqMax", "High Pass Filter Frequency Max (Hz)", 30.0f, 20000.0f, 1000.0f),
     
     //Additional env 1
-    std::make_unique<AudioParameterChoice>("paramEnv1Choice","customEnv 1 choice", StringArray({"None","Osc 1 Tune", "Osc 1 Pan", "Osc 2 Tune", "Osc 2 Pan", "Osc 3 Tune", "Osc 3 Pan", "Osc 4 Tune", "Osc 4 Pan", "Lfo Depth", "Lfo Frequency","Low pass Filter Frequency", "High pass Filter Frequency"}), 0),
-    std::make_unique<AudioParameterFloat>("paramEnv1attack", "Custom Env Attack (ms)", 0.001f, 5000.0f, 1000.0f),
-    std::make_unique<AudioParameterFloat>("paramEnv1decay", "Custom Env Decay (ms)", 0.001f, 5000.0f, 1000.0f),
-    std::make_unique<AudioParameterFloat>("paramEnv1sustain", "Custom Env Sustain (%)", 0.0f, 100.0f, 50.0f),
-    std::make_unique<AudioParameterFloat>("paramEnv1release", "Custom Env Release (ms)", 0.001f, 5000.0f, 1000.0f),
+    std::make_unique<AudioParameterChoice>("paramEnv1Choice","Param Env 1 choice", StringArray({"None","Osc 1 Tune", "Osc 1 Pan", "Osc 2 Tune", "Osc 2 Pan", "Osc 3 Tune", "Osc 3 Pan", "Osc 4 Tune", "Osc 4 Pan", "Lfo Depth", "Lfo Frequency","Low pass Filter Frequency", "High pass Filter Frequency"}), 0),
+    std::make_unique<AudioParameterFloat>("paramEnv1attack", "Param Env Attack (ms)", 0.001f, 5000.0f, 1000.0f),
+    std::make_unique<AudioParameterFloat>("paramEnv1decay", "Param Env Decay (ms)", 0.001f, 5000.0f, 1000.0f),
+    std::make_unique<AudioParameterFloat>("paramEnv1sustain", "Param Env Sustain (%)", 0.0f, 100.0f, 50.0f),
+    std::make_unique<AudioParameterFloat>("paramEnv1release", "Param Env Release (ms)", 0.001f, 5000.0f, 1000.0f),
     
     //Additional env 2
-    std::make_unique<AudioParameterChoice>("paramEnv2Choice","customEnv 2 choice", StringArray({"None","Osc 1 Tune", "Osc 1 Pan", "Osc 2 Tune", "Osc 2 Pan", "Osc 3 Tune", "Osc 3 Pan", "Osc 4 Tune", "Osc 4 Pan", "Lfo Depth", "Lfo Frequency","Low pass Filter Frequency", "High pass Filter Frequency"}), 0),
-    std::make_unique<AudioParameterFloat>("paramEnv2attack", "Custom Env 2 Attack (ms)", 0.001f, 5000.0f, 1000.0f),
-    std::make_unique<AudioParameterFloat>("paramEnv2decay", "Custom Env 2 Decay (ms)", 0.001f, 5000.0f, 1000.0f),
-    std::make_unique<AudioParameterFloat>("paramEnv2sustain", "Custom Env 2 Sustain (%)", 0.0f, 100.0f, 50.0f),
-    std::make_unique<AudioParameterFloat>("paramEnv2release", "Custom Env 2 Release (ms)", 0.001f, 5000.0f, 1000.0f),
+    std::make_unique<AudioParameterChoice>("paramEnv2Choice","Param Env 2 choice", StringArray({"None","Osc 1 Tune", "Osc 1 Pan", "Osc 2 Tune", "Osc 2 Pan", "Osc 3 Tune", "Osc 3 Pan", "Osc 4 Tune", "Osc 4 Pan", "Lfo Depth", "Lfo Frequency","Low pass Filter Frequency", "High pass Filter Frequency"}), 0),
+    std::make_unique<AudioParameterFloat>("paramEnv2attack", "Param Env 2 Attack (ms)", 0.001f, 5000.0f, 1000.0f),
+    std::make_unique<AudioParameterFloat>("paramEnv2decay", "Param Env 2 Decay (ms)", 0.001f, 5000.0f, 1000.0f),
+    std::make_unique<AudioParameterFloat>("paramEnv2sustain", "Param Env 2 Sustain (%)", 0.0f, 100.0f, 50.0f),
+    std::make_unique<AudioParameterFloat>("paramEnv2release", "Param Env 2 Release (ms)", 0.001f, 5000.0f, 1000.0f),
     
     //Additional env 3
-    std::make_unique<AudioParameterChoice>("paramEnv3Choice","customEnv 3 choice", StringArray({"None","Osc 1 Tune", "Osc 1 Pan", "Osc 2 Tune", "Osc 2 Pan", "Osc 3 Tune", "Osc 3 Pan", "Osc 4 Tune", "Osc 4 Pan", "Lfo Depth", "Lfo Frequency","Low pass Filter Frequency", "High pass Filter Frequency"}), 0),
-    std::make_unique<AudioParameterFloat>("paramEnv3attack", "Custom Env 3 Attack (ms)", 0.001f, 5000.0f, 1000.0f),
-    std::make_unique<AudioParameterFloat>("paramEnv3decay", "Custom Env 3 Decay (ms)", 0.001f, 5000.0f, 1000.0f),
-    std::make_unique<AudioParameterFloat>("paramEnv3sustain", "Custom Env 3 Sustain (%)", 0.0f, 100.0f, 50.0f),
-    std::make_unique<AudioParameterFloat>("paramEnv3release", "Custom Env 3 Release (ms)", 0.001f, 5000.0f, 1000.0f),
+    std::make_unique<AudioParameterChoice>("paramEnv3Choice","Param Env 3 choice", StringArray({"None","Osc 1 Tune", "Osc 1 Pan", "Osc 2 Tune", "Osc 2 Pan", "Osc 3 Tune", "Osc 3 Pan", "Osc 4 Tune", "Osc 4 Pan", "Lfo Depth", "Lfo Frequency","Low pass Filter Frequency", "High pass Filter Frequency"}), 0),
+    std::make_unique<AudioParameterFloat>("paramEnv3attack", "Param Env 3 Attack (ms)", 0.001f, 5000.0f, 1000.0f),
+    std::make_unique<AudioParameterFloat>("paramEnv3decay", "Param Env 3 Decay (ms)", 0.001f, 5000.0f, 1000.0f),
+    std::make_unique<AudioParameterFloat>("paramEnv3sustain", "Param Env 3 Sustain (%)", 0.0f, 100.0f, 50.0f),
+    std::make_unique<AudioParameterFloat>("paramEnv3release", "Param Env 3 Release (ms)", 0.001f, 5000.0f, 1000.0f),
     
     //Additional env 4
-    std::make_unique<AudioParameterChoice>("paramEnv4Choice","customEnv 4 choice", StringArray({"None","Osc 1 Tune", "Osc 1 Pan", "Osc 2 Tune", "Osc 2 Pan", "Osc 3 Tune", "Osc 3 Pan", "Osc 4 Tune", "Osc 4 Pan", "Lfo Depth", "Lfo Frequency","Low pass Filter Frequency", "High pass Filter Frequency"}), 0),
-    std::make_unique<AudioParameterFloat>("paramEnv4attack", "Custom Env 4 Attack (ms)", 0.001f, 5000.0f, 1000.0f),
-    std::make_unique<AudioParameterFloat>("paramEnv4decay", "Custom Env 4 Decay (ms)", 0.001f, 5000.0f, 1000.0f),
-    std::make_unique<AudioParameterFloat>("paramEnv4sustain", "Custom Env 4 Sustain (%)", 0.0f, 100.0f, 50.0f),
-    std::make_unique<AudioParameterFloat>("paramEnv4release", "Custom Env 4 Release (ms)", 0.001f, 5000.0f, 1000.0f),
+    std::make_unique<AudioParameterChoice>("paramEnv4Choice","Param Env 4 choice", StringArray({"None","Osc 1 Tune", "Osc 1 Pan", "Osc 2 Tune", "Osc 2 Pan", "Osc 3 Tune", "Osc 3 Pan", "Osc 4 Tune", "Osc 4 Pan", "Lfo Depth", "Lfo Frequency","Low pass Filter Frequency", "High pass Filter Frequency"}), 0),
+    std::make_unique<AudioParameterFloat>("paramEnv4attack", "Param Env 4 Attack (ms)", 0.001f, 5000.0f, 1000.0f),
+    std::make_unique<AudioParameterFloat>("paramEnv4decay", "Param Env 4 Decay (ms)", 0.001f, 5000.0f, 1000.0f),
+    std::make_unique<AudioParameterFloat>("paramEnv4sustain", "Param Env 4 Sustain (%)", 0.0f, 100.0f, 50.0f),
+    std::make_unique<AudioParameterFloat>("paramEnv4release", "Param Env 4 Release (ms)", 0.001f, 5000.0f, 1000.0f),
     
     //Additional env 5
-    std::make_unique<AudioParameterChoice>("paramEnv5Choice","customEnv 5 choice", StringArray({"None","Osc 1 Tune", "Osc 1 Pan", "Osc 2 Tune", "Osc 2 Pan", "Osc 3 Tune", "Osc 3 Pan", "Osc 4 Tune", "Osc 4 Pan", "Lfo Depth", "Lfo Frequency","Low pass Filter Frequency", "High pass Filter Frequency"}), 0),
-    std::make_unique<AudioParameterFloat>("paramEnv5attack", "Custom Env 5 Attack (ms)", 0.001f, 5000.0f, 1000.0f),
-    std::make_unique<AudioParameterFloat>("paramEnv5decay", "Custom Env 5 Decay (ms)", 0.001f, 5000.0f, 1000.0f),
-    std::make_unique<AudioParameterFloat>("paramEnv5sustain", "Custom Env 5 Sustain (%)", 0.0f, 100.0f, 50.0f),
-    std::make_unique<AudioParameterFloat>("paramEnv5release", "Custom Env 5 Release (ms)", 0.001f, 5000.0f, 1000.0f),
+    std::make_unique<AudioParameterChoice>("paramEnv5Choice","Param Env 5 choice", StringArray({"None","Osc 1 Tune", "Osc 1 Pan", "Osc 2 Tune", "Osc 2 Pan", "Osc 3 Tune", "Osc 3 Pan", "Osc 4 Tune", "Osc 4 Pan", "Lfo Depth", "Lfo Frequency","Low pass Filter Frequency", "High pass Filter Frequency"}), 0),
+    std::make_unique<AudioParameterFloat>("paramEnv5attack", "Param Env 5 Attack (ms)", 0.001f, 5000.0f, 1000.0f),
+    std::make_unique<AudioParameterFloat>("paramEnv5decay", "Param Env 5 Decay (ms)", 0.001f, 5000.0f, 1000.0f),
+    std::make_unique<AudioParameterFloat>("paramEnv5sustain", "Param Env 5 Sustain (%)", 0.0f, 100.0f, 50.0f),
+    std::make_unique<AudioParameterFloat>("paramEnv5release", "Param Env 5 Release (ms)", 0.001f, 5000.0f, 1000.0f),
     
     //Master Gain
     std::make_unique<AudioParameterFloat>("masterGain", "Master Gain", 0, 2.0f, 1.0f)
@@ -174,8 +174,8 @@ parameters(*this, nullptr, "Parameters", {
         filterParams.add(new SimpleParams(1, 1));
     }
 
-    //Adding custom envolope storing objects
-    for(int i = 0; i < numEnvs-3; ++i)  //CustomEnvChoice Setup
+    //Adding Param Envolope storing objects
+    for(int i = 0; i < numEnvs-3; ++i)  //Param EnvChoice Setup
     {
         paramEnvChoice.add(new SimpleParams(1, 1));
     }
@@ -351,6 +351,9 @@ void PostBoxSynthesiserProcessor::getStateInformation (MemoryBlock& destData)
     auto state = parameters.copyState();
     std::unique_ptr<XmlElement> xml (state.createXml());
     copyXmlToBinary (*xml, destData);
+    
+    setParamTargets();
+    paramsUpdated = true;
 }
 
 void PostBoxSynthesiserProcessor::setStateInformation (const void* data, int sizeInBytes)
@@ -414,16 +417,16 @@ void PostBoxSynthesiserProcessor::setParamTargets()
         filterParams[i] -> setParams(choiceParam, filterPar);   //Updating filter parameters
     }
     
-    //Getting custom envolope choice parameters
+    //Getting Param Envolope choice parameters
     for(int i = 0; i < numEnvs - 3; ++i)
     {
-        int customEnvChosen[1] = {(int)*parameters.getRawParameterValue(paramID.getEnvolopeParamName(3+i, 4))}; //Getting custom env choice
-        float customEnvMax[1] = {0};
-        if(customEnvChosen[0] > 0 && customEnvChosen[0] < paramID.numMaxParams+1)   //Getting the specific parameter value that the choice is pointing to if in range
+        int paramEnvChosen[1] = {(int)*parameters.getRawParameterValue(paramID.getEnvolopeParamName(3+i, 4))}; //Getting Param Env choice
+        float paramEnvMax[1] = {0};
+        if(paramEnvChosen[0] > 0 && paramEnvChosen[0] < paramID.numMaxParams+1)   //Getting the specific parameter value that the choice is pointing to if in range
         {
-            customEnvMax[0] = *parameters.getRawParameterValue(paramID.getMaxParamName(customEnvChosen[0]-1));
+            paramEnvMax[0] = *parameters.getRawParameterValue(paramID.getMaxParamName(paramEnvChosen[0]-1));
         }
-        paramEnvChoice[i] -> setParams(customEnvChosen, customEnvMax);         //Updating custom env parameters
+        paramEnvChoice[i] -> setParams(paramEnvChosen, paramEnvMax);         //Updating Param Env parameters
     }
 }
 
