@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    myIIRFilter.cpp
+    MyIIRFilter.cpp
     This class creates a filter to filter incoming samples using a IIR filter
     Filters can be -12db/oct or -24db/oct, high pass or low pass
     Created: 15 Apr 2020
@@ -10,20 +10,20 @@
   ==============================================================================
 */
 
-#include "myIIRFilter.h"
+#include "MyIIRFilter.h"
 #include <iostream>
 
-myIIRFilter::myIIRFilter()  //Constructor
+MyIIRFilter::MyIIRFilter()  //Constructor
 {}
-myIIRFilter::~myIIRFilter(){}   //Destructor
+MyIIRFilter::~MyIIRFilter(){}   //Destructor
 
-void myIIRFilter::setSampleRate(float newSampleRate)
+void MyIIRFilter::setSampleRate(float newSampleRate)
 {
     sampleTime = 1/newSampleRate;   //updating sample time based on input sample rate
 }
 
 
-bool myIIRFilter::setCutOffFreq(float newCutoffFreq)
+bool MyIIRFilter::setCutOffFreq(float newCutoffFreq)
 {
     if(cutOffFreq != newCutoffFreq)             //check cut off frequency changed
     {
@@ -38,7 +38,7 @@ bool myIIRFilter::setCutOffFreq(float newCutoffFreq)
 }
 
 
-void myIIRFilter::calcDiffEqnCoeffs(bool typeChanged)
+void MyIIRFilter::calcDiffEqnCoeffs(bool typeChanged)
 {
     double wpSquared = wp * wp;             //Calculations required for the difference equations
     double wpSquaredp4 = wpSquared + 4;
@@ -116,7 +116,7 @@ void myIIRFilter::calcDiffEqnCoeffs(bool typeChanged)
 
 
 
-float myIIRFilter::processNextSample(float nextSample) //Process the next sample
+float MyIIRFilter::processNextSample(float nextSample) //Process the next sample
 {
     prevInput[delayLinePos] = nextSample;   //update previous input
     
@@ -155,7 +155,7 @@ float myIIRFilter::processNextSample(float nextSample) //Process the next sample
 }
 
 
-bool myIIRFilter::setOrder(bool newMinus24DbMode)   //Setting filter order
+bool MyIIRFilter::setOrder(bool newMinus24DbMode)   //Setting filter order
 {
     if(minus24dbMode != newMinus24DbMode)   //If the mode changed
     {
@@ -166,7 +166,7 @@ bool myIIRFilter::setOrder(bool newMinus24DbMode)   //Setting filter order
     return false;                           //Return that the value hasn't changed
 }
 
-bool myIIRFilter::setType(bool highPassMode)    // Setting filter type
+bool MyIIRFilter::setType(bool highPassMode)    // Setting filter type
 {
     if(highPassMode != type)        //If the type has changed
     {
@@ -177,7 +177,7 @@ bool myIIRFilter::setType(bool highPassMode)    // Setting filter type
     return false;                   //Return that the value hasn't changed
 }
 
-void myIIRFilter::setFilterParams(float newCutOffFreq, bool newMinus24DbMode, bool highPassMode) //Setting all filter params
+void MyIIRFilter::setFilterParams(float newCutOffFreq, bool newMinus24DbMode, bool highPassMode) //Setting all filter params
 {
     bool updateOrderType = false;               //Parm to check if the type or order has changed
     if(setType(highPassMode) || setOrder(newMinus24DbMode)) //Check if type or order have changed
@@ -191,12 +191,12 @@ void myIIRFilter::setFilterParams(float newCutOffFreq, bool newMinus24DbMode, bo
     }
 }
 
-void myIIRFilter::setFilterParams(float newCutOffFreq, bool newMinus24DbMode)
+void MyIIRFilter::setFilterParams(float newCutOffFreq, bool newMinus24DbMode)
 {
     setFilterParams(newCutOffFreq, newMinus24DbMode, type); //Use other set filter params method with current type
 }
 
-void myIIRFilter::setFilterType(bool highPassMode)  //Setting the filter type
+void MyIIRFilter::setFilterType(bool highPassMode)  //Setting the filter type
 {
     if(setType(highPassMode))       //Check if type changed
     {
@@ -204,7 +204,7 @@ void myIIRFilter::setFilterType(bool highPassMode)  //Setting the filter type
     }
 }
 
-void myIIRFilter::setFilterOrder(float newMinus24DbMode)    //Setting filter order
+void MyIIRFilter::setFilterOrder(float newMinus24DbMode)    //Setting filter order
 {
     if(setOrder(newMinus24DbMode))  //Check if order changed
     {
@@ -212,7 +212,7 @@ void myIIRFilter::setFilterOrder(float newMinus24DbMode)    //Setting filter ord
     }
 }
 
-void myIIRFilter::setFilterCutOffFreq(float newCutOffFreq)  //Setting cutoff frequency
+void MyIIRFilter::setFilterCutOffFreq(float newCutOffFreq)  //Setting cutoff frequency
 {
     if(setCutOffFreq(newCutOffFreq))    //Check if cut off frequency changed
     {
@@ -220,7 +220,7 @@ void myIIRFilter::setFilterCutOffFreq(float newCutOffFreq)  //Setting cutoff fre
     }
 }
 
-void myIIRFilter::resetFilter() //Reset the filer
+void MyIIRFilter::resetFilter() //Reset the filer
 {
     for(int i = 0; i < 10; ++i) //Loop through all the previous stored parameters and set them to 0
     {

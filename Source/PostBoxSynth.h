@@ -16,7 +16,7 @@
 #include "SmoothChanger.h"
 #include "ParamStore.h"
 #include "XYEnvolopedOscs.h"
-#include "myIIRFilter.h"
+#include "MyIIRFilter.h"
 
 // ===========================
 // ===========================

@@ -27,15 +27,15 @@
  @namespace none
  @updated 2020-04-24
  */
-class myIIRFilter
+class MyIIRFilter
 {
 public:
     //==============================================================================
     /** Constructor*/
-    myIIRFilter();
+    MyIIRFilter();
     
     /** Destructor*/
-    ~myIIRFilter();
+    ~MyIIRFilter();
     
     //==============================================================================
     /**
@@ -300,6 +300,6 @@ public:
 private:
     
     //Creating an array of two IIR filters for each channel of stereo
-    myIIRFilter filters[2];
+    MyIIRFilter filters[2];
     
 };
