@@ -333,7 +333,6 @@ private:
     
     //Parameters to deal with envoloping parameters (12 possible parameters to be envoloped)
     int paramEnvParamsChosen[5] = {0, 0, 0, 0, 0};
-    //float maxParamVals[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     OwnedArray<SmoothChanges> maxParamsVals;
     int numTimesChosen[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     float envolopedParamVals[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
